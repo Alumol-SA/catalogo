@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo de accesorios · Alumol S.A.</title>
+<meta name="description" content="Catálogo de accesorios, herramientas y materiales eléctricos de Alumol S.A. Consulta por WhatsApp.">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ====== Colores de la marca (se pueden cambiar aquí) ====== */
+:root{
+  --acento:#56C5D0;      /* celeste Alumol */
+  --tinta:#12282B;       /* texto principal */
+  --profundo:#0E5F67;    /* títulos y botones */
+  --rojo:#C62828;        /* números de sección */
+  --linea:#D5E6E8;
+  --pastilla:#E2F2F3;
+  --suave:#4A5E61;
+  --fondo:#F4F8F8;
+  --whatsapp:#14703C;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Figtree,"Segoe UI",sans-serif;color:var(--tinta);background:var(--fondo)}
+a{color:var(--profundo)}
+.envoltura{max-width:1180px;margin:0 auto;padding:0 16px}
+.serif{font-family:"Bree Serif",Georgia,serif;font-weight:400}
+
+header{background:#fff;border-bottom:1px solid var(--linea)}
+header .envoltura{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+.marca{display:flex;align-items:center;gap:12px}
+.marca img{height:56px;width:auto;display:block}
+.marca b{display:block;font-size:20px;line-height:1.1}
+.marca span{font-size:13px;color:var(--suave)}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:var(--whatsapp);color:#fff;font-weight:700;font-size:15px;text-decoration:none}
+
+.portada{background:var(--acento)}
+.portada .envoltura{padding-top:36px;padding-bottom:32px}
+.portada small{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.portada h1{margin:8px 0;font-size:clamp(32px,7vw,56px);line-height:1.05}
+.portada p{margin:0;font-size:17px;line-height:1.45;max-width:620px}
+
+.buscador{margin:22px 0 4px}
+.buscador label{display:block;font-weight:700;margin-bottom:6px}
+.buscador input{width:100%;min-height:48px;border:1.5px solid var(--linea);border-radius:12px;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:var(--tinta)}
+.buscador input:focus{outline:2px solid var(--profundo);border-color:var(--profundo)}
+
+nav h2{margin:18px 0 12px;font-size:22px}
+.indice{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:8px}
+.indice a{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 12px;background:#fff;border:1px solid var(--linea);border-radius:12px;text-decoration:none;color:var(--tinta);font-weight:600;font-size:15px}
+.indice a .n{font-family:"Bree Serif",Georgia,serif;color:var(--rojo);min-width:22px}
+.indice a .t{flex-grow:1}
+.indice a .c{font-size:12px;color:var(--suave)}
+
+main{display:flex;flex-direction:column;gap:36px;padding:8px 0 40px}
+section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
+.cabecera{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:3px solid var(--acento);padding-bottom:8px}
+.cabecera h2{margin:0;font-size:26px;line-height:1.15;display:flex;gap:10px;align-items:baseline}
+.cabecera h2 .n{color:var(--rojo)}
+.cabecera a{font-size:14px;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
+.grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:12px}
+
+.tarjeta{background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.foto{width:100%;aspect-ratio:1/1;background:#fff;display:flex;align-items:center;justify-content:center}
+.foto img{width:100%;height:100%;object-fit:contain;padding:8px;display:block}
+.foto.vacia{background:#EEF4F5;flex-direction:column;gap:6px;color:var(--suave);font-size:13px;font-weight:600}
+.cuerpo{padding:12px 12px 14px;display:flex;flex-direction:column;gap:8px;flex-grow:1}
+.cuerpo h3{margin:0;font-size:16px;line-height:1.25}
+.cuerpo p{margin:0;font-size:13px;line-height:1.4;color:var(--suave)}
+.etiqueta{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--profundo)}
+.grupo{display:flex;flex-direction:column;gap:5px}
+.pastillas{display:flex;flex-wrap:wrap;gap:5px}
+.pastillas span{background:var(--pastilla);color:var(--profundo);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap}
+.colores{display:flex;flex-wrap:wrap;gap:4px 10px}
+.colores span{display:inline-flex;align-items:center;gap:5px;font-size:12px}
+.colores i{width:12px;height:12px;border-radius:50%;border:1px solid #9AA9AB;display:inline-block}
+.relleno{flex-grow:1}
+.consultar{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:10px;border:1.5px solid var(--profundo);color:var(--profundo);font-size:14px;font-weight:700;text-decoration:none}
+
+.aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
+[hidden]{display:none !important}
+
+footer{background:var(--tinta);color:#fff}
+footer .envoltura{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px;padding-top:32px;padding-bottom:40px}
+footer .col{display:flex;flex-direction:column;gap:6px}
+footer .tit{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9FD8DE}
+footer a{color:#fff;font-size:16px;min-height:36px;display:inline-flex;align-items:center}
+footer span{font-size:16px}
+</style>
+</head>
+<body>
+<div id="inicio"></div>
+<header>
+  <div class="envoltura">
+    <div class="marca">
+      <img src="logo.png" alt="Alumol S.A." width="50" height="56">
+      <div><b class="serif">Alumol S.A.</b><span>Lizardo García y Portete</span></div>
+    </div>
+    <a class="btn-wa" id="wa-general" href="#" target="_blank" rel="noopener">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>
+      <span>0958918180</span>
+    </a>
+  </div>
+</header>
+
+<section class="portada">
+  <div class="envoltura">
+    <small id="conteo">Catálogo</small>
+    <h1 class="serif">Catálogo de accesorios</h1>
+    <p>Perseverancia, experiencia… nuestro éxito. Busca un producto o elige una sección, revisa medidas y colores, y consúltanos por WhatsApp con un toque.</p>
+  </div>
+</section>
+
+<div class="envoltura">
+  <div class="buscador">
+    <label for="buscar">Buscar producto</label>
+    <input id="buscar" type="search" placeholder="Ej.: bisagra, tornillo, 1/4…" autocomplete="off">
+  </div>
+  <nav aria-label="Secciones" id="nav">
+    <h2 class="serif">Secciones</h2>
+    <div class="indice" id="indice"></div>
+  </nav>
+  <main id="catalogo"><div class="aviso">Cargando catálogo…</div></main>
+</div>
+
+<footer>
+  <div class="envoltura">
+    <div class="col"><span class="serif" style="font-size:24px">Alumol S.A.</span><span style="color:#CFE3E5">Perseverancia, experiencia… nuestro éxito.</span></div>
+    <div class="col">
+      <span class="tit">Contacto</span>
+      <a id="wa-pie" href="#" target="_blank" rel="noopener">WhatsApp 0958918180</a>
+      <a href="https://www.instagram.com/alumolsa" target="_blank" rel="noopener">Instagram @alumolsa</a>
+      <a href="https://www.tiktok.com/@alumol.s.a" target="_blank" rel="noopener">TikTok @alumol.s.a</a>
+      <span>Facebook: Alumol SA</span>
+    </div>
+    <div class="col">
+      <span class="tit">Dirección</span>
+      <span>Lizardo García y Portete</span>
+      <a href="https://www.google.com/maps/search/?api=1&query=Lizardo%20Garc%C3%ADa%20y%20Portete%2C%20Guayaquil" target="_blank" rel="noopener">Cómo llegar (Google Maps)</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= CONFIGURACIÓN ================= */
+// Enlace de la hoja de Google publicada en la web como CSV (Archivo › Compartir › Publicar en la web).
+var HOJA_CSV = "";
+// Número de WhatsApp con código de país, sin + ni espacios.
+var WHATSAPP = "593958918180";
+/* ================================================= */
+
+var COLORES = {"blanco":"#FFFFFF","natural":"#C9CED3","madera":"#B9844F","negro":"#1B1B1B","bronce":"#6A4A2C","gris":"#8E9399",
+  "transparente":"#F2F6F7","silver":"#C9CED3","plateado":"#C9CED3","platino":"#D9DCDF","rojo":"#D62E2E","azul":"#1F5FBF",
+  "dorado":"#C9A13B","verde":"#2E8B57","amarillo":"#F2C230","cafe":"#6B4A2C","café":"#6B4A2C","cromado":"#D0D4D8","gris oscuro":"#555B61"};
+var ICONO_WA = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>';
+var ICONO_CAMARA = '<svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6F8689" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+
+function wa(texto){ return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(texto); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function slug(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "seccion"; }
+function sinTildes(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(); }
+
+document.getElementById("wa-general").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
+document.getElementById("wa-pie").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
+
+// Lector de CSV (respeta comillas y comas dentro de los textos)
+function leerCSV(texto){
+  var filas = [], fila = [], campo = "", comillas = false;
+  texto = texto.replace(/^﻿/, "");
+  for (var i = 0; i < texto.length; i++){
+    var c = texto[i];
+    if (comillas){
+      if (c === '"'){ if (texto[i+1] === '"'){ campo += '"'; i++; } else comillas = false; }
+      else campo += c;
+    } else if (c === '"') comillas = true;
+    else if (c === ",") { fila.push(campo); campo = ""; }
+    else if (c === "\n" || c === "\r"){
+      if (c === "\r" && texto[i+1] === "\n") i++;
+      fila.push(campo); filas.push(fila); fila = []; campo = "";
+    } else campo += c;
+  }
+  if (campo !== "" || fila.length){ fila.push(campo); filas.push(fila); }
+  return filas;
+}
+
+// Busca la columna por el inicio de su título, así se pueden renombrar un poco
+function columna(cabeceras, inicio){
+  inicio = sinTildes(inicio);
+  for (var i = 0; i < cabeceras.length; i++) if (sinTildes(cabeceras[i].trim()).indexOf(inicio) === 0) return i;
+  return -1;
+}
+
+var INDICE_FOTOS = {};
+function urlFoto(valor){
+  valor = (valor || "").trim();
+  if (!valor) return null;
+  // Enlace de Google Drive: .../file/d/ID/... o ...?id=ID
+  var m = valor.match(/\/d\/([A-Za-z0-9_-]{20,})/) || valor.match(/[?&]id=([A-Za-z0-9_-]{20,})/);
+  if (m) return "https://lh3.googleusercontent.com/d/" + m[1] + "=w400";
+  if (/^https?:\/\//i.test(valor)) return valor;
+  return INDICE_FOTOS[valor.toLowerCase()] || null;
+}
+
+function tarjeta(p){
+  var h = '<article class="tarjeta" data-buscar="' + esc(sinTildes(p.buscar)) + '">';
+  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
+  else h += FOTO_VACIA;
+  h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
+  if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
+  if (p.medidas.length){
+    h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">';
+    p.medidas.forEach(function(m){ h += '<span>' + esc(m) + '</span>'; });
+    h += '</div></div>';
+  }
+  if (p.colores.length){
+    h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">';
+    p.colores.forEach(function(c){ h += '<span><i style="background:' + (COLORES[c.toLowerCase()] || "#CCCCCC") + '"></i>' + esc(c) + '</span>'; });
+    h += '</div></div>';
+  }
+  h += '<div class="relleno"></div><a class="consultar" href="' + esc(wa("Hola Alumol, quiero consultar por: " + p.nombre)) + '" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a></div></article>';
+  return h;
+}
+var FOTO_VACIA = '<div class="foto vacia">' + ICONO_CAMARA + '<span>Foto pendiente</span></div>';
+
+function mostrar(texto){
+  var filas = leerCSV(texto).filter(function(f){ return f.some(function(x){ return x.trim() !== ""; }); });
+  var cab = filas.shift() || [];
+  var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
+      cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar");
+  var secciones = [], porNombre = {};
+  filas.forEach(function(f){
+    function v(i){ return i >= 0 && f[i] ? f[i].trim() : ""; }
+    var nombre = v(cP), sec = v(cS);
+    if (!nombre || !sec) return;
+    if (sinTildes(v(cV)).indexOf("no") === 0) return;
+    var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
+      medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
+      colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
+      foto: urlFoto(v(cF)) };
+    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" ")].join(" ");
+    var clave = sinTildes(sec);
+    if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [] }; secciones.push(porNombre[clave]); }
+    porNombre[clave].productos.push(p);
+  });
+  var total = 0, ind = "", cat = "";
+  secciones.forEach(function(s, i){
+    var n = (i + 1 < 10 ? "0" : "") + (i + 1);
+    total += s.productos.length;
+    ind += '<a href="#' + s.id + '"><span class="n">' + n + '</span><span class="t">' + esc(s.nombre) + '</span><span class="c">' + s.productos.length + '</span></a>';
+    cat += '<section class="seccion" id="' + s.id + '"><div class="cabecera"><h2 class="serif"><span class="n">' + n + '</span><span>' + esc(s.nombre) +
+      '</span></h2><a href="#inicio">Volver a secciones</a></div><div class="grilla">' + s.productos.map(tarjeta).join("") + '</div></section>';
+  });
+  document.getElementById("indice").innerHTML = ind;
+  document.getElementById("catalogo").innerHTML = cat + '<div class="aviso" id="sin-resultados" hidden>No encontramos productos con esa búsqueda. Escríbenos por WhatsApp y te ayudamos.</div>';
+  document.getElementById("conteo").textContent = total + " productos";
+}
+
+// Buscador
+document.getElementById("buscar").addEventListener("input", function(){
+  var q = sinTildes(this.value.trim()), hay = false;
+  document.querySelectorAll("section.seccion").forEach(function(s){
+    var visibles = 0;
+    s.querySelectorAll(".tarjeta").forEach(function(t){
+      var ok = !q || t.getAttribute("data-buscar").indexOf(q) !== -1;
+      t.hidden = !ok; if (ok) visibles++;
+    });
+    s.hidden = visibles === 0; if (visibles) hay = true;
+  });
+  document.getElementById("nav").hidden = !!q;
+  var sr = document.getElementById("sin-resultados"); if (sr) sr.hidden = hay;
+});
+
+// Carga: índice de fotos guardadas + hoja de Google (si falla, usa la copia de respaldo)
+function obtener(url){ return fetch(url, {cache: "no-store"}).then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); }); }
+fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(){ return {}; }).then(function(ix){
+  INDICE_FOTOS = ix;
+  if (/[?&]prueba=1/.test(location.search)) return obtener("productos-prueba-755.csv");
+  var principal = HOJA_CSV ? obtener(HOJA_CSV) : Promise.reject();
+  return principal.catch(function(){ return obtener("productos-respaldo.csv"); });
+}).then(mostrar).catch(function(){
+  document.getElementById("catalogo").innerHTML = '<div class="aviso">No se pudo cargar el catálogo. Escríbenos por WhatsApp al 0958918180.</div>';
+});
+</script>
+</body>
+</html>
