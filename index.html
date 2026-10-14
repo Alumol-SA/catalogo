@@ -9,6 +9,8 @@
 <!-- CAMBIO 4 · Vista previa al compartir el enlace (WhatsApp, Facebook) e ícono del celular -->
 <meta name="theme-color" content="#56C5D0">
 <link rel="apple-touch-icon" href="icono.png">
+<!-- CAMBIO 13 · Instalar como app -->
+<link rel="manifest" href="manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Alumol S.A.">
 <meta property="og:title" content="Catálogo de accesorios · Alumol S.A.">
@@ -185,6 +187,27 @@ dialog#ficha::backdrop{background:rgba(18,40,43,.55)}
 #ficha p{margin:0;font-size:15px;line-height:1.5;color:var(--suave);white-space:pre-line}
 #ficha .cerrar{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-size:24px;line-height:1;cursor:pointer;color:var(--tinta)}
 
+/* CAMBIO 10 · Elegir medida, color y cantidad en la ficha */
+#ficha .opc{background:var(--pastilla);color:var(--profundo);border:1.5px solid transparent;border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:34px}
+#ficha .colores .opc{background:#fff;border-color:var(--linea);color:var(--tinta);display:inline-flex;align-items:center;gap:6px;font-weight:600}
+#ficha .opc.sel{background:var(--profundo);border-color:var(--profundo);color:#fff}
+#ficha .elige{font-size:13px;color:var(--suave);margin:-4px 0 0}
+#ficha .fila-cant{display:flex;align-items:center;gap:10px}
+#ficha .fila-cant span{font-weight:700;font-size:14px}
+#ficha .stepper{display:flex;align-items:center;gap:4px}
+#ficha .stepper button{width:40px;height:40px;border-radius:10px;border:1px solid var(--linea);background:#fff;font-size:20px;cursor:pointer;color:var(--tinta)}
+#ficha .stepper input{width:56px;height:40px;text-align:center;font:inherit;font-weight:700;font-size:16px;border:1px solid var(--linea);border-radius:10px}
+#ficha .btn-agregar{min-height:48px;border-radius:10px;border:0;background:var(--profundo);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+#ficha .btn-agregar.listo{background:var(--whatsapp)}
+#ficha .fila-btns{display:flex;gap:8px}
+#ficha .fila-btns .consultar{flex:1}
+/* CAMBIO 12 · Compartir */
+#ficha .compartir{flex:0 0 auto;min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid var(--linea);background:#fff;color:var(--tinta);font:inherit;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.aviso-flota{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:30;background:var(--tinta);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+/* CAMBIO 13 · Instalar como app */
+.instalar{margin-top:14px;display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid var(--tinta);background:rgba(255,255,255,.55);color:var(--tinta);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.instalar-ios{margin:10px 0 0;font-size:14px;background:#fff;border-radius:10px;padding:10px 12px;color:var(--tinta)}
+
 footer{background:var(--tinta);color:#fff}
 footer .envoltura{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px;padding-top:32px;padding-bottom:40px}
 footer .col{display:flex;flex-direction:column;gap:6px}
@@ -226,6 +249,8 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
     <small id="conteo">Catálogo</small>
     <h1 class="serif">Catálogo de accesorios</h1>
     <p>Perseverancia, experiencia… nuestro éxito. Busca un producto o elige una sección, revisa medidas y colores, y consúltanos por WhatsApp con un toque.</p>
+    <button class="instalar" id="instalar" type="button" hidden><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>Instalar en tu celular</button>
+    <p class="instalar-ios" id="instalar-ios" hidden>En iPhone: toca el botón <b>Compartir</b> (el cuadro con la flecha hacia arriba) y luego <b>«Agregar a inicio»</b>.</p>
   </div>
 </section>
 
@@ -297,6 +322,9 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
 var HOJA_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaWomSRtCQnm4-QMc_y947wx7aqCHwsnZAHTemvaIqDTK_0PiEMLHAtgTs8D_mUjFN6IUHCDCj25mM/pub?gid=1814359891&single=true&output=csv";
 // Número de WhatsApp con código de país, sin + ni espacios.
 var WHATSAPP = "593958918180";
+// CAMBIO 14 · Estadísticas en un formulario de Google (vacío = apagado).
+// FORMULARIO: enlace .../formResponse del formulario. CAMPO_TIPO y CAMPO_VALOR: los "entry.123..." de sus 2 preguntas.
+var FORMULARIO = "", CAMPO_TIPO = "", CAMPO_VALOR = "";
 /* ================================================= */
 
 var COLORES = {"blanco":"#FFFFFF","natural":"#C9CED3","madera":"#B9844F","negro":"#1B1B1B","bronce":"#6A4A2C","gris":"#8E9399",
@@ -309,6 +337,39 @@ function wa(texto){ return "https://wa.me/" + WHATSAPP + "?text=" + encodeURICom
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function slug(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "seccion"; }
 function sinTildes(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(); }
+
+/* CAMBIO 11 · Búsqueda que perdona errores
+   Se escribe "como suena": v=b, z=s, ce/ci=se/si, ll=y, sin h, sin letras dobles. Así «visagra» encuentra «bisagra». */
+function normal(s){
+  s = sinTildes(String(s)).replace(/(\d)\s*[x×*]\s*(\d)/g, "$1x$2");
+  s = s.replace(/ll/g, "y").replace(/v/g, "b").replace(/z/g, "s").replace(/c([ei])/g, "s$1").replace(/h/g, "").replace(/([a-z])\1+/g, "$1");
+  return s.replace(/[^a-z0-9#°\/.x ]+/g, " ").replace(/\s+/g, " ").trim();
+}
+// Nombres de la calle → nombre en el catálogo (se pueden agregar más aquí, o usar la columna «Otros nombres» de la hoja)
+var SINONIMOS = { "chapa":"cerradura", "chapas":"cerradura", "manija":"tiradera", "jaladera":"tiradera", "haladera":"tiradera", "halador":"tiradera",
+  "jalador":"tiradera", "tarugo":"taco", "silicona":"silicon", "siliconas":"silicon", "foco":"foco", "garrucha":"garrucha", "taladro":"taladro" };
+var SIN_N = {}; for (var _k in SINONIMOS) SIN_N[normal(_k)] = normal(SINONIMOS[_k]);
+function raiz(w){ return w.length > 4 ? w.replace(/(es|s)$/, "") : w; }
+function distancia(a, b){  // cuántas letras hay que cambiar para pasar de a a b
+  if (Math.abs(a.length - b.length) > 2) return 9;
+  var d = []; for (var i = 0; i <= a.length; i++){ d[i] = [i]; }
+  for (var j = 1; j <= b.length; j++) d[0][j] = j;
+  for (i = 1; i <= a.length; i++) for (j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function palabraCalza(w, texto, palabras){
+  if (texto.indexOf(w) !== -1) return true;
+  var r = raiz(w); if (r !== w && texto.indexOf(r) !== -1) return true;
+  if (SIN_N[w] && texto.indexOf(SIN_N[w]) !== -1) return true;
+  if (w.length < 5 || /\d/.test(w)) return false;
+  var tope = w.length >= 9 ? 2 : 1;
+  for (var i = 0; i < palabras.length; i++){
+    var p = palabras[i]; if (p.length < 4) continue;
+    if (distancia(r, p.slice(0, r.length)) <= tope || distancia(w, p) <= tope) return true;
+  }
+  return false;
+}
 
 document.getElementById("wa-general").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
 document.getElementById("wa-pie").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
@@ -356,7 +417,7 @@ function urlFoto(valor){
 }
 
 function tarjeta(p){
-  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(sinTildes(p.buscar)) + '">' + cinta(p);
+  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '">' + cinta(p);
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
@@ -394,9 +455,9 @@ function mostrar(texto){
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
       cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°");
+      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres");
   PRODUCTOS = [];
-  var secciones = [], porNombre = {};
+  var secciones = [], porNombre = {}, USADOS = {};
   filas.forEach(function(f){
     function v(i){ return i >= 0 && f[i] ? f[i].trim() : ""; }
     var nombre = v(cP), sec = v(cS);
@@ -409,7 +470,9 @@ function mostrar(texto){
       foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto };
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
-    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
+    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
+    // CAMBIO 12: dirección propia de cada producto (#p-nombre) para compartirlo
+    var base = "p-" + slug(nombre), sl = base, k = 2; while (USADOS[sl]) sl = base + "-" + (k++); USADOS[sl] = 1; p.slug = sl;
     var clave = sinTildes(sec);
     if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [] }; secciones.push(porNombre[clave]); }
     porNombre[clave].productos.push(p);
@@ -437,15 +500,19 @@ function mostrar(texto){
       '<span class="nom">' + esc(p.nombre) + '</span></button>';
   }).join("");
   document.getElementById("recomendados").hidden = reco.length === 0;
+  if (window.FICHA) FICHA.desdeEnlace();
 }
 
 // Buscador
 document.getElementById("buscar").addEventListener("input", function(){
-  var q = sinTildes(this.value.trim()), hay = false;
+  var q = normal(this.value.trim()), hay = false;
+  var pals = q ? q.split(" ").filter(Boolean) : [];
   document.querySelectorAll("section.seccion").forEach(function(s){
     var visibles = 0;
     s.querySelectorAll(".tarjeta").forEach(function(t){
-      var ok = !q || t.getAttribute("data-buscar").indexOf(q) !== -1;
+      var txt = t.getAttribute("data-buscar"), ps = null;
+      // Cada palabra escrita tiene que aparecer (o parecerse) en el producto
+      var ok = !q || pals.every(function(w){ return palabraCalza(w, txt, ps || (ps = txt.split(" "))); });
       t.hidden = !ok; if (ok) visibles++;
     });
     s.hidden = visibles === 0; if (visibles) hay = true;
@@ -453,6 +520,7 @@ document.getElementById("buscar").addEventListener("input", function(){
   document.getElementById("nav").hidden = !!q;
   var rc = document.getElementById("recomendados"); if (rc.children[1].children.length) rc.hidden = !!q;
   var sr = document.getElementById("sin-resultados"); if (sr) sr.hidden = hay;
+  if (window.STATS) STATS.busqueda(this.value.trim(), hay);
 });
 
 // Carga: índice de fotos guardadas + hoja de Google (si falla, usa la copia de respaldo)
@@ -506,7 +574,7 @@ var PEDIDO = (function(){
     document.getElementById("pedido-n").textContent = n;
     document.querySelectorAll(".tarjeta").forEach(function(t){
       var p = PRODUCTOS[+t.getAttribute("data-id")], b = t.querySelector(".agregar");
-      if (p && b){ var en = !!lista[p.nombre]; b.classList.toggle("en-lista", en); b.textContent = en ? "✓" : "+"; }
+      if (p && b){ var en = enLista(p.nombre); b.classList.toggle("en-lista", en); b.textContent = en ? "✓" : "+"; }
     });
     var ul = document.getElementById("pedido-lista"), h = "", txt = "Hola Alumol, quiero cotizar estos productos:\n";
     Object.keys(lista).forEach(function(k){
@@ -516,10 +584,13 @@ var PEDIDO = (function(){
     ul.innerHTML = h || '<li>Tu lista está vacía.</li>';
     document.getElementById("pedido-enviar").href = wa(txt);
   }
-  function agregar(nombre){ lista[nombre] = (lista[nombre] || 0) + 1; guardar(); pintar(); }
+  function enLista(n){ for (var k in lista) if (k === n || k.indexOf(n + " · ") === 0) return true; return false; }
+  function agregar(nombre, cant){ lista[nombre] = (lista[nombre] || 0) + (cant || 1); guardar(); pintar(); }
   document.getElementById("catalogo").addEventListener("click", function(e){
     var b = e.target.closest(".agregar"); if (!b) return;
     var p = PRODUCTOS[+b.closest(".tarjeta").getAttribute("data-id")];
+    // CAMBIO 10: si el producto tiene varias medidas o colores, se abre la ficha para elegir
+    if (p.medidas.length > 1 || p.colores.length > 1) { FICHA.abrir(p, true); return; }
     if (lista[p.nombre]) { delete lista[p.nombre]; guardar(); pintar(); } else agregar(p.nombre);
   });
   document.getElementById("pedido-lista").addEventListener("click", function(e){
@@ -533,34 +604,147 @@ var PEDIDO = (function(){
   document.getElementById("pedido-cerrar").addEventListener("click", function(){ dlg.close(); });
   dlg.addEventListener("click", function(e){ if (e.target === dlg) dlg.close(); });
   document.getElementById("pedido-vaciar").addEventListener("click", function(){ lista = {}; guardar(); pintar(); });
+  document.getElementById("pedido-enviar").addEventListener("click", function(){ if (window.STATS) STATS.enviar("pedido enviado", total() + " unidades"); });
   return { pintar: pintar, agregar: agregar };
 })();
 
-/* CAMBIO 1 · Ficha del producto al tocarlo */
-(function(){
-  var ficha = document.getElementById("ficha");
-  function abrir(p){
+/* CAMBIO 1 · Ficha del producto al tocarlo
+   CAMBIO 10 · Elegir medida, color y cantidad   ·   CAMBIO 12 · Compartir el producto */
+var FICHA = (function(){
+  var ficha = document.getElementById("ficha"), actual = null, elegido = { m: "", c: "" };
+  function opciones(lista, g, conColor){
+    return lista.map(function(v){
+      return '<button type="button" class="opc" data-g="' + g + '" data-v="' + esc(v) + '" aria-pressed="false">' +
+        (conColor ? '<i style="background:' + (COLORES[v.toLowerCase()] || "#CCCCCC") + '"></i>' : "") + esc(v) + '</button>';
+    }).join("");
+  }
+  function clave(){
+    var partes = [];
+    if (elegido.m) partes.push(elegido.m);
+    if (elegido.c) partes.push(elegido.c);
+    return actual.nombre + (partes.length ? " · " + partes.join(" · ") : "");
+  }
+  function cantidad(){ var n = parseInt(document.getElementById("f-cant").value, 10); return n > 0 ? n : 1; }
+  function refrescar(){
+    var txt = "Hola Alumol, quiero consultar por: " + clave() + (cantidad() > 1 ? " (" + cantidad() + " unidades)" : "");
+    document.getElementById("f-consultar").href = wa(txt);
+  }
+  function abrir(p, paraPedir){
+    actual = p; elegido = { m: p.medidas.length === 1 ? p.medidas[0] : "", c: p.colores.length === 1 ? p.colores[0] : "" };
     var h = '<div class="ficha-foto">' + (p.fotoGrande ? '<img src="' + esc(p.fotoGrande) + '" alt="' + esc(p.nombre) + '">' : ICONO_CAMARA) + '</div>';
     h += '<div class="ficha-cuerpo">' + cinta(p) + '<span class="ficha-sec">' + esc(p.seccion) + '</span><h3 class="serif" id="ficha-titulo">' + esc(p.nombre) + '</h3>';
     if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
     if (p.detalle) h += '<p>' + esc(p.detalle) + '</p>';
-    if (p.medidas.length){ h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">' + p.medidas.map(function(m){ return '<span>' + esc(m) + '</span>'; }).join("") + '</div></div>'; }
-    if (p.colores.length){ h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">' + p.colores.map(function(c){ return '<span><i style="background:' + (COLORES[c.toLowerCase()] || "#CCCCCC") + '"></i>' + esc(c) + '</span>'; }).join("") + '</div></div>'; }
-    h += '<a class="consultar" href="' + esc(wa("Hola Alumol, quiero consultar por: " + p.nombre)) + '" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar por WhatsApp</span></a></div>';
+    if (p.medidas.length > 1 || p.colores.length > 1) h += '<p class="elige">' + (paraPedir ? "Elige " : "Puedes elegir ") + [p.medidas.length > 1 ? "la medida" : "", p.colores.length > 1 ? "el color" : ""].filter(Boolean).join(" y ") + ' antes de agregarlo a tu pedido.</p>';
+    if (p.medidas.length) h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">' + opciones(p.medidas, "m") + '</div></div>';
+    if (p.colores.length) h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">' + opciones(p.colores, "c", true) + '</div></div>';
+    h += '<div class="fila-cant"><span>Cantidad</span><div class="stepper"><button type="button" data-d="-1" aria-label="Menos">−</button>' +
+         '<input id="f-cant" type="number" inputmode="numeric" min="1" value="1" aria-label="Cantidad"><button type="button" data-d="1" aria-label="Más">+</button></div></div>';
+    h += '<button type="button" class="btn-agregar" id="f-agregar">Agregar a mi pedido</button>';
+    h += '<div class="fila-btns"><a class="consultar" id="f-consultar" href="#" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a>' +
+         '<button type="button" class="compartir" id="f-compartir"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Compartir</button></div></div>';
     document.getElementById("ficha-contenido").innerHTML = h;
-    if (ficha.showModal) ficha.showModal(); else ficha.setAttribute("open", "");
+    ficha.querySelectorAll(".opc").forEach(function(b){
+      var on = elegido[b.getAttribute("data-g")] === b.getAttribute("data-v");
+      b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on);
+    });
+    refrescar();
+    if (!ficha.open) { if (ficha.showModal) ficha.showModal(); else ficha.setAttribute("open", ""); }
+    if (window.STATS) STATS.enviar("producto visto", p.nombre);
   }
+  ficha.addEventListener("click", function(e){
+    if (e.target === ficha) { ficha.close(); return; }
+    var o = e.target.closest(".opc");
+    if (o){
+      var g = o.getAttribute("data-g"), v = o.getAttribute("data-v");
+      elegido[g] = elegido[g] === v ? "" : v;   // tocar otra vez la quita
+      ficha.querySelectorAll('.opc[data-g="' + g + '"]').forEach(function(b){
+        var on = b.getAttribute("data-v") === elegido[g]; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on);
+      });
+      refrescar(); return;
+    }
+    var st = e.target.closest(".stepper button");
+    if (st){ var inp = document.getElementById("f-cant"); inp.value = Math.max(1, cantidad() + (+st.getAttribute("data-d"))); refrescar(); return; }
+    if (e.target.closest("#f-agregar")){
+      PEDIDO.agregar(clave(), cantidad());
+      var b = document.getElementById("f-agregar"); b.textContent = "✓ Agregado a tu pedido"; b.classList.add("listo");
+      setTimeout(function(){ if (b.isConnected){ b.textContent = "Agregar otra"; b.classList.remove("listo"); } }, 1600);
+      return;
+    }
+    if (e.target.closest("#f-compartir")) compartir(actual);
+    if (e.target.closest("#f-consultar") && window.STATS) STATS.enviar("consulta", clave());
+  });
+  ficha.addEventListener("input", function(e){ if (e.target.id === "f-cant") refrescar(); });
+  ficha.addEventListener("close", function(){
+    if (/^#p-/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
+  });
+  ficha.querySelector(".cerrar").addEventListener("click", function(){ ficha.close(); });
+
+  function aviso(t){
+    var d = document.createElement("div"); d.className = "aviso-flota"; d.setAttribute("role", "status"); d.textContent = t;
+    document.body.appendChild(d); setTimeout(function(){ d.remove(); }, 2200);
+  }
+  function compartir(p){
+    var url = location.origin + location.pathname + "#" + p.slug;
+    var texto = "Mira este producto en el catálogo de Alumol: " + p.nombre;
+    if (navigator.share) { navigator.share({ title: p.nombre + " · Alumol", text: texto, url: url }).catch(function(){}); }
+    else window.open("https://wa.me/?text=" + encodeURIComponent(texto + "\n" + url), "_blank", "noopener");
+    if (window.STATS) STATS.enviar("producto compartido", p.nombre);
+  }
+  function desdeEnlace(){
+    var m = location.hash.match(/^#(p-[a-z0-9-]+)$/); if (!m) return;
+    for (var i = 0; i < PRODUCTOS.length; i++) if (PRODUCTOS[i].slug === m[1]) { abrir(PRODUCTOS[i]); return; }
+  }
+  window.addEventListener("hashchange", desdeEnlace);
+
   document.getElementById("catalogo").addEventListener("click", function(e){
     if (e.target.closest("a, .agregar")) return;
     var t = e.target.closest(".foto, h3, .ver-mas, .mas"); if (!t) return;
     var card = t.closest(".tarjeta"); if (!card) return;
     abrir(PRODUCTOS[+card.getAttribute("data-id")]);
   });
-  ficha.querySelector(".cerrar").addEventListener("click", function(){ ficha.close(); });
   document.getElementById("reco-fila").addEventListener("click", function(e){
     var b = e.target.closest(".reco"); if (b) abrir(PRODUCTOS[+b.getAttribute("data-id")]);
   });
-  ficha.addEventListener("click", function(e){ if (e.target === ficha) ficha.close(); });
+  document.getElementById("catalogo").addEventListener("click", function(e){
+    var c = e.target.closest(".tarjeta .consultar"); if (c && window.STATS) STATS.enviar("consulta", PRODUCTOS[+c.closest(".tarjeta").getAttribute("data-id")].nombre);
+  });
+  return { abrir: abrir, desdeEnlace: desdeEnlace };
+})();
+
+/* CAMBIO 13 · Instalar como app (y abrir aunque haya poca señal) */
+(function(){
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function(){});
+  var btn = document.getElementById("instalar"), ios = document.getElementById("instalar-ios"), evento = null;
+  var instalada = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  if (instalada) return;
+  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); evento = e; btn.hidden = false; });
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) btn.hidden = false;
+  btn.addEventListener("click", function(){
+    if (evento) { evento.prompt(); evento.userChoice.then(function(){ evento = null; btn.hidden = true; }); }
+    else ios.hidden = !ios.hidden;
+  });
+  window.addEventListener("appinstalled", function(){ btn.hidden = true; if (window.STATS) STATS.enviar("app instalada", ""); });
+})();
+
+/* CAMBIO 14 · Estadísticas anónimas en un formulario de Google (solo si FORMULARIO está lleno) */
+var STATS = (function(){
+  var activo = !!(FORMULARIO && CAMPO_TIPO && CAMPO_VALOR) && !REVISION, espera = null, ultima = "";
+  function enviar(tipo, valor){
+    if (!activo) return;
+    var datos = new URLSearchParams(); datos.append(CAMPO_TIPO, tipo); datos.append(CAMPO_VALOR, String(valor).slice(0, 200));
+    fetch(FORMULARIO, { method: "POST", mode: "no-cors", body: datos }).catch(function(){});
+  }
+  function busqueda(q, hay){
+    clearTimeout(espera);
+    if (q.length < 3) return;
+    espera = setTimeout(function(){   // se registra cuando la persona deja de escribir
+      if (q === ultima) return; ultima = q;
+      enviar(hay ? "búsqueda" : "búsqueda sin resultados", q);
+    }, 1800);
+  }
+  try { if (activo && !sessionStorage.getItem("alumol-visita")) { sessionStorage.setItem("alumol-visita", "1"); enviar("visita", document.referrer ? "enlace" : "directo o QR"); } } catch (e) {}
+  return { enviar: enviar, busqueda: busqueda };
 })();
 </script>
 </body>
