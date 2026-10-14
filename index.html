@@ -95,6 +95,17 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
 [hidden]{display:none !important}
 
+/* CAMBIO 5 · Carga más agradable */
+@keyframes brillo{0%{background-position:-200px 0}100%{background-position:200px 0}}
+.esqueleto{background:linear-gradient(90deg,#E8F0F1 0,#F5F9F9 50%,#E8F0F1 100%);background-size:400px 100%;animation:brillo 1.2s infinite linear;border-radius:14px}
+.esq-grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:12px;padding-top:18px}
+.esq-grilla div{aspect-ratio:3/4}
+.foto img{opacity:0;transition:opacity .35s ease}
+.foto img.cargada{opacity:1}
+.foto:not(.vacia){background:linear-gradient(90deg,#F3F7F7 0,#FFFFFF 50%,#F3F7F7 100%);background-size:400px 100%;animation:brillo 1.2s infinite linear}
+.foto.lista{animation:none;background:#fff}
+@media (prefers-reduced-motion: reduce){.esqueleto,.foto:not(.vacia){animation:none}.foto img{transition:none}}
+
 /* CAMBIO 3 · Barra de secciones fija y botón para subir */
 #chips{position:sticky;top:0;z-index:15;background:rgba(244,248,248,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--linea);margin:0 -16px;padding:8px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 #chips::-webkit-scrollbar{display:none}
@@ -178,7 +189,7 @@ footer span{font-size:16px}
     <div class="indice" id="indice"></div>
   </nav>
   <div id="chips" aria-label="Ir a sección" hidden></div>
-  <main id="catalogo"><div class="aviso">Cargando catálogo…</div></main>
+  <main id="catalogo"><div class="esq-grilla" aria-label="Cargando catálogo"><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div></div></main>
 </div>
 
 <footer>
@@ -282,7 +293,7 @@ function urlFoto(valor){
 
 function tarjeta(p){
   var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(sinTildes(p.buscar)) + '">';
-  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
+  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add('cargada');this.parentNode.classList.add('lista')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
   if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
@@ -338,7 +349,8 @@ function mostrar(texto){
   document.getElementById("indice").innerHTML = ind;
   document.getElementById("catalogo").innerHTML = cat + '<div class="aviso" id="sin-resultados" hidden>No encontramos productos con esa búsqueda. Escríbenos por WhatsApp y te ayudamos.</div>';
   document.getElementById("conteo").textContent = total + " productos";
-  document.getElementById("fuente").textContent = "Datos: " + FUENTE;
+  // CAMBIO 5: la línea de origen de datos solo se muestra con ?diagnostico=1
+  if (/[?&]diagnostico=1/.test(location.search)) document.getElementById("fuente").textContent = "Datos: " + FUENTE;
   if (window.PEDIDO) PEDIDO.pintar();
   if (window.CHIPS) CHIPS.armar(secciones);
 }
