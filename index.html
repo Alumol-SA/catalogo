@@ -106,10 +106,12 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 @media (prefers-reduced-motion: reduce){.esqueleto,.foto:not(.vacia){animation:none}.foto img{transition:none}}
 
 /* CAMBIO 3 · Barra de secciones fija y botón para subir */
-#chips{position:sticky;top:0;z-index:15;background:rgba(244,248,248,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--linea);margin:0 -16px;padding:8px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
-#chips::-webkit-scrollbar{display:none}
+#chips{position:sticky;top:0;z-index:15;background:rgba(244,248,248,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--linea);margin:0 -16px;padding:8px 0 8px 16px;display:flex;gap:8px;align-items:center}
+#chips-lista{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;padding-right:16px}
+#chips-lista::-webkit-scrollbar{display:none}
 #chips a{flex:0 0 auto;min-height:38px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--linea);background:#fff;color:var(--tinta);text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
 #chips a.activo{background:var(--tinta);border-color:var(--tinta);color:#fff}
+#chips a.ir-inicio{background:var(--acento);border-color:var(--acento);color:var(--tinta);font-weight:700}
 section.seccion{scroll-margin-top:64px}
 #subir{position:fixed;right:14px;bottom:80px;z-index:19;width:48px;height:48px;border-radius:50%;border:0;background:#fff;color:var(--tinta);box-shadow:0 3px 12px rgba(0,0,0,.2);font-size:22px;cursor:pointer}
 
@@ -384,7 +386,8 @@ fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(
 var CHIPS = (function(){
   var barra = document.getElementById("chips"), subir = document.getElementById("subir"), obs;
   function armar(secciones){
-    barra.innerHTML = secciones.map(function(s){ return '<a href="#' + s.id + '">' + esc(s.nombre) + '</a>'; }).join("");
+    barra.innerHTML = '<a class="ir-inicio" href="#inicio">↑ Inicio</a><div id="chips-lista">' + secciones.map(function(s){ return '<a href="#' + s.id + '">' + esc(s.nombre) + '</a>'; }).join("") + '</div>';
+    var lista = document.getElementById("chips-lista");
     barra.hidden = secciones.length < 2;
     if (!("IntersectionObserver" in window)) return;
     if (obs) obs.disconnect();
@@ -394,7 +397,7 @@ var CHIPS = (function(){
         barra.querySelectorAll("a").forEach(function(a){
           var on = a.getAttribute("href") === "#" + en.target.id;
           a.classList.toggle("activo", on);
-          if (on && a.scrollIntoView) barra.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" });
+          if (on && a.parentNode === lista) lista.scrollTo({ left: Math.max(0, a.offsetLeft - lista.offsetLeft - 8), behavior: "smooth" });
         });
       });
     }, { rootMargin: "-70px 0px -70% 0px" });
