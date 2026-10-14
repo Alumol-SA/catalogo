@@ -142,12 +142,13 @@ footer span{font-size:16px}
       <a href="https://www.google.com/maps/search/?api=1&query=Lizardo%20Garc%C3%ADa%20y%20Portete%2C%20Guayaquil" target="_blank" rel="noopener">Cómo llegar (Google Maps)</a>
     </div>
   </div>
+  <div class="envoltura" style="padding-bottom:16px"><small id="fuente" style="color:#7FA3A7;font-size:12px"></small></div>
 </footer>
 
 <script>
 /* ================= CONFIGURACIÓN ================= */
 // Enlace de la hoja de Google publicada en la web como CSV (Archivo › Compartir › Publicar en la web).
-var HOJA_CSV = "";
+var HOJA_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaWomSRtCQnm4-QMc_y947wx7aqCHwsnZAHTemvaIqDTK_0PiEMLHAtgTs8D_mUjFN6IUHCDCj25mM/pub?gid=1814359891&single=true&output=csv";
 // Número de WhatsApp con código de país, sin + ni espacios.
 var WHATSAPP = "593958918180";
 /* ================================================= */
@@ -193,7 +194,7 @@ function columna(cabeceras, inicio){
   return -1;
 }
 
-var INDICE_FOTOS = {};
+var INDICE_FOTOS = {}, FUENTE = "prueba";
 function urlFoto(valor){
   valor = (valor || "").trim();
   if (!valor) return null;
@@ -256,6 +257,7 @@ function mostrar(texto){
   document.getElementById("indice").innerHTML = ind;
   document.getElementById("catalogo").innerHTML = cat + '<div class="aviso" id="sin-resultados" hidden>No encontramos productos con esa búsqueda. Escríbenos por WhatsApp y te ayudamos.</div>';
   document.getElementById("conteo").textContent = total + " productos";
+  document.getElementById("fuente").textContent = "Datos: " + FUENTE;
 }
 
 // Buscador
@@ -279,7 +281,7 @@ fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(
   INDICE_FOTOS = ix;
   if (/[?&]prueba=1/.test(location.search)) return obtener("productos-prueba-755.csv");
   var principal = HOJA_CSV ? obtener(HOJA_CSV) : Promise.reject();
-  return principal.catch(function(){ return obtener("productos-respaldo.csv"); });
+  return principal.then(function(t){ FUENTE = "en vivo"; return t; }).catch(function(){ FUENTE = "respaldo"; return obtener("productos-respaldo.csv"); });
 }).then(mostrar).catch(function(){
   document.getElementById("catalogo").innerHTML = '<div class="aviso">No se pudo cargar el catálogo. Escríbenos por WhatsApp al 0958918180.</div>';
 });
