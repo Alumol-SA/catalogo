@@ -42,7 +42,10 @@ a{color:var(--profundo)}
 
 header{background:#fff;border-bottom:1px solid var(--linea)}
 header .envoltura{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
-.marca{display:flex;align-items:center;gap:12px}
+.marca{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.volver-web{background:#0A3F45}
+.volver-web a{display:inline-flex;align-items:center;min-height:36px;color:#fff;font-size:14px;font-weight:600;text-decoration:none}
+.volver-web a:hover{text-decoration:underline}
 .marca img{height:56px;width:auto;display:block}
 .marca b{display:block;font-size:20px;line-height:1.1}
 .marca span{font-size:13px;color:var(--suave)}
@@ -189,12 +192,13 @@ footer span{font-size:16px}
 <body>
 <div id="inicio"></div>
 <div class="aviso-rev" id="aviso-rev" hidden>MODO REVISIÓN · se ven los números y también los productos ocultos</div>
+<nav class="volver-web" aria-label="Página principal"><div class="envoltura"><a href="web/">‹ Página principal de Alumol</a></div></nav>
 <header>
   <div class="envoltura">
-    <div class="marca">
+    <a class="marca" href="web/" title="Ir a la página principal de Alumol">
       <img src="logo.png" alt="Alumol S.A." width="50" height="56">
       <div><b class="serif">Alumol S.A.</b><span>Lizardo García y Portete</span></div>
-    </div>
+    </a>
     <a class="btn-wa" id="wa-general" href="#" target="_blank" rel="noopener">
       <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>
       <span>0958918180</span>
@@ -233,6 +237,7 @@ footer span{font-size:16px}
     <div class="col">
       <span class="tit">Contacto</span>
       <a id="wa-pie" href="#" target="_blank" rel="noopener">WhatsApp 0958918180</a>
+      <a href="web/">Página principal de Alumol</a>
       <a href="https://www.instagram.com/alumolsa" target="_blank" rel="noopener">Instagram @alumolsa</a>
       <a href="https://www.tiktok.com/@alumol.s.a" target="_blank" rel="noopener">TikTok @alumol.s.a</a>
       <span>Facebook: Alumol SA</span>
