@@ -83,6 +83,14 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
 [hidden]{display:none !important}
 
+/* CAMBIO 3 · Barra de secciones fija y botón para subir */
+#chips{position:sticky;top:0;z-index:15;background:rgba(244,248,248,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--linea);margin:0 -16px;padding:8px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+#chips::-webkit-scrollbar{display:none}
+#chips a{flex:0 0 auto;min-height:38px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--linea);background:#fff;color:var(--tinta);text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
+#chips a.activo{background:var(--tinta);border-color:var(--tinta);color:#fff}
+section.seccion{scroll-margin-top:64px}
+#subir{position:fixed;right:14px;bottom:80px;z-index:19;width:48px;height:48px;border-radius:50%;border:0;background:#fff;color:var(--tinta);box-shadow:0 3px 12px rgba(0,0,0,.2);font-size:22px;cursor:pointer}
+
 /* CAMBIO 2 · Lista de pedido */
 .acciones{display:flex;gap:6px}
 .acciones .consultar{flex:1}
@@ -157,6 +165,7 @@ footer span{font-size:16px}
     <h2 class="serif">Secciones</h2>
     <div class="indice" id="indice"></div>
   </nav>
+  <div id="chips" aria-label="Ir a sección" hidden></div>
   <main id="catalogo"><div class="aviso">Cargando catálogo…</div></main>
 </div>
 
@@ -178,6 +187,9 @@ footer span{font-size:16px}
   </div>
   <div class="envoltura" style="padding-bottom:16px"><small id="fuente" style="color:#7FA3A7;font-size:12px"></small></div>
 </footer>
+
+<!-- CAMBIO 3 · Botón para subir -->
+<button id="subir" type="button" aria-label="Volver arriba" hidden>↑</button>
 
 <!-- CAMBIO 2 · Lista de pedido -->
 <button id="barra-pedido" type="button" hidden>Mi pedido <b id="pedido-n">0</b></button>
@@ -316,6 +328,7 @@ function mostrar(texto){
   document.getElementById("conteo").textContent = total + " productos";
   document.getElementById("fuente").textContent = "Datos: " + FUENTE;
   if (window.PEDIDO) PEDIDO.pintar();
+  if (window.CHIPS) CHIPS.armar(secciones);
 }
 
 // Buscador
@@ -343,6 +356,32 @@ fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(
 }).then(mostrar).catch(function(){
   document.getElementById("catalogo").innerHTML = '<div class="aviso">No se pudo cargar el catálogo. Escríbenos por WhatsApp al 0958918180.</div>';
 });
+
+/* CAMBIO 3 · Barra de secciones fija (resalta la sección que se está viendo) y botón para subir */
+var CHIPS = (function(){
+  var barra = document.getElementById("chips"), subir = document.getElementById("subir"), obs;
+  function armar(secciones){
+    barra.innerHTML = secciones.map(function(s){ return '<a href="#' + s.id + '">' + esc(s.nombre) + '</a>'; }).join("");
+    barra.hidden = secciones.length < 2;
+    if (!("IntersectionObserver" in window)) return;
+    if (obs) obs.disconnect();
+    obs = new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if (!en.isIntersecting) return;
+        barra.querySelectorAll("a").forEach(function(a){
+          var on = a.getAttribute("href") === "#" + en.target.id;
+          a.classList.toggle("activo", on);
+          if (on && a.scrollIntoView) barra.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" });
+        });
+      });
+    }, { rootMargin: "-70px 0px -70% 0px" });
+    document.querySelectorAll("section.seccion").forEach(function(s){ obs.observe(s); });
+  }
+  window.addEventListener("scroll", function(){ subir.hidden = window.scrollY < 900; }, { passive: true });
+  subir.addEventListener("click", function(){ window.scrollTo({ top: 0, behavior: "smooth" }); });
+  document.getElementById("buscar").addEventListener("input", function(){ barra.style.display = this.value.trim() ? "none" : ""; });
+  return { armar: armar };
+})();
 
 /* CAMBIO 2 · Lista de pedido (se envía completa por WhatsApp) */
 var PEDIDO = (function(){
