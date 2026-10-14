@@ -83,6 +83,19 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
 [hidden]{display:none !important}
 
+/* CAMBIO 1 · Ficha del producto al tocarlo */
+.tarjeta .foto, .tarjeta h3{cursor:pointer}
+.ver-mas{align-self:flex-start;background:none;border:0;padding:4px 0;min-height:32px;font:inherit;font-size:13px;font-weight:700;color:var(--profundo);text-decoration:underline;cursor:pointer}
+dialog#ficha{border:0;border-radius:18px;padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
+dialog#ficha::backdrop{background:rgba(18,40,43,.55)}
+#ficha .ficha-foto{background:#fff;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--linea)}
+#ficha .ficha-foto img{width:100%;height:100%;object-fit:contain;padding:12px}
+#ficha .ficha-cuerpo{padding:16px 18px 20px;display:flex;flex-direction:column;gap:12px}
+#ficha .ficha-sec{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rojo)}
+#ficha h3{margin:0;font-size:24px;line-height:1.2}
+#ficha p{margin:0;font-size:15px;line-height:1.5;color:var(--suave);white-space:pre-line}
+#ficha .cerrar{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-size:24px;line-height:1;cursor:pointer;color:var(--tinta)}
+
 footer{background:var(--tinta);color:#fff}
 footer .envoltura{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px;padding-top:32px;padding-bottom:40px}
 footer .col{display:flex;flex-direction:column;gap:6px}
@@ -145,6 +158,12 @@ footer span{font-size:16px}
   <div class="envoltura" style="padding-bottom:16px"><small id="fuente" style="color:#7FA3A7;font-size:12px"></small></div>
 </footer>
 
+<!-- CAMBIO 1 · Ficha del producto -->
+<dialog id="ficha" aria-labelledby="ficha-titulo">
+  <button class="cerrar" type="button" aria-label="Cerrar">×</button>
+  <div id="ficha-contenido"></div>
+</dialog>
+
 <script>
 /* ================= CONFIGURACIÓN ================= */
 // Enlace de la hoja de Google publicada en la web como CSV (Archivo › Compartir › Publicar en la web).
@@ -194,7 +213,7 @@ function columna(cabeceras, inicio){
   return -1;
 }
 
-var INDICE_FOTOS = {}, FUENTE = "prueba";
+var INDICE_FOTOS = {}, FUENTE = "prueba", PRODUCTOS = [];
 function urlFoto(valor){
   valor = (valor || "").trim();
   if (!valor) return null;
@@ -206,7 +225,7 @@ function urlFoto(valor){
 }
 
 function tarjeta(p){
-  var h = '<article class="tarjeta" data-buscar="' + esc(sinTildes(p.buscar)) + '">';
+  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(sinTildes(p.buscar)) + '">';
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
@@ -221,6 +240,7 @@ function tarjeta(p){
     p.colores.forEach(function(c){ h += '<span><i style="background:' + (COLORES[c.toLowerCase()] || "#CCCCCC") + '"></i>' + esc(c) + '</span>'; });
     h += '</div></div>';
   }
+  h += '<button class="ver-mas" type="button">Ver detalles</button>';
   h += '<div class="relleno"></div><a class="consultar" href="' + esc(wa("Hola Alumol, quiero consultar por: " + p.nombre)) + '" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a></div></article>';
   return h;
 }
@@ -230,7 +250,9 @@ function mostrar(texto){
   var filas = leerCSV(texto).filter(function(f){ return f.some(function(x){ return x.trim() !== ""; }); });
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
-      cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar");
+      cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
+      cX = columna(cab,"detalle");
+  PRODUCTOS = [];
   var secciones = [], porNombre = {};
   filas.forEach(function(f){
     function v(i){ return i >= 0 && f[i] ? f[i].trim() : ""; }
@@ -240,7 +262,9 @@ function mostrar(texto){
     var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)) };
+      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec };
+    if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
+    p.id = PRODUCTOS.push(p) - 1;
     p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" ")].join(" ");
     var clave = sinTildes(sec);
     if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [] }; secciones.push(porNombre[clave]); }
@@ -285,6 +309,30 @@ fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(
 }).then(mostrar).catch(function(){
   document.getElementById("catalogo").innerHTML = '<div class="aviso">No se pudo cargar el catálogo. Escríbenos por WhatsApp al 0958918180.</div>';
 });
+
+/* CAMBIO 1 · Ficha del producto al tocarlo */
+(function(){
+  var ficha = document.getElementById("ficha");
+  function abrir(p){
+    var h = '<div class="ficha-foto">' + (p.fotoGrande ? '<img src="' + esc(p.fotoGrande) + '" alt="' + esc(p.nombre) + '">' : ICONO_CAMARA) + '</div>';
+    h += '<div class="ficha-cuerpo"><span class="ficha-sec">' + esc(p.seccion) + '</span><h3 class="serif" id="ficha-titulo">' + esc(p.nombre) + '</h3>';
+    if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
+    if (p.detalle) h += '<p>' + esc(p.detalle) + '</p>';
+    if (p.medidas.length){ h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">' + p.medidas.map(function(m){ return '<span>' + esc(m) + '</span>'; }).join("") + '</div></div>'; }
+    if (p.colores.length){ h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">' + p.colores.map(function(c){ return '<span><i style="background:' + (COLORES[c.toLowerCase()] || "#CCCCCC") + '"></i>' + esc(c) + '</span>'; }).join("") + '</div></div>'; }
+    h += '<a class="consultar" href="' + esc(wa("Hola Alumol, quiero consultar por: " + p.nombre)) + '" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar por WhatsApp</span></a></div>';
+    document.getElementById("ficha-contenido").innerHTML = h;
+    if (ficha.showModal) ficha.showModal(); else ficha.setAttribute("open", "");
+  }
+  document.getElementById("catalogo").addEventListener("click", function(e){
+    if (e.target.closest("a, .agregar")) return;
+    var t = e.target.closest(".foto, h3, .ver-mas"); if (!t) return;
+    var card = t.closest(".tarjeta"); if (!card) return;
+    abrir(PRODUCTOS[+card.getAttribute("data-id")]);
+  });
+  ficha.querySelector(".cerrar").addEventListener("click", function(){ ficha.close(); });
+  ficha.addEventListener("click", function(e){ if (e.target === ficha) ficha.close(); });
+})();
 </script>
 </body>
 </html>
