@@ -94,6 +94,9 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
 [hidden]{display:none !important}
 
+/* Botón «+N más» en medidas y colores */
+.mas{background:#fff;border:1.5px dashed var(--profundo);color:var(--profundo);border-radius:999px;padding:2px 9px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;min-height:26px}
+
 /* Modo revisión (temporal) */
 .rev-num{position:absolute;top:10px;right:10px;z-index:3;background:#FFE14D;color:#12282B;font-size:12px;font-weight:800;padding:4px 8px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.25);pointer-events:none}
 #ficha .rev-num{position:static;align-self:flex-start}
@@ -340,12 +343,17 @@ function tarjeta(p){
   if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
   if (p.medidas.length){
     h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">';
-    p.medidas.forEach(function(m){ h += '<span>' + esc(m) + '</span>'; });
+    // Si hay muchas medidas, la tarjeta muestra las primeras y el resto se ve en la ficha
+    var mv = p.medidas.length > MAX_TARJETA ? p.medidas.slice(0, MAX_TARJETA - 1) : p.medidas;
+    mv.forEach(function(m){ h += '<span>' + esc(m) + '</span>'; });
+    if (mv.length < p.medidas.length) h += '<button type="button" class="mas">+' + (p.medidas.length - mv.length) + ' más</button>';
     h += '</div></div>';
   }
   if (p.colores.length){
     h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">';
-    p.colores.forEach(function(c){ h += '<span><i style="background:' + (COLORES[c.toLowerCase()] || "#CCCCCC") + '"></i>' + esc(c) + '</span>'; });
+    var cv = p.colores.length > MAX_TARJETA ? p.colores.slice(0, MAX_TARJETA - 1) : p.colores;
+    cv.forEach(function(c){ h += '<span><i style="background:' + (COLORES[c.toLowerCase()] || "#CCCCCC") + '"></i>' + esc(c) + '</span>'; });
+    if (cv.length < p.colores.length) h += '<button type="button" class="mas">+' + (p.colores.length - cv.length) + ' más</button>';
     h += '</div></div>';
   }
   h += '<button class="ver-mas" type="button">Ver detalles</button>';
@@ -358,6 +366,7 @@ function marcaRevision(p){
   return '<span class="rev-num">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") + (p.foto ? "" : " · SIN FOTO") + '</span>';
 }
 function cinta(p){ return marcaRevision(p) + (p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""); }
+var MAX_TARJETA = 6;  // máximo de medidas o colores visibles en la tarjeta
 var FOTO_VACIA = '<div class="foto vacia">' + ICONO_CAMARA + '<span>Foto pendiente</span></div>';
 
 function mostrar(texto){
@@ -523,7 +532,7 @@ var PEDIDO = (function(){
   }
   document.getElementById("catalogo").addEventListener("click", function(e){
     if (e.target.closest("a, .agregar")) return;
-    var t = e.target.closest(".foto, h3, .ver-mas"); if (!t) return;
+    var t = e.target.closest(".foto, h3, .ver-mas, .mas"); if (!t) return;
     var card = t.closest(".tarjeta"); if (!card) return;
     abrir(PRODUCTOS[+card.getAttribute("data-id")]);
   });
