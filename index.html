@@ -94,6 +94,11 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
 [hidden]{display:none !important}
 
+/* Modo revisión (temporal) */
+.rev-num{position:absolute;top:10px;right:10px;z-index:3;background:#FFE14D;color:#12282B;font-size:12px;font-weight:800;padding:4px 8px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.25);pointer-events:none}
+#ficha .rev-num{position:static;align-self:flex-start}
+.aviso-rev{background:#FFE14D;color:#12282B;text-align:center;font-weight:700;padding:8px 16px;font-size:14px}
+
 /* CAMBIO 9 · Recomendados (columna «Destacar» = SÍ en la hoja) */
 #recomendados h2{margin:18px 0 10px;font-size:22px}
 .reco-fila{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 8px}
@@ -180,6 +185,7 @@ footer span{font-size:16px}
 </head>
 <body>
 <div id="inicio"></div>
+<div class="aviso-rev" id="aviso-rev" hidden>MODO REVISIÓN · se ven los números y también los productos ocultos</div>
 <header>
   <div class="envoltura">
     <div class="marca">
@@ -313,6 +319,9 @@ function columna(cabeceras, inicio){
 }
 
 var INDICE_FOTOS = {}, FUENTE = "prueba", PRODUCTOS = [];
+// Modo revisión (temporal): ?revision=1 muestra el N° de cada producto y también los ocultos
+var REVISION = /[?&]revision=1/.test(location.search);
+if (REVISION) document.getElementById("aviso-rev").hidden = false;
 function urlFoto(valor){
   valor = (valor || "").trim();
   if (!valor) return null;
@@ -344,7 +353,11 @@ function tarjeta(p){
     '<button class="agregar" type="button" aria-label="Agregar ' + esc(p.nombre) + ' a mi pedido" title="Agregar a mi pedido">+</button></div></div></article>';
   return h;
 }
-function cinta(p){ return p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""; }
+function marcaRevision(p){
+  if (!REVISION) return "";
+  return '<span class="rev-num">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") + (p.foto ? "" : " · SIN FOTO") + '</span>';
+}
+function cinta(p){ return marcaRevision(p) + (p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""); }
 var FOTO_VACIA = '<div class="foto vacia">' + ICONO_CAMARA + '<span>Foto pendiente</span></div>';
 
 function mostrar(texto){
@@ -352,21 +365,22 @@ function mostrar(texto){
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
       cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar");
+      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°");
   PRODUCTOS = [];
   var secciones = [], porNombre = {};
   filas.forEach(function(f){
     function v(i){ return i >= 0 && f[i] ? f[i].trim() : ""; }
     var nombre = v(cP), sec = v(cS);
     if (!nombre || !sec) return;
-    if (sinTildes(v(cV)).indexOf("no") === 0) return;
+    var oculto = sinTildes(v(cV)).indexOf("no") === 0;
+    if (oculto && !REVISION) return;
     var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))) };
+      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto };
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
-    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta].join(" ");
+    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
     var clave = sinTildes(sec);
     if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [] }; secciones.push(porNombre[clave]); }
     porNombre[clave].productos.push(p);
