@@ -94,6 +94,14 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
 [hidden]{display:none !important}
 
+/* CAMBIO 9 · Recomendados (columna «Destacar» = SÍ en la hoja) */
+#recomendados h2{margin:18px 0 10px;font-size:22px}
+.reco-fila{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 8px}
+.reco-fila::-webkit-scrollbar{display:none}
+.reco{flex:0 0 140px;position:relative;background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden;padding:0;font:inherit;color:var(--tinta);text-align:left;cursor:pointer;display:flex;flex-direction:column}
+.reco .foto{aspect-ratio:1/1}
+.reco span.nom{padding:8px 10px 10px;font-size:14px;font-weight:600;line-height:1.25}
+
 /* CAMBIO 7 · Botón flotante de WhatsApp */
 #wa-flotante{position:fixed;right:14px;bottom:14px;z-index:21;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.28)}
 #wa-flotante svg{width:30px;height:30px}
@@ -198,6 +206,10 @@ footer span{font-size:16px}
     <label for="buscar">Buscar producto</label>
     <input id="buscar" type="search" placeholder="Ej.: bisagra, tornillo, 1/4…" autocomplete="off">
   </div>
+  <section id="recomendados" aria-labelledby="reco-titulo" hidden>
+    <h2 class="serif" id="reco-titulo">Recomendados</h2>
+    <div class="reco-fila" id="reco-fila"></div>
+  </section>
   <nav aria-label="Secciones" id="nav">
     <h2 class="serif">Secciones</h2>
     <div class="indice" id="indice"></div>
@@ -340,7 +352,7 @@ function mostrar(texto){
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
       cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta");
+      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar");
   PRODUCTOS = [];
   var secciones = [], porNombre = {};
   filas.forEach(function(f){
@@ -351,7 +363,7 @@ function mostrar(texto){
     var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE) };
+      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))) };
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
     p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta].join(" ");
@@ -374,6 +386,14 @@ function mostrar(texto){
   if (/[?&]diagnostico=1/.test(location.search)) document.getElementById("fuente").textContent = "Datos: " + FUENTE;
   if (window.PEDIDO) PEDIDO.pintar();
   if (window.CHIPS) CHIPS.armar(secciones);
+  // CAMBIO 9: fila de recomendados
+  var reco = PRODUCTOS.filter(function(p){ return p.destacar; });
+  document.getElementById("reco-fila").innerHTML = reco.map(function(p){
+    return '<button class="reco" type="button" data-id="' + p.id + '">' + cinta(p) +
+      (p.foto ? '<div class="foto"><img src="' + esc(p.foto) + '" alt="" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')"></div>' : FOTO_VACIA) +
+      '<span class="nom">' + esc(p.nombre) + '</span></button>';
+  }).join("");
+  document.getElementById("recomendados").hidden = reco.length === 0;
 }
 
 // Buscador
@@ -388,6 +408,7 @@ document.getElementById("buscar").addEventListener("input", function(){
     s.hidden = visibles === 0; if (visibles) hay = true;
   });
   document.getElementById("nav").hidden = !!q;
+  var rc = document.getElementById("recomendados"); if (rc.children[1].children.length) rc.hidden = !!q;
   var sr = document.getElementById("sin-resultados"); if (sr) sr.hidden = hay;
 });
 
@@ -493,6 +514,9 @@ var PEDIDO = (function(){
     abrir(PRODUCTOS[+card.getAttribute("data-id")]);
   });
   ficha.querySelector(".cerrar").addEventListener("click", function(){ ficha.close(); });
+  document.getElementById("reco-fila").addEventListener("click", function(e){
+    var b = e.target.closest(".reco"); if (b) abrir(PRODUCTOS[+b.getAttribute("data-id")]);
+  });
   ficha.addEventListener("click", function(e){ if (e.target === ficha) ficha.close(); });
 })();
 </script>
