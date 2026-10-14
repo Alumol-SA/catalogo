@@ -293,7 +293,7 @@ function urlFoto(valor){
 
 function tarjeta(p){
   var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(sinTildes(p.buscar)) + '">';
-  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add('cargada');this.parentNode.classList.add('lista')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
+  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
   if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
