@@ -43,6 +43,10 @@ a{color:var(--profundo)}
 header{background:#fff;border-bottom:1px solid var(--linea)}
 header .envoltura{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
 .marca{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+/* Enlaces a la página web: ocultos hasta que se lance la web (se ven con ?web=1) */
+.solo-web{display:none !important}
+html.con-web .volver-web.solo-web{display:block !important}
+html.con-web a.solo-web{display:inline !important}
 .volver-web{background:#0A3F45}
 .volver-web a{display:inline-flex;align-items:center;min-height:36px;color:#fff;font-size:14px;font-weight:600;text-decoration:none}
 .volver-web a:hover{text-decoration:underline}
@@ -190,12 +194,23 @@ footer span{font-size:16px}
 </style>
 </head>
 <body>
+<script>
+// ENLACES A LA PÁGINA WEB: escondidos hasta el lanzamiento. Para lanzarlos, poner WEB_LANZADA = true.
+var WEB_LANZADA = false;
+if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
+  document.documentElement.classList.add("con-web");
+  document.addEventListener("DOMContentLoaded", function(){
+    var m = document.getElementById("marca-web");
+    if (m) { m.href = "web/"; m.title = "Ir a la página principal de Alumol"; }
+  });
+}
+</script>
 <div id="inicio"></div>
 <div class="aviso-rev" id="aviso-rev" hidden>MODO REVISIÓN · se ven los números y también los productos ocultos</div>
-<nav class="volver-web" aria-label="Página principal"><div class="envoltura"><a href="web/">‹ Página principal de Alumol</a></div></nav>
+<nav class="volver-web solo-web" aria-label="Página principal"><div class="envoltura"><a href="web/">‹ Página principal de Alumol</a></div></nav>
 <header>
   <div class="envoltura">
-    <a class="marca" href="web/" title="Ir a la página principal de Alumol">
+    <a class="marca" id="marca-web">
       <img src="logo.png" alt="Alumol S.A." width="50" height="56">
       <div><b class="serif">Alumol S.A.</b><span>Lizardo García y Portete</span></div>
     </a>
@@ -237,7 +252,7 @@ footer span{font-size:16px}
     <div class="col">
       <span class="tit">Contacto</span>
       <a id="wa-pie" href="#" target="_blank" rel="noopener">WhatsApp 0958918180</a>
-      <a href="web/">Página principal de Alumol</a>
+      <a class="solo-web" href="web/">Página principal de Alumol</a>
       <a href="https://www.instagram.com/alumolsa" target="_blank" rel="noopener">Instagram @alumolsa</a>
       <a href="https://www.tiktok.com/@alumol.s.a" target="_blank" rel="noopener">TikTok @alumol.s.a</a>
       <span>Facebook: Alumol SA</span>
