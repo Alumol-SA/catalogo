@@ -35,7 +35,6 @@
   --whatsapp:#14703C;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
 body{margin:0;font-family:Figtree,"Segoe UI",sans-serif;color:var(--tinta);background:var(--fondo)}
 a{color:var(--profundo)}
 .envoltura{max-width:1180px;margin:0 auto;padding:0 16px}
@@ -402,7 +401,7 @@ var CHIPS = (function(){
     document.querySelectorAll("section.seccion").forEach(function(s){ obs.observe(s); });
   }
   window.addEventListener("scroll", function(){ subir.hidden = window.scrollY < 900; }, { passive: true });
-  subir.addEventListener("click", function(){ window.scrollTo({ top: 0, behavior: "smooth" }); });
+  subir.addEventListener("click", function(){ window.scrollTo(0, 0); });
   document.getElementById("buscar").addEventListener("input", function(){ barra.style.display = this.value.trim() ? "none" : ""; });
   return { armar: armar };
 })();
