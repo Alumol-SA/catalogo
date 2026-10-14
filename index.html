@@ -94,6 +94,19 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
 [hidden]{display:none !important}
 
+/* CAMBIO 7 · Botón flotante de WhatsApp */
+#wa-flotante{position:fixed;right:14px;bottom:14px;z-index:21;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.28)}
+#wa-flotante svg{width:30px;height:30px}
+#barra-pedido{max-width:calc(100% - 150px)}
+
+/* CAMBIO 8 · Etiquetas en las tarjetas (columna «Etiqueta» de la hoja) */
+.tarjeta{position:relative}
+.cinta{position:absolute;top:10px;left:10px;z-index:2;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:var(--tinta);box-shadow:0 1px 3px rgba(0,0,0,.2);pointer-events:none}
+.cinta.nuevo{background:#1F5FBF}
+.cinta.mas-vendido{background:#B45309}
+.cinta.oferta{background:#C62828}
+#ficha .cinta{position:static;align-self:flex-start}
+
 /* CAMBIO 5 · Carga más agradable */
 @keyframes brillo{0%{background-position:-200px 0}100%{background-position:200px 0}}
 .esqueleto{background:linear-gradient(90deg,#E8F0F1 0,#F5F9F9 50%,#E8F0F1 100%);background-size:400px 100%;animation:brillo 1.2s infinite linear;border-radius:14px}
@@ -212,6 +225,11 @@ footer span{font-size:16px}
   <div class="envoltura" style="padding-bottom:16px"><small id="fuente" style="color:#7FA3A7;font-size:12px"></small></div>
 </footer>
 
+<!-- CAMBIO 7 · Botón flotante de WhatsApp -->
+<a id="wa-flotante" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>
+</a>
+
 <!-- CAMBIO 3 · Botón para subir -->
 <button id="subir" type="button" aria-label="Volver arriba" hidden>↑</button>
 
@@ -253,6 +271,7 @@ function sinTildes(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerC
 
 document.getElementById("wa-general").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
 document.getElementById("wa-pie").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
+document.getElementById("wa-flotante").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
 
 // Lector de CSV (respeta comillas y comas dentro de los textos)
 function leerCSV(texto){
@@ -293,7 +312,7 @@ function urlFoto(valor){
 }
 
 function tarjeta(p){
-  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(sinTildes(p.buscar)) + '">';
+  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(sinTildes(p.buscar)) + '">' + cinta(p);
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
@@ -313,6 +332,7 @@ function tarjeta(p){
     '<button class="agregar" type="button" aria-label="Agregar ' + esc(p.nombre) + ' a mi pedido" title="Agregar a mi pedido">+</button></div></div></article>';
   return h;
 }
+function cinta(p){ return p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""; }
 var FOTO_VACIA = '<div class="foto vacia">' + ICONO_CAMARA + '<span>Foto pendiente</span></div>';
 
 function mostrar(texto){
@@ -320,7 +340,7 @@ function mostrar(texto){
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
       cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle");
+      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta");
   PRODUCTOS = [];
   var secciones = [], porNombre = {};
   filas.forEach(function(f){
@@ -331,10 +351,10 @@ function mostrar(texto){
     var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec };
+      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE) };
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
-    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" ")].join(" ");
+    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta].join(" ");
     var clave = sinTildes(sec);
     if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [] }; secciones.push(porNombre[clave]); }
     porNombre[clave].productos.push(p);
@@ -457,7 +477,7 @@ var PEDIDO = (function(){
   var ficha = document.getElementById("ficha");
   function abrir(p){
     var h = '<div class="ficha-foto">' + (p.fotoGrande ? '<img src="' + esc(p.fotoGrande) + '" alt="' + esc(p.nombre) + '">' : ICONO_CAMARA) + '</div>';
-    h += '<div class="ficha-cuerpo"><span class="ficha-sec">' + esc(p.seccion) + '</span><h3 class="serif" id="ficha-titulo">' + esc(p.nombre) + '</h3>';
+    h += '<div class="ficha-cuerpo">' + cinta(p) + '<span class="ficha-sec">' + esc(p.seccion) + '</span><h3 class="serif" id="ficha-titulo">' + esc(p.nombre) + '</h3>';
     if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
     if (p.detalle) h += '<p>' + esc(p.detalle) + '</p>';
     if (p.medidas.length){ h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">' + p.medidas.map(function(m){ return '<span>' + esc(m) + '</span>'; }).join("") + '</div></div>'; }
