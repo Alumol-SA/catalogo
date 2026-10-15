@@ -1,7 +1,7 @@
 /* CAMBIO 13 · Funciona como app y abre aunque haya poca señal.
    - Página, hoja de Google e índice: primero internet; si no hay, lo último guardado.
    - Fotos y letras: primero lo guardado (cargan al instante); si no está, se descarga y se guarda. */
-var CACHE = "alumol-v1";
+var CACHE = "alumol-v2";
 var BASE = ["./", "logo.png", "fotos/indice.json", "productos-respaldo.csv", "icono-192.png"];
 
 self.addEventListener("install", function(e){
@@ -23,6 +23,7 @@ self.addEventListener("fetch", function(e){
   if (req.method !== "GET") return;
   var url = new URL(req.url);
   var esFoto = (url.origin === location.origin && /\/fotos\/.+\.(jpe?g|png|webp)$/i.test(url.pathname)) ||
+               (url.origin === location.origin && /\/quitar-fondo\//.test(url.pathname)) ||
                url.hostname === "lh3.googleusercontent.com" || url.hostname === "fonts.gstatic.com";
   if (esFoto) {
     e.respondWith(caches.match(req).then(function(r){ return r || fetch(req).then(function(res){ return guardar(req, res); }); }));

@@ -208,6 +208,36 @@ dialog#ficha::backdrop{background:rgba(18,40,43,.55)}
 .instalar{margin-top:14px;display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid var(--tinta);background:rgba(255,255,255,.55);color:var(--tinta);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .instalar-ios{margin:10px 0 0;font-size:14px;background:#fff;border-radius:10px;padding:10px 12px;color:var(--tinta)}
 
+/* CAMBIO 15 · Filtro «Faltan fotos» (modo revisión) */
+.filtro-fotos{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0}
+.filtro-fotos button{min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid #B8860B;background:#FFF7D6;color:#5a4a00;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.filtro-fotos button[aria-pressed="true"]{background:#FFE14D;border-color:#FFE14D;color:#12282B}
+.filtro-fotos small{color:var(--suave);font-size:13px}
+/* CAMBIO 16 · Subir foto desde la app (modo revisión) */
+.btn-subir{display:inline-flex;align-items:center;gap:6px;margin-top:6px;min-height:36px;padding:0 12px;border-radius:999px;border:0;background:var(--profundo);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.foto.vacia .btn-subir{position:relative;z-index:2}
+#ficha .btn-subir{align-self:flex-start}
+dialog#subir-foto{border:0;border-radius:18px;padding:0;width:min(520px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
+dialog#subir-foto::backdrop{background:rgba(18,40,43,.55)}
+#subir-foto .sf-cuerpo{padding:18px;display:flex;flex-direction:column;gap:12px}
+#subir-foto h3{margin:0;font-size:22px;padding-right:44px}
+#subir-foto .sf-nombre{color:var(--suave);font-size:14px;margin:-6px 0 0}
+#subir-foto .consejo{background:var(--pastilla);border-radius:10px;padding:10px 12px;font-size:14px;margin:0}
+#subir-foto .opciones-foto{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#subir-foto .opciones-foto button{border:2px solid var(--linea);border-radius:12px;background:#fff;padding:6px;cursor:pointer;font:inherit;font-size:13px;font-weight:700;color:var(--tinta);display:flex;flex-direction:column;gap:6px;align-items:center}
+#subir-foto .opciones-foto button[aria-pressed="true"]{border-color:var(--profundo);box-shadow:0 0 0 2px var(--profundo)}
+#subir-foto .opciones-foto img{width:100%;aspect-ratio:1;object-fit:contain;background:#fff;border-radius:8px}
+#subir-foto .estado{font-size:14px;font-weight:600;color:var(--profundo);margin:0}
+#subir-foto .estado.error{color:var(--rojo)}
+#subir-foto .barra{height:8px;border-radius:99px;background:var(--linea);overflow:hidden}
+#subir-foto .barra i{display:block;height:100%;width:0;background:var(--acento);transition:width .2s}
+#subir-foto .sf-btns{display:flex;flex-direction:column;gap:8px}
+#subir-foto .principal{min-height:48px;border-radius:10px;border:0;background:var(--profundo);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+#subir-foto .principal:disabled{opacity:.5;cursor:default}
+#subir-foto .secundario{min-height:44px;border-radius:10px;border:1.5px solid var(--linea);background:#fff;color:var(--tinta);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+#subir-foto label.secundario{display:flex;align-items:center;justify-content:center}
+#subir-foto .cerrar{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-size:24px;cursor:pointer;color:var(--tinta)}
+
 footer{background:var(--tinta);color:#fff}
 footer .envoltura{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px;padding-top:32px;padding-bottom:40px}
 footer .col{display:flex;flex-direction:column;gap:6px}
@@ -258,6 +288,10 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
   <div class="buscador">
     <label for="buscar">Buscar producto</label>
     <input id="buscar" type="search" placeholder="Ej.: bisagra, tornillo, 1/4…" autocomplete="off">
+    <div class="filtro-fotos" id="filtro-fotos" hidden>
+      <button type="button" id="solo-sin-foto" aria-pressed="false">Ver solo los que faltan foto</button>
+      <small id="faltan-n"></small>
+    </div>
   </div>
   <section id="recomendados" aria-labelledby="reco-titulo" hidden>
     <h2 class="serif" id="reco-titulo">Recomendados</h2>
@@ -310,6 +344,33 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
   </div>
 </dialog>
 
+<!-- CAMBIO 16 · Subir foto (modo revisión) -->
+<dialog id="subir-foto" aria-labelledby="sf-titulo">
+  <button class="cerrar" type="button" aria-label="Cerrar">×</button>
+  <div class="sf-cuerpo">
+    <h3 class="serif" id="sf-titulo">Subir foto</h3>
+    <p class="sf-nombre" id="sf-nombre"></p>
+    <div id="sf-paso1">
+      <p class="consejo">Consejo: producto entero y centrado, con buena luz y sin flash. No importa el fondo: lo quitamos y lo ponemos blanco.</p>
+      <div class="sf-btns" style="margin-top:12px">
+        <label class="principal" style="display:flex;align-items:center;justify-content:center">Tomar o elegir foto<input type="file" accept="image/*" id="sf-archivo" hidden></label>
+      </div>
+    </div>
+    <div id="sf-paso2" hidden>
+      <p class="estado" id="sf-estado"></p>
+      <div class="barra" id="sf-barra" hidden><i></i></div>
+      <div class="opciones-foto" id="sf-opciones" hidden>
+        <button type="button" data-o="limpia" aria-pressed="true"><img alt="Foto con fondo blanco"><span>Fondo blanco</span></button>
+        <button type="button" data-o="original" aria-pressed="false"><img alt="Foto original"><span>Original</span></button>
+      </div>
+      <div class="sf-btns">
+        <button type="button" class="principal" id="sf-subir" disabled>Usar esta foto</button>
+        <label class="secundario">Tomar otra<input type="file" accept="image/*" id="sf-archivo2" hidden></label>
+      </div>
+    </div>
+  </div>
+</dialog>
+
 <!-- CAMBIO 1 · Ficha del producto -->
 <dialog id="ficha" aria-labelledby="ficha-titulo">
   <button class="cerrar" type="button" aria-label="Cerrar">×</button>
@@ -325,6 +386,8 @@ var WHATSAPP = "593958918180";
 // CAMBIO 14 · Estadísticas en un formulario de Google (vacío = apagado).
 // FORMULARIO: enlace .../formResponse del formulario. CAMPO_TIPO y CAMPO_VALOR: los "entry.123..." de sus 2 preguntas.
 var FORMULARIO = "", CAMPO_TIPO = "", CAMPO_VALOR = "";
+// CAMBIO 16 · Enlace de la «aplicación web» de Apps Script que guarda las fotos (vacío = todavía no configurado).
+var SUBIR_FOTOS = "";
 /* ================================================= */
 
 var COLORES = {"blanco":"#FFFFFF","natural":"#C9CED3","madera":"#B9844F","negro":"#1B1B1B","bronce":"#6A4A2C","gris":"#8E9399",
@@ -405,6 +468,8 @@ function columna(cabeceras, inicio){
 var INDICE_FOTOS = {}, FUENTE = "prueba", PRODUCTOS = [];
 // Modo revisión (temporal): ?revision=1 muestra el N° de cada producto y también los ocultos
 var REVISION = /[?&]revision=1/.test(location.search);
+// Fotos recién subidas desde este celular (se muestran mientras la hoja publicada se actualiza)
+var SUBIDAS = {}; try { SUBIDAS = JSON.parse(localStorage.getItem("alumol-subidas") || "{}") || {}; } catch (e) {}
 if (REVISION) document.getElementById("aviso-rev").hidden = false;
 function urlFoto(valor){
   valor = (valor || "").trim();
@@ -417,9 +482,9 @@ function urlFoto(valor){
 }
 
 function tarjeta(p){
-  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '">' + cinta(p);
+  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + '>' + cinta(p);
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
-  else h += FOTO_VACIA;
+  else h += REVISION ? FOTO_VACIA.replace("</div>", BTN_SUBIR + "</div>") : FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
   if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
   if (p.medidas.length){
@@ -449,6 +514,7 @@ function marcaRevision(p){
 function cinta(p){ return marcaRevision(p) + (p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""); }
 var MAX_TARJETA = 6;  // máximo de medidas o colores visibles en la tarjeta
 var FOTO_VACIA = '<div class="foto vacia">' + ICONO_CAMARA + '<span>Foto pendiente</span></div>';
+var BTN_SUBIR = '<button type="button" class="btn-subir">Subir foto</button>';
 
 function mostrar(texto){
   var filas = leerCSV(texto).filter(function(f){ return f.some(function(x){ return x.trim() !== ""; }); });
@@ -468,6 +534,7 @@ function mostrar(texto){
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
       foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto };
+    if (REVISION && !p.foto && SUBIDAS[p.numero || p.nombre]) p.foto = p.fotoGrande = SUBIDAS[p.numero || p.nombre];
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
     p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
@@ -501,26 +568,43 @@ function mostrar(texto){
   }).join("");
   document.getElementById("recomendados").hidden = reco.length === 0;
   if (window.FICHA) FICHA.desdeEnlace();
+  if (REVISION) { document.getElementById("filtro-fotos").hidden = false; filtrar(); }
 }
 
-// Buscador
-document.getElementById("buscar").addEventListener("input", function(){
-  var q = normal(this.value.trim()), hay = false;
+// Buscador (+ CAMBIO 15: filtro «solo los que faltan foto» en modo revisión)
+var SOLO_SIN_FOTO = false;
+function filtrar(){
+  var valor = document.getElementById("buscar").value.trim();
+  var q = normal(valor), hay = false, faltan = 0;
   var pals = q ? q.split(" ").filter(Boolean) : [];
   document.querySelectorAll("section.seccion").forEach(function(s){
     var visibles = 0;
     s.querySelectorAll(".tarjeta").forEach(function(t){
+      var sinFoto = t.hasAttribute("data-sinfoto"); if (sinFoto) faltan++;
       var txt = t.getAttribute("data-buscar"), ps = null;
       // Cada palabra escrita tiene que aparecer (o parecerse) en el producto
       var ok = !q || pals.every(function(w){ return palabraCalza(w, txt, ps || (ps = txt.split(" "))); });
+      if (SOLO_SIN_FOTO && !sinFoto) ok = false;
       t.hidden = !ok; if (ok) visibles++;
     });
     s.hidden = visibles === 0; if (visibles) hay = true;
   });
-  document.getElementById("nav").hidden = !!q;
-  var rc = document.getElementById("recomendados"); if (rc.children[1].children.length) rc.hidden = !!q;
+  var filtrando = !!q || SOLO_SIN_FOTO;
+  document.getElementById("nav").hidden = filtrando;
+  var rc = document.getElementById("recomendados"); if (rc.children[1].children.length) rc.hidden = filtrando;
   var sr = document.getElementById("sin-resultados"); if (sr) sr.hidden = hay;
+  if (REVISION) document.getElementById("faltan-n").textContent = faltan ? "Faltan " + faltan + " fotos" : "¡Todos los productos tienen foto!";
+  return hay;
+}
+document.getElementById("buscar").addEventListener("input", function(){
+  var hay = filtrar();
   if (window.STATS) STATS.busqueda(this.value.trim(), hay);
+});
+document.getElementById("solo-sin-foto").addEventListener("click", function(){
+  SOLO_SIN_FOTO = !SOLO_SIN_FOTO;
+  this.setAttribute("aria-pressed", SOLO_SIN_FOTO);
+  this.textContent = SOLO_SIN_FOTO ? "Ver todos los productos" : "Ver solo los que faltan foto";
+  filtrar();
 });
 
 // Carga: índice de fotos guardadas + hoja de Google (si falla, usa la copia de respaldo)
@@ -640,6 +724,7 @@ var FICHA = (function(){
     if (p.colores.length) h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">' + opciones(p.colores, "c", true) + '</div></div>';
     h += '<div class="fila-cant"><span>Cantidad</span><div class="stepper"><button type="button" data-d="-1" aria-label="Menos">−</button>' +
          '<input id="f-cant" type="number" inputmode="numeric" min="1" value="1" aria-label="Cantidad"><button type="button" data-d="1" aria-label="Más">+</button></div></div>';
+    if (REVISION) h += '<button type="button" class="btn-subir" id="f-subir-foto">' + (p.foto ? "Cambiar foto" : "Subir foto") + '</button>';
     h += '<button type="button" class="btn-agregar" id="f-agregar">Agregar a mi pedido</button>';
     h += '<div class="fila-btns"><a class="consultar" id="f-consultar" href="#" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a>' +
          '<button type="button" class="compartir" id="f-compartir"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Compartir</button></div></div>';
@@ -672,6 +757,7 @@ var FICHA = (function(){
       return;
     }
     if (e.target.closest("#f-compartir")) compartir(actual);
+    if (e.target.closest("#f-subir-foto")) { ficha.close(); FOTOS.abrir(actual); return; }
     if (e.target.closest("#f-consultar") && window.STATS) STATS.enviar("consulta", clave());
   });
   ficha.addEventListener("input", function(e){ if (e.target.id === "f-cant") refrescar(); });
@@ -698,7 +784,7 @@ var FICHA = (function(){
   window.addEventListener("hashchange", desdeEnlace);
 
   document.getElementById("catalogo").addEventListener("click", function(e){
-    if (e.target.closest("a, .agregar")) return;
+    if (e.target.closest("a, .agregar, .btn-subir")) return;
     var t = e.target.closest(".foto, h3, .ver-mas, .mas"); if (!t) return;
     var card = t.closest(".tarjeta"); if (!card) return;
     abrir(PRODUCTOS[+card.getAttribute("data-id")]);
@@ -710,6 +796,129 @@ var FICHA = (function(){
     var c = e.target.closest(".tarjeta .consultar"); if (c && window.STATS) STATS.enviar("consulta", PRODUCTOS[+c.closest(".tarjeta").getAttribute("data-id")].nombre);
   });
   return { abrir: abrir, desdeEnlace: desdeEnlace };
+})();
+
+/* CAMBIO 16 · Subir foto desde la app, quitando el fondo (solo modo revisión).
+   El fondo se quita en el mismo celular (carpeta quitar-fondo/); la foto se guarda en Drive y en la hoja
+   mediante la aplicación web de Apps Script (SUBIR_FOTOS). */
+var FOTOS = (function(){
+  var dlg = document.getElementById("subir-foto"), producto = null, versiones = {}, elegida = "limpia", herramienta = null;
+  var estado = document.getElementById("sf-estado"), barra = document.getElementById("sf-barra"),
+      opciones = document.getElementById("sf-opciones"), btnSubir = document.getElementById("sf-subir");
+  function decir(t, error){ estado.textContent = t; estado.classList.toggle("error", !!error); }
+  function abrir(p){
+    producto = p; versiones = {}; elegida = "limpia";
+    document.getElementById("sf-titulo").textContent = p.foto ? "Cambiar foto" : "Subir foto";
+    document.getElementById("sf-nombre").textContent = (p.numero ? "N° " + p.numero + " · " : "") + p.nombre;
+    document.getElementById("sf-paso1").hidden = false; document.getElementById("sf-paso2").hidden = true;
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
+  }
+  function cargarImagen(archivo){
+    return new Promise(function(ok, mal){
+      var img = new Image(); img.onload = function(){ ok(img); }; img.onerror = mal; img.src = URL.createObjectURL(archivo);
+    });
+  }
+  function lienzo(w, h){ var c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
+  // Pone la imagen centrada en un cuadrado blanco de 1000 px; si «recortar», se ajusta al contorno del producto
+  function cuadrado(img, recortar){
+    var w = img.naturalWidth || img.width, h = img.naturalHeight || img.height, x0 = 0, y0 = 0, x1 = w, y1 = h;
+    if (recortar){
+      var c = lienzo(w, h), cx = c.getContext("2d"); cx.drawImage(img, 0, 0);
+      var a = cx.getImageData(0, 0, w, h).data; x0 = w; y0 = h; x1 = 0; y1 = 0;
+      for (var y = 0; y < h; y += 2) for (var x = 0; x < w; x += 2)
+        if (a[(y * w + x) * 4 + 3] > 40){ if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      if (x1 <= x0 || y1 <= y0){ x0 = 0; y0 = 0; x1 = w; y1 = h; }
+    }
+    var bw = x1 - x0, bh = y1 - y0, L = 1000, margen = recortar ? 0.84 : 1, k = Math.min(L * margen / bw, L * margen / bh);
+    var out = lienzo(L, L), o = out.getContext("2d"); o.fillStyle = "#fff"; o.fillRect(0, 0, L, L);
+    o.imageSmoothingQuality = "high";
+    o.drawImage(img, x0, y0, bw, bh, (L - bw * k) / 2, (L - bh * k) / 2, bw * k, bh * k);
+    return out.toDataURL("image/jpeg", 0.88);
+  }
+  function reducida(img, max){
+    var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, max / Math.max(w, h));
+    var c = lienzo(Math.round(w * k), Math.round(h * k)); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    return new Promise(function(ok){ c.toBlob(ok, "image/jpeg", 0.92); });
+  }
+  function mostrarOpciones(){
+    opciones.querySelectorAll("button").forEach(function(b){
+      var o = b.getAttribute("data-o"); b.hidden = !versiones[o];
+      if (versiones[o]) b.querySelector("img").src = versiones[o];
+      b.setAttribute("aria-pressed", o === elegida);
+    });
+    opciones.hidden = false; btnSubir.disabled = false;
+  }
+  function procesar(archivo){
+    if (!archivo) return;
+    document.getElementById("sf-paso1").hidden = true; document.getElementById("sf-paso2").hidden = false;
+    opciones.hidden = true; btnSubir.disabled = true; btnSubir.textContent = "Usar esta foto"; versiones = {}; elegida = "limpia";
+    decir("Preparando la foto…");
+    cargarImagen(archivo).then(function(img){
+      versiones.original = cuadrado(img, false);
+      return reducida(img, 1280);
+    }).then(function(blob){
+      decir("Quitando el fondo… (la primera vez tarda un poco más)");
+      herramienta = herramienta || import("./quitar-fondo/quitar-fondo.js");
+      return herramienta.then(function(m){
+        barra.hidden = false; barra.firstChild.style.width = "0";
+        return m.removeBackground(blob, {
+          publicPath: new URL("quitar-fondo/", location.href).href, model: "small", output: { format: "image/png" },
+          progress: function(clave, actual, total){
+            if (/fetch/.test(clave) && total){ barra.firstChild.style.width = Math.round(actual / total * 100) + "%"; decir("Descargando la herramienta (solo la primera vez)…"); }
+            else decir("Quitando el fondo…");
+          }
+        });
+      });
+    }).then(function(png){ return cargarImagen(png); }).then(function(sin){
+      barra.hidden = true; versiones.limpia = cuadrado(sin, true);
+      decir("Elige cómo se ve mejor y toca «Usar esta foto».");
+      mostrarOpciones();
+    }).catch(function(){
+      barra.hidden = true;
+      if (versiones.original){ elegida = "original"; decir("No se pudo quitar el fondo en este celular. Puedes subir la foto original o tomar otra.", true); mostrarOpciones(); }
+      else decir("No se pudo abrir esa foto. Intenta con otra.", true);
+    });
+  }
+  opciones.addEventListener("click", function(e){
+    var b = e.target.closest("button[data-o]"); if (!b) return;
+    elegida = b.getAttribute("data-o"); mostrarOpciones();
+  });
+  btnSubir.addEventListener("click", function(){
+    if (!SUBIR_FOTOS){ decir("Falta conectar la subida de fotos con la hoja de Google (es una configuración de una sola vez).", true); return; }
+    var clave = ""; try { clave = localStorage.getItem("alumol-clave") || ""; } catch (e) {}
+    if (!clave){ clave = (prompt("Escribe la clave para subir fotos:") || "").trim(); if (!clave) return; }
+    var imagen = versiones[elegida];
+    btnSubir.disabled = true; decir("Subiendo la foto…");
+    fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: clave, numero: producto.numero || "", producto: producto.nombre, imagen: imagen }) })
+      .then(function(r){ return r.json(); })
+      .then(function(r){
+        if (!r.ok){
+          if (/clave/i.test(r.error || "")) try { localStorage.removeItem("alumol-clave"); } catch (e) {}
+          throw new Error(r.error || "Error");
+        }
+        try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
+        // Se muestra al instante; la hoja publicada tarda unos minutos en reflejarlo
+        producto.foto = producto.fotoGrande = imagen;
+        SUBIDAS[producto.numero || producto.nombre] = urlFoto(r.url) || imagen;
+        try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
+        var card = document.querySelector('.tarjeta[data-id="' + producto.id + '"]');
+        if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(producto); card.replaceWith(nueva.firstChild); }
+        if (window.PEDIDO) PEDIDO.pintar();
+        filtrar();
+        decir("✓ Foto guardada en la hoja y en el catálogo.");
+        btnSubir.textContent = "Listo";
+        setTimeout(function(){ if (dlg.open) dlg.close(); }, 1400);
+      })
+      .catch(function(err){ btnSubir.disabled = false; decir("No se pudo subir: " + (err.message || "revisa tu conexión") + ".", true); });
+  });
+  document.getElementById("sf-archivo").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
+  document.getElementById("sf-archivo2").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
+  dlg.querySelector(".cerrar").addEventListener("click", function(){ dlg.close(); });
+  document.getElementById("catalogo").addEventListener("click", function(e){
+    var b = e.target.closest(".btn-subir"); if (!b) return;
+    abrir(PRODUCTOS[+b.closest(".tarjeta").getAttribute("data-id")]);
+  });
+  return { abrir: abrir };
 })();
 
 /* CAMBIO 13 · Instalar como app (y abrir aunque haya poca señal) */

@@ -1,0 +1,7 @@
+Herramienta para quitar el fondo de las fotos (solo se usa en modo revisión, al subir fotos).
+
+- quitar-fondo.js: @imgly/background-removal 1.4.5 empaquetado en un solo archivo.
+  Licencia AGPL-3.0. Código fuente: https://github.com/imgly/background-removal-js
+- Los demás archivos son el modelo "small" (IS-Net) y el motor onnxruntime-web,
+  copiados sin cambios del paquete @imgly/background-removal-data 1.4.5.
+Todo corre en el celular de quien sube la foto; las fotos no se envían a ningún servicio para quitar el fondo.
