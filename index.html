@@ -353,7 +353,8 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
     <div id="sf-paso1">
       <p class="consejo">Consejo: producto entero y centrado, con buena luz y sin flash. No importa el fondo: lo quitamos y lo ponemos blanco.</p>
       <div class="sf-btns" style="margin-top:12px">
-        <label class="principal" style="display:flex;align-items:center;justify-content:center">Tomar o elegir foto<input type="file" accept="image/*" id="sf-archivo" hidden></label>
+        <label class="principal" style="display:flex;align-items:center;justify-content:center">Tomar foto con la cámara<input type="file" accept="image/*" capture="environment" id="sf-archivo" hidden></label>
+        <label class="secundario">Elegir de la galería<input type="file" accept="image/*" id="sf-galeria" hidden></label>
       </div>
     </div>
     <div id="sf-paso2" hidden>
@@ -365,7 +366,7 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
       </div>
       <div class="sf-btns">
         <button type="button" class="principal" id="sf-subir" disabled>Usar esta foto</button>
-        <label class="secundario">Tomar otra<input type="file" accept="image/*" id="sf-archivo2" hidden></label>
+        <label class="secundario">Tomar otra<input type="file" accept="image/*" capture="environment" id="sf-archivo2" hidden></label>
       </div>
     </div>
   </div>
@@ -913,6 +914,7 @@ var FOTOS = (function(){
   });
   document.getElementById("sf-archivo").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
   document.getElementById("sf-archivo2").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
+  document.getElementById("sf-galeria").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
   dlg.querySelector(".cerrar").addEventListener("click", function(){ dlg.close(); });
   document.getElementById("catalogo").addEventListener("click", function(e){
     var b = e.target.closest(".btn-subir"); if (!b) return;
