@@ -1,0 +1,16 @@
+{
+  "id": "./?revision=1",
+  "name": "Alumol Revisión",
+  "short_name": "Alumol Rev.",
+  "description": "Modo revisión del catálogo de Alumol: números, productos ocultos y fotos.",
+  "lang": "es",
+  "start_url": "./?revision=1",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF7D6",
+  "theme_color": "#FFE14D",
+  "icons": [
+    { "src": "icono-rev-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icono-rev-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

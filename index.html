@@ -9,8 +9,19 @@
 <!-- CAMBIO 4 · Vista previa al compartir el enlace (WhatsApp, Facebook) e ícono del celular -->
 <meta name="theme-color" content="#56C5D0">
 <link rel="apple-touch-icon" href="icono.png">
+<meta name="apple-mobile-web-app-title" content="Alumol">
 <!-- CAMBIO 13 · Instalar como app -->
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" id="manifest" href="manifest.webmanifest">
+<script>
+// Si se abre en modo revisión, se instala como otra app aparte: «Alumol Revisión» (ícono amarillo)
+if (/[?&]revision=1/.test(location.search)) {
+  document.getElementById("manifest").href = "manifest-revision.webmanifest";
+  document.querySelector('meta[name="theme-color"]').content = "#FFE14D";
+  document.querySelector('link[rel="apple-touch-icon"]').href = "icono-rev-192.png";
+  document.title = "Alumol Revisión";
+  document.querySelector('meta[name="apple-mobile-web-app-title"]').content = "Alumol Rev.";
+}
+</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Alumol S.A.">
 <meta property="og:title" content="Catálogo de accesorios · Alumol S.A.">
