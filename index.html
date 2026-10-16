@@ -109,6 +109,13 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 /* Modo revisión (temporal) */
 .rev-num{position:absolute;top:10px;right:10px;z-index:3;background:#FFE14D;color:#12282B;font-size:12px;font-weight:800;padding:4px 8px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.25);pointer-events:none}
 #ficha .rev-num{position:static;align-self:flex-start}
+.rev-num.mejorar{background:#F59E0B}
+/* CAMBIO 17 · Quitar foto y marcar para mejorar (modo revisión) */
+#ficha .rev-acciones{display:flex;flex-wrap:wrap;gap:6px}
+#ficha .rev-acciones .btn-subir{margin-top:0}
+.btn-subir.suave{background:#fff;color:var(--profundo);border:1.5px solid var(--profundo)}
+.btn-subir.peligro{background:#fff;color:var(--rojo);border:1.5px solid var(--rojo)}
+.btn-subir.naranja{background:#FFF4E0;color:#8A4B00;border:1.5px solid #F59E0B}
 .aviso-rev{background:#FFE14D;color:#12282B;text-align:center;font-weight:700;padding:8px 16px;font-size:14px}
 
 /* CAMBIO 9 · Recomendados (columna «Destacar» = SÍ en la hoja) */
@@ -289,7 +296,7 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
     <label for="buscar">Buscar producto</label>
     <input id="buscar" type="search" placeholder="Ej.: bisagra, tornillo, 1/4…" autocomplete="off">
     <div class="filtro-fotos" id="filtro-fotos" hidden>
-      <button type="button" id="solo-sin-foto" aria-pressed="false">Ver solo los que faltan foto</button>
+      <button type="button" id="solo-sin-foto" aria-pressed="false">Ver los que faltan o hay que mejorar</button>
       <small id="faltan-n"></small>
     </div>
   </div>
@@ -483,7 +490,7 @@ function urlFoto(valor){
 }
 
 function tarjeta(p){
-  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + '>' + cinta(p);
+  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + (p.mejorar ? ' data-mejorar="1"' : "") + '>' + cinta(p);
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += REVISION ? FOTO_VACIA.replace("</div>", BTN_SUBIR + "</div>") : FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
@@ -510,7 +517,8 @@ function tarjeta(p){
 }
 function marcaRevision(p){
   if (!REVISION) return "";
-  return '<span class="rev-num">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") + (p.foto ? "" : " · SIN FOTO") + '</span>';
+  return '<span class="rev-num' + (p.mejorar && p.foto ? " mejorar" : "") + '">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") +
+    (p.foto ? (p.mejorar ? " · MEJORAR FOTO" : "") : " · SIN FOTO") + '</span>';
 }
 function cinta(p){ return marcaRevision(p) + (p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""); }
 var MAX_TARJETA = 6;  // máximo de medidas o colores visibles en la tarjeta
@@ -522,7 +530,7 @@ function mostrar(texto){
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
       cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres");
+      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres"), cMj = columna(cab,"mejorar foto");
   PRODUCTOS = [];
   var secciones = [], porNombre = {}, USADOS = {};
   filas.forEach(function(f){
@@ -534,10 +542,13 @@ function mostrar(texto){
     var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto };
-    // Solo por 15 minutos: si después borran la foto en la hoja, aquí también desaparece
-    var sub = REVISION && !p.foto && SUBIDAS[p.numero || p.nombre];
-    if (sub && sub.t && Date.now() - sub.t < 15 * 60 * 1000) p.foto = p.fotoGrande = sub.url;
+      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto, mejorar: /^s/.test(sinTildes(v(cMj))) };
+    // Cambios hechos desde este celular: se respetan 15 minutos mientras la hoja publicada se actualiza
+    var sub = REVISION && SUBIDAS[p.numero || p.nombre];
+    if (sub && sub.t && Date.now() - sub.t < 15 * 60 * 1000){
+      if ("url" in sub) p.foto = p.fotoGrande = sub.url || null;
+      if ("mejorar" in sub) p.mejorar = sub.mejorar;
+    }
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
     p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
@@ -578,16 +589,17 @@ function mostrar(texto){
 var SOLO_SIN_FOTO = false;
 function filtrar(){
   var valor = document.getElementById("buscar").value.trim();
-  var q = normal(valor), hay = false, faltan = 0;
+  var q = normal(valor), hay = false, faltan = 0, porMejorar = 0;
   var pals = q ? q.split(" ").filter(Boolean) : [];
   document.querySelectorAll("section.seccion").forEach(function(s){
     var visibles = 0;
     s.querySelectorAll(".tarjeta").forEach(function(t){
-      var sinFoto = t.hasAttribute("data-sinfoto"); if (sinFoto) faltan++;
+      var sinFoto = t.hasAttribute("data-sinfoto"), mejorar = t.hasAttribute("data-mejorar") && !sinFoto;
+      if (sinFoto) faltan++; if (mejorar) porMejorar++;
       var txt = t.getAttribute("data-buscar"), ps = null;
       // Cada palabra escrita tiene que aparecer (o parecerse) en el producto
       var ok = !q || pals.every(function(w){ return palabraCalza(w, txt, ps || (ps = txt.split(" "))); });
-      if (SOLO_SIN_FOTO && !sinFoto) ok = false;
+      if (SOLO_SIN_FOTO && !sinFoto && !mejorar) ok = false;
       t.hidden = !ok; if (ok) visibles++;
     });
     s.hidden = visibles === 0; if (visibles) hay = true;
@@ -596,7 +608,7 @@ function filtrar(){
   document.getElementById("nav").hidden = filtrando;
   var rc = document.getElementById("recomendados"); if (rc.children[1].children.length) rc.hidden = filtrando;
   var sr = document.getElementById("sin-resultados"); if (sr) sr.hidden = hay;
-  if (REVISION) document.getElementById("faltan-n").textContent = faltan ? "Faltan " + faltan + " fotos" : "¡Todos los productos tienen foto!";
+  if (REVISION) document.getElementById("faltan-n").textContent = (faltan ? "Faltan " + faltan + " fotos" : "¡Todos tienen foto!") + (porMejorar ? " · " + porMejorar + " por mejorar" : "");
   return hay;
 }
 document.getElementById("buscar").addEventListener("input", function(){
@@ -606,7 +618,7 @@ document.getElementById("buscar").addEventListener("input", function(){
 document.getElementById("solo-sin-foto").addEventListener("click", function(){
   SOLO_SIN_FOTO = !SOLO_SIN_FOTO;
   this.setAttribute("aria-pressed", SOLO_SIN_FOTO);
-  this.textContent = SOLO_SIN_FOTO ? "Ver todos los productos" : "Ver solo los que faltan foto";
+  this.textContent = SOLO_SIN_FOTO ? "Ver todos los productos" : "Ver los que faltan o hay que mejorar";
   filtrar();
 });
 
@@ -727,7 +739,12 @@ var FICHA = (function(){
     if (p.colores.length) h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">' + opciones(p.colores, "c", true) + '</div></div>';
     h += '<div class="fila-cant"><span>Cantidad</span><div class="stepper"><button type="button" data-d="-1" aria-label="Menos">−</button>' +
          '<input id="f-cant" type="number" inputmode="numeric" min="1" value="1" aria-label="Cantidad"><button type="button" data-d="1" aria-label="Más">+</button></div></div>';
-    if (REVISION) h += '<button type="button" class="btn-subir" id="f-subir-foto">' + (p.foto ? "Cambiar foto" : "Subir foto") + '</button>';
+    if (REVISION){
+      h += '<div class="rev-acciones"><button type="button" class="btn-subir" id="f-subir-foto">' + (p.foto ? "Cambiar foto" : "Subir foto") + '</button>';
+      if (p.foto) h += '<button type="button" class="btn-subir naranja" id="f-mejorar">' + (p.mejorar ? "Quitar marca «mejorar»" : "Marcar para mejorar") + '</button>' +
+                       '<button type="button" class="btn-subir peligro" id="f-quitar-foto">Quitar foto</button>';
+      h += '</div>';
+    }
     h += '<button type="button" class="btn-agregar" id="f-agregar">Agregar a mi pedido</button>';
     h += '<div class="fila-btns"><a class="consultar" id="f-consultar" href="#" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a>' +
          '<button type="button" class="compartir" id="f-compartir"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Compartir</button></div></div>';
@@ -761,6 +778,16 @@ var FICHA = (function(){
     }
     if (e.target.closest("#f-compartir")) compartir(actual);
     if (e.target.closest("#f-subir-foto")) { ficha.close(); FOTOS.abrir(actual); return; }
+    if (e.target.closest("#f-quitar-foto")) {
+      if (!confirm("¿Seguro que quieres quitar la foto de " + (actual.numero ? "N° " + actual.numero + " · " : "") + actual.nombre + "?")) return;
+      var p0 = actual; FOTOS.accion(p0, "quitar").then(function(ok){ if (ok){ ficha.close(); aviso("Foto quitada. El producto quedó sin foto."); } });
+      return;
+    }
+    if (e.target.closest("#f-mejorar")) {
+      var p1 = actual, nuevo = !p1.mejorar;
+      FOTOS.accion(p1, "mejorar", nuevo).then(function(ok){ if (ok){ abrir(p1); aviso(nuevo ? "Marcada para mejorar." : "Marca quitada."); } });
+      return;
+    }
     if (e.target.closest("#f-consultar") && window.STATS) STATS.enviar("consulta", clave());
   });
   ficha.addEventListener("input", function(e){ if (e.target.id === "f-cant") refrescar(); });
@@ -902,7 +929,8 @@ var FOTOS = (function(){
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
         // Se muestra al instante; la hoja publicada tarda unos minutos en reflejarlo
         producto.foto = producto.fotoGrande = imagen;
-        SUBIDAS[producto.numero || producto.nombre] = { url: urlFoto(r.url) || imagen, t: Date.now() };
+        producto.mejorar = false;
+        SUBIDAS[producto.numero || producto.nombre] = { url: urlFoto(r.url) || imagen, mejorar: false, t: Date.now() };
         try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
         var card = document.querySelector('.tarjeta[data-id="' + producto.id + '"]');
         if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(producto); card.replaceWith(nueva.firstChild); }
@@ -922,7 +950,43 @@ var FOTOS = (function(){
     var b = e.target.closest(".btn-subir"); if (!b) return;
     abrir(PRODUCTOS[+b.closest(".tarjeta").getAttribute("data-id")]);
   });
-  return { abrir: abrir };
+  // CAMBIO 17 · Quitar foto / marcar para mejorar
+  function accion(p, tipo, valor){
+    if (!SUBIR_FOTOS){ alert("Falta conectar la subida de fotos con la hoja de Google."); return Promise.resolve(false); }
+    var clave = ""; try { clave = localStorage.getItem("alumol-clave") || ""; } catch (e) {}
+    if (!clave){ clave = (prompt("Escribe la clave:") || "").trim(); if (!clave) return Promise.resolve(false); }
+    // Primero se confirma que el código de Apps Script ya tiene estas opciones (versión 2 o más)
+    return fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){
+      if (!info || !(info.version >= 2)) throw new Error("ACTUALIZAR");
+      return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: clave, accion: tipo, valor: valor, numero: p.numero || "", producto: p.nombre }) });
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(r){
+        if (!r.ok){
+          if (/clave/i.test(r.error || "")) try { localStorage.removeItem("alumol-clave"); } catch (e) {}
+          throw new Error(r.error || "Error");
+        }
+        try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
+        var cambio = { t: Date.now() };
+        if (tipo === "quitar"){ p.foto = p.fotoGrande = null; p.mejorar = false; cambio.url = ""; cambio.mejorar = false; }
+        if (tipo === "mejorar"){ p.mejorar = !!valor; cambio.mejorar = !!valor; }
+        var previo = SUBIDAS[p.numero || p.nombre];
+        if (tipo === "mejorar" && previo && previo.t && Date.now() - previo.t < 15 * 60 * 1000 && "url" in previo) cambio.url = previo.url;
+        SUBIDAS[p.numero || p.nombre] = cambio;
+        try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
+        var card = document.querySelector('.tarjeta[data-id="' + p.id + '"]');
+        if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(p); card.replaceWith(nueva.firstChild); }
+        if (window.PEDIDO) PEDIDO.pintar();
+        filtrar();
+        return true;
+      })
+      .catch(function(err){
+        if (err.message === "ACTUALIZAR") alert("Para usar esta opción hay que pegar la versión nueva del código en Apps Script (ver instrucciones).");
+        else alert("No se pudo: " + (err.message || "revisa tu conexión"));
+        return false;
+      });
+  }
+  return { abrir: abrir, accion: accion };
 })();
 
 /* CAMBIO 13 · Instalar como app (y abrir aunque haya poca señal) */
