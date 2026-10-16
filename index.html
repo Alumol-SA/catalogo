@@ -535,7 +535,9 @@ function mostrar(texto){
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
       foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto };
-    if (REVISION && !p.foto && SUBIDAS[p.numero || p.nombre]) p.foto = p.fotoGrande = SUBIDAS[p.numero || p.nombre];
+    // Solo por 15 minutos: si después borran la foto en la hoja, aquí también desaparece
+    var sub = REVISION && !p.foto && SUBIDAS[p.numero || p.nombre];
+    if (sub && sub.t && Date.now() - sub.t < 15 * 60 * 1000) p.foto = p.fotoGrande = sub.url;
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
     p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
@@ -900,7 +902,7 @@ var FOTOS = (function(){
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
         // Se muestra al instante; la hoja publicada tarda unos minutos en reflejarlo
         producto.foto = producto.fotoGrande = imagen;
-        SUBIDAS[producto.numero || producto.nombre] = urlFoto(r.url) || imagen;
+        SUBIDAS[producto.numero || producto.nombre] = { url: urlFoto(r.url) || imagen, t: Date.now() };
         try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
         var card = document.querySelector('.tarjeta[data-id="' + producto.id + '"]');
         if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(producto); card.replaceWith(nueva.firstChild); }
