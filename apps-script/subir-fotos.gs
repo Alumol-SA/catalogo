@@ -1,5 +1,5 @@
 /**
- * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 4
+ * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 5
  * Dónde va: en la hoja «Catálogo Alumol – Productos» › Extensiones › Apps Script.
  * Qué hace:
  *  - Subir foto: la guarda en una carpeta de Google Drive, la comparte como «cualquiera con el enlace
@@ -10,6 +10,8 @@
  *  - Notas: guarda notas por producto en la pestaña «Notas de revisión» (no se publica; solo la ve la app
  *    de revisión con la clave). Se pueden marcar como resueltas.
  *  - Ocultar / mostrar producto: escribe NO o SÍ en la columna «Mostrar».
+ *  - Menú «Catálogo › Reordenar números» en la hoja: numera todo del 1 en adelante en el mismo orden
+ *    de la app (sección por sección, con los ocultos en su lugar) y actualiza las notas.
  *  - Registro: cada acción queda anotada en la pestaña «Registro de fotos» (fecha, quién, N°, producto, acción).
  */
 
@@ -19,7 +21,7 @@ var CLAVE = "alumol2026";
 var CARPETA = "Fotos catálogo (desde la app)";
 var HOJA_NOTAS = "Notas de revisión";
 var HOJA_REGISTRO = "Registro de fotos";
-var VERSION = 4;
+var VERSION = 5;
 
 function doPost(e) {
   try {
@@ -161,3 +163,57 @@ function carpeta() {
 function normal(s) { return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); }
 function columna(cab, inicio) { inicio = normal(inicio); for (var i = 0; i < cab.length; i++) if (cab[i].indexOf(inicio) === 0) return i; return -1; }
 function salida(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+
+// ---------- Menú en la hoja ----------
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu("Catálogo").addItem("Reordenar números", "reordenarNumeros").addToUi();
+}
+
+// Numera del 1 en adelante en el orden en que se ve la app: las secciones en el orden en que aparecen
+// por primera vez en la hoja, y dentro de cada sección los productos en el orden de sus filas.
+function reordenarNumeros() {
+  var ui = SpreadsheetApp.getUi();
+  var hoja = buscarHoja();
+  if (!hoja) { ui.alert("No encuentro la hoja con las columnas Producto y Foto."); return; }
+  var r = ui.alert("Reordenar números",
+    "Se van a volver a numerar todos los productos (del 1 en adelante, en el orden de la app). " +
+    "Las notas se actualizan solas. Avísale a quien esté subiendo fotos que actualice la app después.\n\n¿Continuar?",
+    ui.ButtonSet.YES_NO);
+  if (r !== ui.Button.YES) return;
+
+  var ultimaCol = hoja.getLastColumn(), filas = hoja.getLastRow() - 1;
+  if (filas < 1) return;
+  var cab = hoja.getRange(1, 1, 1, ultimaCol).getValues()[0].map(normal);
+  var cN = columna(cab, "n°"), cS = columna(cab, "secci"), cP = columna(cab, "producto");
+  if (cN < 0) { cN = ultimaCol; hoja.getRange(1, cN + 1).setValue("N°"); ultimaCol++; }
+  var datos = hoja.getRange(2, 1, filas, ultimaCol).getValues();
+
+  // Secciones en orden de aparición y filas de cada una
+  var orden = [], grupos = {};
+  for (var i = 0; i < datos.length; i++) {
+    var sec = normal(datos[i][cS]), prod = String(datos[i][cP] || "").trim();
+    if (!sec || !prod) continue;
+    if (!grupos[sec]) { grupos[sec] = []; orden.push(sec); }
+    grupos[sec].push(i);
+  }
+  var nuevos = datos.map(function (f) { return [f[cN]]; }), mapa = {}, n = 0, cambiados = 0;
+  orden.forEach(function (sec) {
+    grupos[sec].forEach(function (i) {
+      n++;
+      var viejo = String(datos[i][cN]).trim();
+      if (viejo && !(viejo in mapa)) mapa[viejo] = n;
+      if (viejo !== String(n)) cambiados++;
+      nuevos[i] = [n];
+    });
+  });
+  hoja.getRange(2, cN + 1, filas, 1).setValues(nuevos);
+
+  // Las notas siguen apuntando al mismo producto
+  var hn = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(HOJA_NOTAS);
+  if (hn && hn.getLastRow() > 1) {
+    var rango = hn.getRange(2, 3, hn.getLastRow() - 1, 1), v = rango.getValues();
+    rango.setValues(v.map(function (x) { var k = String(x[0]).trim(); return [k in mapa ? mapa[k] : x[0]]; }));
+  }
+  registrar(Session.getActiveUser().getEmail() || "", { numero: "", producto: "" }, "Números reordenados (" + n + " productos, " + cambiados + " cambiaron)");
+  ui.alert("Listo: " + n + " productos numerados, " + cambiados + " cambiaron de número.");
+}
