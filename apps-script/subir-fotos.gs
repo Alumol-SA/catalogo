@@ -1,5 +1,5 @@
 /**
- * FOTOS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 2
+ * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 3
  * Dónde va: en la hoja «Catálogo Alumol – Productos» › Extensiones › Apps Script.
  * Qué hace:
  *  - Subir foto: la guarda en una carpeta de Google Drive, la comparte como «cualquiera con el enlace
@@ -7,19 +7,42 @@
  *    Si el producto ya tenía una foto subida desde la app, la anterior se manda a la papelera de Drive.
  *  - Quitar foto: deja la celda Foto en blanco y manda a la papelera la foto, solo si se subió desde la app.
  *  - Marcar para mejorar: escribe SÍ (o borra) en la columna «Mejorar foto» (se crea sola si no existe).
+ *  - Notas: guarda notas por producto en la pestaña «Notas de revisión» (no se publica; solo la ve la app
+ *    de revisión con la clave). Se pueden marcar como resueltas.
+ *  - Registro: cada acción queda anotada en la pestaña «Registro de fotos» (fecha, quién, N°, producto, acción).
  */
 
-// Clave para que solo ustedes puedan cambiar fotos. La app la pide una sola vez en cada celular.
+// Clave para que solo ustedes puedan cambiar fotos y notas. La app la pide una sola vez en cada celular.
 var CLAVE = "alumol2026";
 // Carpeta de Drive donde se guardan las fotos (se crea sola si no existe).
 var CARPETA = "Fotos catálogo (desde la app)";
-var VERSION = 2;
+var HOJA_NOTAS = "Notas de revisión";
+var HOJA_REGISTRO = "Registro de fotos";
+var VERSION = 3;
 
 function doPost(e) {
   try {
     var d = JSON.parse(e.postData.contents);
     if (String(d.clave || "").trim() !== CLAVE) return salida({ ok: false, error: "La clave no es correcta." });
-    var accion = d.accion || "subir";
+    var accion = d.accion || "subir", autor = String(d.autor || "").slice(0, 60);
+
+    // Notas: van en su propia pestaña
+    if (accion === "nota") {
+      var texto = String(d.nota || "").trim().slice(0, 1000);
+      if (!texto) return salida({ ok: false, error: "La nota está vacía." });
+      var hn = pestana(HOJA_NOTAS, ["Fecha", "Quién", "N°", "Producto", "Nota", "Estado"]);
+      hn.appendRow([new Date(), autor, d.numero || "", d.producto || "", texto, "Pendiente"]);
+      registrar(autor, d, "Nota: " + texto);
+      return salida({ ok: true, fila: hn.getLastRow() });
+    }
+    if (accion === "resolver") {
+      var hr = pestana(HOJA_NOTAS, ["Fecha", "Quién", "N°", "Producto", "Nota", "Estado"]);
+      var f = parseInt(d.fila, 10);
+      if (!(f >= 2 && f <= hr.getLastRow())) return salida({ ok: false, error: "No encuentro esa nota." });
+      hr.getRange(f, 6).setValue("Resuelta");
+      registrar(autor, d, "Nota resuelta");
+      return salida({ ok: true });
+    }
 
     var hoja = buscarHoja();
     if (!hoja) return salida({ ok: false, error: "No encuentro la hoja con las columnas Producto y Foto." });
@@ -39,12 +62,14 @@ function doPost(e) {
       celdaFoto.setValue("");
       if (cM >= 0) hoja.getRange(fila + 2, cM + 1).setValue("");
       var aPapelera = mandarAPapelera(anterior);
+      registrar(autor, d, "Foto quitada");
       return salida({ ok: true, fila: fila + 2, papelera: aPapelera });
     }
 
     if (accion === "mejorar") {
       if (cM < 0) { cM = ultimaCol; hoja.getRange(1, cM + 1).setValue("Mejorar foto"); }
       hoja.getRange(fila + 2, cM + 1).setValue(d.valor ? "SÍ" : "");
+      registrar(autor, d, d.valor ? "Marcada para mejorar" : "Quitada la marca de mejorar");
       return salida({ ok: true, fila: fila + 2 });
     }
 
@@ -57,15 +82,49 @@ function doPost(e) {
     celdaFoto.setValue(url);
     if (cM >= 0) hoja.getRange(fila + 2, cM + 1).setValue("");
     mandarAPapelera(anterior);
+    registrar(autor, d, anterior ? "Foto cambiada" : "Foto subida");
     return salida({ ok: true, url: url, fila: fila + 2 });
   } catch (err) {
     return salida({ ok: false, error: String(err) });
   }
 }
 
-// Para comprobar que quedó instalado: abrir el enlace de la aplicación web en el navegador.
-function doGet() { return salida({ ok: true, version: VERSION, mensaje: "Fotos del catálogo listas" }); }
+// GET: sin parámetros dice la versión (para comprobar que quedó instalado).
+// Con ?accion=notas&clave=… devuelve las notas para la app de revisión.
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+  if (p.accion === "notas") {
+    if (String(p.clave || "").trim() !== CLAVE) return salida({ ok: false, error: "La clave no es correcta." });
+    var hn = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(HOJA_NOTAS), notas = [];
+    if (hn && hn.getLastRow() > 1) {
+      var v = hn.getRange(2, 1, hn.getLastRow() - 1, 6).getValues();
+      for (var i = 0; i < v.length; i++) {
+        if (!v[i][4]) continue;
+        var fecha = v[i][0] instanceof Date ? Utilities.formatDate(v[i][0], "America/Guayaquil", "dd/MM HH:mm") : String(v[i][0]);
+        notas.push({ fila: i + 2, fecha: fecha, autor: String(v[i][1]), numero: String(v[i][2]), producto: String(v[i][3]), nota: String(v[i][4]), estado: String(v[i][5] || "Pendiente") });
+      }
+    }
+    return salida({ ok: true, notas: notas });
+  }
+  return salida({ ok: true, version: VERSION, mensaje: "Fotos y notas del catálogo listas" });
+}
 
+function registrar(autor, d, accion) {
+  try {
+    var h = pestana(HOJA_REGISTRO, ["Fecha", "Quién", "N°", "Producto", "Acción"]);
+    h.appendRow([new Date(), autor, d.numero || "", d.producto || "", accion]);
+  } catch (e) {}
+}
+function pestana(nombre, cabecera) {
+  var libro = SpreadsheetApp.getActiveSpreadsheet(), h = libro.getSheetByName(nombre);
+  if (!h) {
+    h = libro.insertSheet(nombre);
+    h.appendRow(cabecera);
+    h.getRange(1, 1, 1, cabecera.length).setFontWeight("bold");
+    h.setFrozenRows(1);
+  }
+  return h;
+}
 // Solo manda a la papelera fotos que estén en la carpeta de la app (nunca otras fotos de Drive).
 function mandarAPapelera(enlace) {
   var m = String(enlace).match(/\/d\/([A-Za-z0-9_-]{20,})/) || String(enlace).match(/[?&]id=([A-Za-z0-9_-]{20,})/);
@@ -79,7 +138,8 @@ function mandarAPapelera(enlace) {
 function buscarHoja() {
   var hojas = SpreadsheetApp.getActiveSpreadsheet().getSheets();
   for (var i = 0; i < hojas.length; i++) {
-    if (hojas[i].getLastColumn() < 2) continue;
+    var n = hojas[i].getName();
+    if (n === HOJA_NOTAS || n === HOJA_REGISTRO || hojas[i].getLastColumn() < 2) continue;
     var cab = hojas[i].getRange(1, 1, 1, hojas[i].getLastColumn()).getValues()[0].map(normal);
     if (columna(cab, "producto") >= 0 && columna(cab, "foto") >= 0) return hojas[i];
   }
