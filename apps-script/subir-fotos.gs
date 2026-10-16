@@ -1,5 +1,5 @@
 /**
- * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 3
+ * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 4
  * Dónde va: en la hoja «Catálogo Alumol – Productos» › Extensiones › Apps Script.
  * Qué hace:
  *  - Subir foto: la guarda en una carpeta de Google Drive, la comparte como «cualquiera con el enlace
@@ -9,6 +9,7 @@
  *  - Marcar para mejorar: escribe SÍ (o borra) en la columna «Mejorar foto» (se crea sola si no existe).
  *  - Notas: guarda notas por producto en la pestaña «Notas de revisión» (no se publica; solo la ve la app
  *    de revisión con la clave). Se pueden marcar como resueltas.
+ *  - Ocultar / mostrar producto: escribe NO o SÍ en la columna «Mostrar».
  *  - Registro: cada acción queda anotada en la pestaña «Registro de fotos» (fecha, quién, N°, producto, acción).
  */
 
@@ -18,7 +19,7 @@ var CLAVE = "alumol2026";
 var CARPETA = "Fotos catálogo (desde la app)";
 var HOJA_NOTAS = "Notas de revisión";
 var HOJA_REGISTRO = "Registro de fotos";
-var VERSION = 3;
+var VERSION = 4;
 
 function doPost(e) {
   try {
@@ -57,6 +58,14 @@ function doPost(e) {
     if (fila < 0) return salida({ ok: false, error: "No encuentro ese producto en la hoja." });
     var celdaFoto = hoja.getRange(fila + 2, cF + 1);
     var anterior = String(datos[fila][cF] || "");
+
+    if (accion === "mostrar") {
+      var cV = columna(cab, "mostrar");
+      if (cV < 0) { cV = ultimaCol; hoja.getRange(1, cV + 1).setValue("Mostrar (SÍ/NO)"); }
+      hoja.getRange(fila + 2, cV + 1).setValue(d.valor ? "SÍ" : "NO");
+      registrar(autor, d, d.valor ? "Producto mostrado en el catálogo" : "Producto ocultado del catálogo");
+      return salida({ ok: true, fila: fila + 2 });
+    }
 
     if (accion === "quitar") {
       celdaFoto.setValue("");

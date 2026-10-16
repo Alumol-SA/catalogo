@@ -127,6 +127,15 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .btn-subir.suave{background:#fff;color:var(--profundo);border:1.5px solid var(--profundo)}
 .btn-subir.peligro{background:#fff;color:var(--rojo);border:1.5px solid var(--rojo)}
 .btn-subir.naranja{background:#FFF4E0;color:#8A4B00;border:1.5px solid #F59E0B}
+/* CAMBIO 19 · Ocultar / mostrar producto (modo revisión) */
+.tarjeta[data-oculto]{background:#ECEFF1;border:2px dashed #90A4AE}
+.tarjeta[data-oculto] .foto{opacity:.55}
+.tarjeta[data-oculto] h3{color:#546E7A}
+.rev-num.oculto{background:#546E7A;color:#fff}
+.vista-rev{display:flex;gap:4px;background:#fff;border:1px solid var(--linea);border-radius:999px;padding:3px;width:100%;max-width:440px}
+.vista-rev button{flex:1;min-height:36px;border:0;border-radius:999px;background:transparent;color:var(--suave);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.vista-rev button[aria-pressed="true"]{background:var(--tinta);color:#fff}
+.btn-subir.gris{background:#fff;color:#546E7A;border:1.5px solid #546E7A}
 /* CAMBIO 18 · Notas de revisión */
 .rev-num.con-nota{box-shadow:0 0 0 2px #1F5FBF,0 1px 3px rgba(0,0,0,.25)}
 #ficha .notas-rev{display:flex;flex-direction:column;gap:8px;background:#F3F7FF;border:1px solid #C9D8F5;border-radius:12px;padding:12px}
@@ -243,8 +252,8 @@ dialog#ficha::backdrop{background:rgba(18,40,43,.55)}
 
 /* CAMBIO 15 · Filtro «Faltan fotos» (modo revisión) */
 .filtro-fotos{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0}
-.filtro-fotos button{min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid #B8860B;background:#FFF7D6;color:#5a4a00;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.filtro-fotos button[aria-pressed="true"]{background:#FFE14D;border-color:#FFE14D;color:#12282B}
+.filtro-fotos > button{min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid #B8860B;background:#FFF7D6;color:#5a4a00;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.filtro-fotos > button[aria-pressed="true"]{background:#FFE14D;border-color:#FFE14D;color:#12282B}
 .filtro-fotos small{color:var(--suave);font-size:13px}
 /* CAMBIO 16 · Subir foto desde la app (modo revisión) */
 .btn-subir{display:inline-flex;align-items:center;gap:6px;margin-top:6px;min-height:36px;padding:0 12px;border-radius:999px;border:0;background:var(--profundo);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
@@ -322,6 +331,11 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
     <label for="buscar">Buscar producto</label>
     <input id="buscar" type="search" placeholder="Ej.: bisagra, tornillo, 1/4…" autocomplete="off">
     <div class="filtro-fotos" id="filtro-fotos" hidden>
+      <div class="vista-rev" role="group" aria-label="Qué productos ver">
+        <button type="button" data-vista="todos" aria-pressed="true">Todos</button>
+        <button type="button" data-vista="cliente" aria-pressed="false">Como el cliente</button>
+        <button type="button" data-vista="ocultos" aria-pressed="false">Solo ocultos</button>
+      </div>
       <button type="button" id="solo-sin-foto" aria-pressed="false">Ver los que faltan o hay que mejorar</button>
       <button type="button" id="solo-notas" aria-pressed="false">Ver los que tienen notas</button>
       <small id="faltan-n"></small>
@@ -524,7 +538,7 @@ function urlFoto(valor){
 }
 
 function tarjeta(p){
-  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + (p.mejorar ? ' data-mejorar="1"' : "") + (p.notas ? ' data-nota="1"' : "") + '>' + cinta(p);
+  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + (p.mejorar ? ' data-mejorar="1"' : "") + (p.notas ? ' data-nota="1"' : "") + (REVISION && p.oculto ? ' data-oculto="1"' : "") + '>' + cinta(p);
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += REVISION ? FOTO_VACIA.replace("</div>", BTN_SUBIR + "</div>") : FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
@@ -551,7 +565,7 @@ function tarjeta(p){
 }
 function marcaRevision(p){
   if (!REVISION) return "";
-  return '<span class="rev-num' + (p.mejorar && p.foto ? " mejorar" : "") + (p.notas ? " con-nota" : "") + '">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") +
+  return '<span class="rev-num' + (p.oculto ? " oculto" : (p.mejorar && p.foto ? " mejorar" : "")) + (p.notas ? " con-nota" : "") + '">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") +
     (p.foto ? (p.mejorar ? " · MEJORAR FOTO" : "") : " · SIN FOTO") + (p.notas ? " · 📝 NOTA" : "") + '</span>';
 }
 function cinta(p){ return marcaRevision(p) + (p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""); }
@@ -582,6 +596,7 @@ function mostrar(texto){
     if (sub && sub.t && Date.now() - sub.t < 15 * 60 * 1000){
       if ("url" in sub) p.foto = p.fotoGrande = sub.url || null;
       if ("mejorar" in sub) p.mejorar = sub.mejorar;
+      if ("oculto" in sub) p.oculto = sub.oculto;
     }
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
@@ -621,10 +636,10 @@ function mostrar(texto){
 }
 
 // Buscador (+ CAMBIO 15: filtro «solo los que faltan foto» en modo revisión)
-var SOLO_SIN_FOTO = false, SOLO_NOTAS = false;
+var SOLO_SIN_FOTO = false, SOLO_NOTAS = false, VISTA = "todos";
 function filtrar(){
   var valor = document.getElementById("buscar").value.trim();
-  var q = normal(valor), hay = false, faltan = 0, porMejorar = 0, conNota = 0;
+  var q = normal(valor), hay = false, faltan = 0, porMejorar = 0, conNota = 0, ocultos = 0;
   var pals = q ? q.split(" ").filter(Boolean) : [];
   document.querySelectorAll("section.seccion").forEach(function(s){
     var visibles = 0;
@@ -636,20 +651,28 @@ function filtrar(){
       // Cada palabra escrita tiene que aparecer (o parecerse) en el producto
       var ok = !q || pals.every(function(w){ return palabraCalza(w, txt, ps || (ps = txt.split(" "))); });
       if ((SOLO_SIN_FOTO || SOLO_NOTAS) && !((SOLO_SIN_FOTO && (sinFoto || mejorar)) || (SOLO_NOTAS && nota))) ok = false;
+      var oc = t.hasAttribute("data-oculto"); if (oc) ocultos++;
+      if ((VISTA === "cliente" && oc) || (VISTA === "ocultos" && !oc)) ok = false;
       t.hidden = !ok; if (ok) visibles++;
     });
     s.hidden = visibles === 0; if (visibles) hay = true;
   });
-  var filtrando = !!q || SOLO_SIN_FOTO || SOLO_NOTAS;
+  var filtrando = !!q || SOLO_SIN_FOTO || SOLO_NOTAS || VISTA === "ocultos";
   document.getElementById("nav").hidden = filtrando;
   var rc = document.getElementById("recomendados"); if (rc.children[1].children.length) rc.hidden = filtrando;
   var sr = document.getElementById("sin-resultados"); if (sr) sr.hidden = hay;
-  if (REVISION) document.getElementById("faltan-n").textContent = (faltan ? "Faltan " + faltan + " fotos" : "¡Todos tienen foto!") + (porMejorar ? " · " + porMejorar + " por mejorar" : "") + (conNota ? " · " + conNota + " con notas" : "");
+  if (REVISION) document.getElementById("faltan-n").textContent = (faltan ? "Faltan " + faltan + " fotos" : "¡Todos tienen foto!") + (porMejorar ? " · " + porMejorar + " por mejorar" : "") + (conNota ? " · " + conNota + " con notas" : "") + (ocultos ? " · " + ocultos + " ocultos" : "");
   return hay;
 }
 document.getElementById("buscar").addEventListener("input", function(){
   var hay = filtrar();
   if (window.STATS) STATS.busqueda(this.value.trim(), hay);
+});
+document.querySelector(".vista-rev").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-vista]"); if (!b) return;
+  VISTA = b.getAttribute("data-vista");
+  this.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x === b); });
+  filtrar();
 });
 document.getElementById("solo-notas").addEventListener("click", function(){
   var b = this;
@@ -796,6 +819,7 @@ var FICHA = (function(){
       h += '<div class="rev-acciones"><button type="button" class="btn-subir" id="f-subir-foto">' + (p.foto ? "Cambiar foto" : "Subir foto") + '</button>';
       if (p.foto) h += '<button type="button" class="btn-subir naranja" id="f-mejorar">' + (p.mejorar ? "Quitar marca «mejorar»" : "Marcar para mejorar") + '</button>' +
                        '<button type="button" class="btn-subir peligro" id="f-quitar-foto">Quitar foto</button>';
+      h += '<button type="button" class="btn-subir gris" id="f-ocultar">' + (p.oculto ? "Mostrar en el catálogo" : "Ocultar producto") + '</button>';
       h += '</div>';
       h += NOTAS.html(p);
     }
@@ -845,6 +869,12 @@ var FICHA = (function(){
     if (e.target.closest("#f-quitar-foto")) {
       if (!confirm("¿Seguro que quieres quitar la foto de " + (actual.numero ? "N° " + actual.numero + " · " : "") + actual.nombre + "?")) return;
       var p0 = actual; FOTOS.accion(p0, "quitar").then(function(ok){ if (ok){ ficha.close(); aviso("Foto quitada. El producto quedó sin foto."); } });
+      return;
+    }
+    if (e.target.closest("#f-ocultar")) {
+      var p4 = actual, mostrarlo = !!p4.oculto;
+      if (!mostrarlo && !confirm("¿Ocultar " + (p4.numero ? "N° " + p4.numero + " · " : "") + p4.nombre + " del catálogo? Los clientes ya no lo verán.")) return;
+      FOTOS.accion(p4, "mostrar", mostrarlo).then(function(ok){ if (ok){ abrir(p4); aviso(mostrarlo ? "Ahora se muestra en el catálogo." : "Producto ocultado. Los clientes ya no lo ven."); } });
       return;
     }
     if (e.target.closest("#f-mejorar")) {
@@ -1021,7 +1051,7 @@ var FOTOS = (function(){
     if (!clave){ clave = (prompt("Escribe la clave:") || "").trim(); if (!clave) return Promise.resolve(false); }
     // Primero se confirma que el código de Apps Script ya tiene estas opciones (versión 2 o más)
     return fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){
-      if (!info || !(info.version >= 2)) throw new Error("ACTUALIZAR");
+      if (!info || !(info.version >= (tipo === "mostrar" ? 4 : 2))) throw new Error("ACTUALIZAR");
       return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: clave, autor: autorGuardado(), accion: tipo, valor: valor, numero: p.numero || "", producto: p.nombre }) });
     })
       .then(function(r){ return r.json(); })
@@ -1031,11 +1061,13 @@ var FOTOS = (function(){
           throw new Error(r.error || "Error");
         }
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
-        var cambio = { t: Date.now() };
+        // Se guarda junto con los cambios recientes de este producto (si los hay)
+        var previo = SUBIDAS[p.numero || p.nombre], cambio = {};
+        if (previo && previo.t && Date.now() - previo.t < 15 * 60 * 1000) for (var k in previo) cambio[k] = previo[k];
+        cambio.t = Date.now();
         if (tipo === "quitar"){ p.foto = p.fotoGrande = null; p.mejorar = false; cambio.url = ""; cambio.mejorar = false; }
         if (tipo === "mejorar"){ p.mejorar = !!valor; cambio.mejorar = !!valor; }
-        var previo = SUBIDAS[p.numero || p.nombre];
-        if (tipo === "mejorar" && previo && previo.t && Date.now() - previo.t < 15 * 60 * 1000 && "url" in previo) cambio.url = previo.url;
+        if (tipo === "mostrar"){ p.oculto = !valor; cambio.oculto = !valor; }
         SUBIDAS[p.numero || p.nombre] = cambio;
         try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
         var card = document.querySelector('.tarjeta[data-id="' + p.id + '"]');
