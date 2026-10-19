@@ -127,6 +127,14 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .btn-subir.suave{background:#fff;color:var(--profundo);border:1.5px solid var(--profundo)}
 .btn-subir.peligro{background:#fff;color:var(--rojo);border:1.5px solid var(--rojo)}
 .btn-subir.naranja{background:#FFF4E0;color:#8A4B00;border:1.5px solid #F59E0B}
+/* CAMBIO 20 · Código del producto */
+.tarjeta .cod{margin:-2px 0 0;font-size:12px;color:var(--suave);font-variant-numeric:tabular-nums}
+#ficha .cod-elegido{margin:0;padding:8px 12px;border-radius:10px;background:var(--pastilla);color:var(--profundo);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+#ficha .cod-elegido.pendiente{background:#F3F5F5;color:var(--suave);font-weight:600}
+#ficha details.todos-cod summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--profundo);min-height:32px;display:flex;align-items:center}
+#ficha details.todos-cod ul{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+#ficha details.todos-cod li{display:flex;gap:10px;font-size:13px;color:var(--suave);border-bottom:1px dashed var(--linea);padding:4px 0}
+#ficha details.todos-cod li b{color:var(--tinta);font-variant-numeric:tabular-nums;min-width:92px}
 /* CAMBIO 19 · Ocultar / mostrar producto (modo revisión) */
 .tarjeta[data-oculto]{background:#ECEFF1;border:2px dashed #90A4AE}
 .tarjeta[data-oculto] .foto{opacity:.55}
@@ -515,6 +523,19 @@ function columna(cabeceras, inicio){
 }
 
 var INDICE_FOTOS = {}, FUENTE = "prueba", PRODUCTOS = [];
+// CAMBIO 20 · A qué medida y color corresponde cada código del sistema (archivo codigos.json)
+var CODIGOS = {};
+function etiquetaCodigo(c){ var v = CODIGOS[c]; return v ? [v.m, v.c].filter(Boolean).join(" · ") : ""; }
+// Códigos que corresponden a la medida y color elegidos (si el producto tiene un solo código, siempre ese)
+function codigosDe(p, m, c){
+  if (p.codigos.length <= 1) return p.codigos.slice();
+  return p.codigos.filter(function(k){
+    var v = CODIGOS[k]; if (!v) return false;
+    var okM = !p.medidas.length || !v.m || !m || v.m === m;
+    var okC = !p.colores.length || !v.c || !c || v.c.toLowerCase() === String(c).toLowerCase();
+    return okM && okC;
+  });
+}
 // Modo revisión (temporal): ?revision=1 muestra el N° de cada producto y también los ocultos
 var REVISION = /[?&]revision=1/.test(location.search);
 // Clave y nombre de quien trabaja en modo revisión (se piden una sola vez por celular)
@@ -542,6 +563,7 @@ function tarjeta(p){
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += REVISION ? FOTO_VACIA.replace("</div>", BTN_SUBIR + "</div>") : FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
+  if (p.codigos.length === 1) h += '<p class="cod">Cód. ' + esc(p.codigos[0]) + '</p>';
   if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
   if (p.medidas.length){
     h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">';
@@ -559,7 +581,7 @@ function tarjeta(p){
     h += '</div></div>';
   }
   h += '<button class="ver-mas" type="button">Ver detalles</button>';
-  h += '<div class="relleno"></div><div class="acciones"><a class="consultar" href="' + esc(wa("Hola Alumol, quiero consultar por: " + p.nombre)) + '" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a>' +
+  h += '<div class="relleno"></div><div class="acciones"><a class="consultar" href="' + esc(wa("Hola Alumol, quiero consultar por: " + p.nombre + (p.codigos.length === 1 ? " (Cód. " + p.codigos[0] + ")" : ""))) + '" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a>' +
     '<button class="agregar" type="button" aria-label="Agregar ' + esc(p.nombre) + ' a mi pedido" title="Agregar a mi pedido">+</button></div></div></article>';
   return h;
 }
@@ -578,7 +600,7 @@ function mostrar(texto){
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
       cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres"), cMj = columna(cab,"mejorar foto");
+      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres"), cMj = columna(cab,"mejorar foto"), cK = columna(cab,"codigos");
   PRODUCTOS = [];
   var secciones = [], porNombre = {}, USADOS = {};
   filas.forEach(function(f){
@@ -590,7 +612,8 @@ function mostrar(texto){
     var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto, mejorar: /^s/.test(sinTildes(v(cMj))) };
+      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto, mejorar: /^s/.test(sinTildes(v(cMj))),
+      codigos: v(cK).split(/[\s,;]+/).filter(function(x){ return /^\d{6,}$/.test(x); }) };
     // Cambios hechos desde este celular: se respetan 15 minutos mientras la hoja publicada se actualiza
     var sub = REVISION && SUBIDAS[p.numero || p.nombre];
     if (sub && sub.t && Date.now() - sub.t < 15 * 60 * 1000){
@@ -601,7 +624,7 @@ function mostrar(texto){
     if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
     p.notas = REVISION && window.NOTAS ? NOTAS.pendientes(p).length : 0;
-    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
+    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), p.codigos.join(" "), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
     // CAMBIO 12: dirección propia de cada producto (#p-nombre) para compartirlo
     var base = "p-" + slug(nombre), sl = base, k = 2; while (USADOS[sl]) sl = base + "-" + (k++); USADOS[sl] = 1; p.slug = sl;
     var clave = sinTildes(sec);
@@ -700,7 +723,11 @@ document.getElementById("solo-sin-foto").addEventListener("click", function(){
 
 // Carga: índice de fotos guardadas + hoja de Google (si falla, usa la copia de respaldo)
 function obtener(url){ return fetch(url, {cache: "no-store"}).then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); }); }
-fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(){ return {}; }).then(function(ix){
+Promise.all([
+  fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(){ return {}; }),
+  fetch("codigos.json").then(function(r){ return r.json(); }).catch(function(){ return {}; })
+]).then(function(res){
+  var ix = res[0]; CODIGOS = res[1] || {};
   INDICE_FOTOS = ix;
   if (/[?&]prueba=1/.test(location.search)) return obtener("productos-prueba-755.csv");
   var principal = HOJA_CSV ? obtener(HOJA_CSV) : Promise.reject();
@@ -793,14 +820,28 @@ var FICHA = (function(){
         (conColor ? '<i style="background:' + (COLORES[v.toLowerCase()] || "#CCCCCC") + '"></i>' : "") + esc(v) + '</button>';
     }).join("");
   }
+  function codigoUnico(){ var l = codigosDe(actual, elegido.m, elegido.c); return l.length === 1 ? l[0] : ""; }
   function clave(){
     var partes = [];
     if (elegido.m) partes.push(elegido.m);
     if (elegido.c) partes.push(elegido.c);
+    var cod = codigoUnico(); if (cod) partes.push("Cód. " + cod);
     return actual.nombre + (partes.length ? " · " + partes.join(" · ") : "");
+  }
+  // CAMBIO 20: muestra el código de lo que está elegido
+  function pintarCodigo(){
+    var el = document.getElementById("f-cod"); if (!el) return;
+    var p = actual, l = codigosDe(p, elegido.m, elegido.c);
+    var falta = [p.medidas.length > 1 && !elegido.m ? "la medida" : "", p.colores.length > 1 && !elegido.c ? "el color" : ""].filter(Boolean);
+    el.classList.remove("pendiente");
+    if (l.length === 1) el.textContent = "Código: " + l[0];
+    else if (falta.length && l.length > 1) { el.textContent = "Elige " + falta.join(" y ") + " para ver el código exacto."; el.classList.add("pendiente"); }
+    else if (l.length > 1) el.textContent = "Códigos: " + l.map(function(k){ return k + (CODIGOS[k] ? " (" + CODIGOS[k].d.toLowerCase() + ")" : ""); }).join(" · ");
+    else { el.textContent = "Esta combinación no tiene código registrado. Consúltanos por WhatsApp."; el.classList.add("pendiente"); }
   }
   function cantidad(){ var n = parseInt(document.getElementById("f-cant").value, 10); return n > 0 ? n : 1; }
   function refrescar(){
+    pintarCodigo();
     var txt = "Hola Alumol, quiero consultar por: " + clave() + (cantidad() > 1 ? " (" + cantidad() + " unidades)" : "");
     document.getElementById("f-consultar").href = wa(txt);
   }
@@ -813,6 +854,21 @@ var FICHA = (function(){
     if (p.medidas.length > 1 || p.colores.length > 1) h += '<p class="elige">' + (paraPedir ? "Elige " : "Puedes elegir ") + [p.medidas.length > 1 ? "la medida" : "", p.colores.length > 1 ? "el color" : ""].filter(Boolean).join(" y ") + ' antes de agregarlo a tu pedido.</p>';
     if (p.medidas.length) h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">' + opciones(p.medidas, "m") + '</div></div>';
     if (p.colores.length) h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">' + opciones(p.colores, "c", true) + '</div></div>';
+    if (p.codigos.length){
+      h += '<p class="cod-elegido" id="f-cod"></p>';
+      if (p.codigos.length > 1){
+        var etq = {}; p.codigos.forEach(function(k){ var e = etiquetaCodigo(k); etq[e] = (etq[e] || 0) + 1; });
+        var orden = p.codigos.slice().sort(function(a, b){
+          var va = CODIGOS[a] || {}, vb = CODIGOS[b] || {};
+          return (p.medidas.indexOf(va.m) - p.medidas.indexOf(vb.m)) || (p.colores.indexOf(va.c) - p.colores.indexOf(vb.c)) || (a < b ? -1 : 1);
+        });
+        h += '<details class="todos-cod"><summary>Ver todos los códigos (' + p.codigos.length + ')</summary><ul>' + orden.map(function(k){
+          var e = etiquetaCodigo(k), v = CODIGOS[k];
+          var txt = e && etq[e] === 1 ? e : (e ? e + " — " : "") + (v ? v.d.toLowerCase() : "");
+          return '<li><b>' + esc(k) + '</b><span>' + esc(txt) + '</span></li>';
+        }).join("") + '</ul></details>';
+      }
+    }
     h += '<div class="fila-cant"><span>Cantidad</span><div class="stepper"><button type="button" data-d="-1" aria-label="Menos">−</button>' +
          '<input id="f-cant" type="number" inputmode="numeric" min="1" value="1" aria-label="Cantidad"><button type="button" data-d="1" aria-label="Más">+</button></div></div>';
     if (REVISION){
