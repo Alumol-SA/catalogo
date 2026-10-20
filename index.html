@@ -127,6 +127,30 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .btn-subir.suave{background:#fff;color:var(--profundo);border:1.5px solid var(--profundo)}
 .btn-subir.peligro{background:#fff;color:var(--rojo);border:1.5px solid var(--rojo)}
 .btn-subir.naranja{background:#FFF4E0;color:#8A4B00;border:1.5px solid #F59E0B}
+/* CAMBIO 21 · Cambios por aprobar */
+.rev-num.pend{box-shadow:0 0 0 2px #C62828,0 1px 3px rgba(0,0,0,.25)}
+.rol-rev{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--suave)}
+.rol-rev b{color:var(--tinta)}
+.rol-rev button{background:none;border:0;padding:0;font:inherit;font-size:13px;font-weight:700;color:var(--profundo);text-decoration:underline;cursor:pointer;min-height:32px}
+#ver-aprobar{border-color:#C62828 !important;background:#FDECEA !important;color:#C62828 !important}
+dialog#aprobar{border:0;border-radius:18px;padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
+dialog#aprobar::backdrop{background:rgba(18,40,43,.55)}
+#aprobar .ap-cab{position:sticky;top:0;z-index:2;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--linea)}
+#aprobar .ap-cab h3{margin:0;font-size:22px}
+#aprobar .ap-lista{padding:12px 18px 18px;display:flex;flex-direction:column;gap:12px}
+#aprobar .ap-item{border:1px solid var(--linea);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+#aprobar .ap-item h4{margin:0;font-size:16px}
+#aprobar .ap-item small{color:var(--suave)}
+#aprobar .ap-que{font-weight:700;font-size:14px}
+#aprobar .ap-fotos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#aprobar .ap-fotos figure{margin:0;display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--suave);text-align:center}
+#aprobar .ap-fotos img,#aprobar .ap-fotos .sin{width:100%;aspect-ratio:1;object-fit:contain;background:#F3F5F5;border-radius:8px;display:grid;place-items:center}
+#aprobar .ap-btns{display:flex;gap:8px}
+#aprobar .ap-btns button,#aprobar .todo{flex:1;min-height:44px;border-radius:10px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+#aprobar .si{border:0;background:var(--whatsapp);color:#fff}
+#aprobar .no{border:1.5px solid var(--rojo);background:#fff;color:var(--rojo)}
+#aprobar .todo{flex:0 0 auto;padding:0 14px;border:0;background:var(--whatsapp);color:#fff;min-height:40px;font-size:14px}
+#aprobar .vacio{color:var(--suave);text-align:center;padding:20px 0}
 /* CAMBIO 20 · Código del producto */
 .tarjeta .cod{margin:-2px 0 0;font-size:12px;color:var(--suave);font-variant-numeric:tabular-nums}
 #ficha .cod-elegido{margin:0;padding:8px 12px;border-radius:10px;background:var(--pastilla);color:var(--profundo);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -346,7 +370,9 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
       </div>
       <button type="button" id="solo-sin-foto" aria-pressed="false">Ver los que faltan o hay que mejorar</button>
       <button type="button" id="solo-notas" aria-pressed="false">Ver los que tienen notas</button>
+      <button type="button" id="ver-aprobar" hidden>Por aprobar (0)</button>
       <small id="faltan-n"></small>
+      <div class="rol-rev" id="rol-rev"></div>
     </div>
   </div>
   <section id="recomendados" aria-labelledby="reco-titulo" hidden>
@@ -398,6 +424,12 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
     <a class="consultar" id="pedido-enviar" href="#" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>
     <button class="vaciar" type="button" id="pedido-vaciar">Vaciar lista</button>
   </div>
+</dialog>
+
+<!-- CAMBIO 21 · Cambios por aprobar (solo administradora) -->
+<dialog id="aprobar" aria-labelledby="ap-titulo">
+  <div class="ap-cab"><h3 class="serif" id="ap-titulo">Por aprobar</h3><button type="button" class="todo" id="ap-todo">Aprobar todo</button><button class="quitar" type="button" id="ap-cerrar" aria-label="Cerrar" style="width:40px;height:40px;border-radius:8px;border:1px solid var(--linea);background:#fff;font-size:20px;cursor:pointer">×</button></div>
+  <div class="ap-lista" id="ap-lista"></div>
 </dialog>
 
 <!-- CAMBIO 16 · Subir foto (modo revisión) -->
@@ -538,6 +570,9 @@ function codigosDe(p, m, c){
 }
 // Modo revisión (temporal): ?revision=1 muestra el N° de cada producto y también los ocultos
 var REVISION = /[?&]revision=1/.test(location.search);
+// CAMBIO 21 · Rol según la clave (administradora o trabajador) y cambios que esperan aprobación
+var ROL = "", PEND = {};
+function pendientesDe(p){ return PEND[String(p.numero || p.nombre)] || []; }
 // Clave y nombre de quien trabaja en modo revisión (se piden una sola vez por celular)
 function claveGuardada(){ try { return localStorage.getItem("alumol-clave") || ""; } catch (e) { return ""; } }
 function autorGuardado(){
@@ -559,7 +594,7 @@ function urlFoto(valor){
 }
 
 function tarjeta(p){
-  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + (p.mejorar ? ' data-mejorar="1"' : "") + (p.notas ? ' data-nota="1"' : "") + (REVISION && p.oculto ? ' data-oculto="1"' : "") + '>' + cinta(p);
+  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + (p.mejorar ? ' data-mejorar="1"' : "") + (p.notas ? ' data-nota="1"' : "") + (REVISION && p.oculto ? ' data-oculto="1"' : "") + (p.pend ? ' data-pend="1"' : "") + '>' + cinta(p);
   if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
   else h += REVISION ? FOTO_VACIA.replace("</div>", BTN_SUBIR + "</div>") : FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
@@ -587,8 +622,8 @@ function tarjeta(p){
 }
 function marcaRevision(p){
   if (!REVISION) return "";
-  return '<span class="rev-num' + (p.oculto ? " oculto" : (p.mejorar && p.foto ? " mejorar" : "")) + (p.notas ? " con-nota" : "") + '">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") +
-    (p.foto ? (p.mejorar ? " · MEJORAR FOTO" : "") : " · SIN FOTO") + (p.notas ? " · 📝 NOTA" : "") + '</span>';
+  return '<span class="rev-num' + (p.oculto ? " oculto" : (p.mejorar && p.foto ? " mejorar" : "")) + (p.notas ? " con-nota" : "") + (p.pend ? " pend" : "") + '">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") +
+    (p.foto ? (p.mejorar ? " · MEJORAR FOTO" : "") : " · SIN FOTO") + (p.notas ? " · 📝 NOTA" : "") + (p.pend ? " · ⏳ POR APROBAR" : "") + '</span>';
 }
 function cinta(p){ return marcaRevision(p) + (p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""); }
 var MAX_TARJETA = 6;  // máximo de medidas o colores visibles en la tarjeta
@@ -655,7 +690,7 @@ function mostrar(texto){
   }).join("");
   document.getElementById("recomendados").hidden = reco.length === 0;
   if (window.FICHA) FICHA.desdeEnlace();
-  if (REVISION) { document.getElementById("filtro-fotos").hidden = false; filtrar(); if (window.NOTAS) NOTAS.cargar(); }
+  if (REVISION) { document.getElementById("filtro-fotos").hidden = false; filtrar(); if (window.NOTAS) { NOTAS.pintarRol(); NOTAS.cargar(); } }
 }
 
 // Buscador (+ CAMBIO 15: filtro «solo los que faltan foto» en modo revisión)
@@ -924,13 +959,13 @@ var FICHA = (function(){
     if (rs){ var p3 = actual; rs.disabled = true; NOTAS.resolver(p3, +rs.getAttribute("data-fila")).then(function(ok){ if (ok){ abrir(p3); aviso("Nota marcada como resuelta."); } else rs.disabled = false; }); return; }
     if (e.target.closest("#f-quitar-foto")) {
       if (!confirm("¿Seguro que quieres quitar la foto de " + (actual.numero ? "N° " + actual.numero + " · " : "") + actual.nombre + "?")) return;
-      var p0 = actual; FOTOS.accion(p0, "quitar").then(function(ok){ if (ok){ ficha.close(); aviso("Foto quitada. El producto quedó sin foto."); } });
+      var p0 = actual; FOTOS.accion(p0, "quitar").then(function(ok){ if (ok){ ficha.close(); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : "Foto quitada. El producto quedó sin foto."); } });
       return;
     }
     if (e.target.closest("#f-ocultar")) {
       var p4 = actual, mostrarlo = !!p4.oculto;
       if (!mostrarlo && !confirm("¿Ocultar " + (p4.numero ? "N° " + p4.numero + " · " : "") + p4.nombre + " del catálogo? Los clientes ya no lo verán.")) return;
-      FOTOS.accion(p4, "mostrar", mostrarlo).then(function(ok){ if (ok){ abrir(p4); aviso(mostrarlo ? "Ahora se muestra en el catálogo." : "Producto ocultado. Los clientes ya no lo ven."); } });
+      FOTOS.accion(p4, "mostrar", mostrarlo).then(function(ok){ if (ok){ abrir(p4); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : (mostrarlo ? "Ahora se muestra en el catálogo." : "Producto ocultado. Los clientes ya no lo ven.")); } });
       return;
     }
     if (e.target.closest("#f-mejorar")) {
@@ -1077,6 +1112,14 @@ var FOTOS = (function(){
           throw new Error(r.error || "Error");
         }
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
+        if (r.rol) ROL = r.rol;
+        if (r.pendiente){
+          NOTAS.agregarPendiente(producto, { id: r.id, accion: "subir", nueva: imagen, anterior: "", autor: autorGuardado(), fecha: "ahora" });
+          decir("✓ Foto enviada. El cliente la verá cuando la administradora la apruebe.");
+          btnSubir.textContent = "Listo";
+          setTimeout(function(){ if (dlg.open) dlg.close(); }, 1800);
+          return;
+        }
         // Se muestra al instante; la hoja publicada tarda unos minutos en reflejarlo
         producto.foto = producto.fotoGrande = imagen;
         producto.mejorar = false;
@@ -1117,6 +1160,11 @@ var FOTOS = (function(){
           throw new Error(r.error || "Error");
         }
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
+        if (r.rol) ROL = r.rol;
+        if (r.pendiente){
+          NOTAS.agregarPendiente(p, { id: r.id, accion: tipo, valor: tipo === "mostrar" ? (valor ? "SÍ" : "NO") : "", nueva: "", anterior: p.foto || "", autor: autorGuardado(), fecha: "ahora" });
+          return "pendiente";
+        }
         // Se guarda junto con los cambios recientes de este producto (si los hay)
         var previo = SUBIDAS[p.numero || p.nombre], cambio = {};
         if (previo && previo.t && Date.now() - previo.t < 15 * 60 * 1000) for (var k in previo) cambio[k] = previo[k];
@@ -1151,19 +1199,24 @@ var NOTAS = (function(){
   function pendientes(p){ return todas(p).filter(function(n){ return n.estado !== "Resuelta"; }); }
   function repintar(){
     PRODUCTOS.forEach(function(p){
-      var n = pendientes(p).length; if (n === (p.notas || 0)) return;
-      p.notas = n;
+      var n = pendientes(p).length, pe = pendientesDe(p).length;
+      if (n === (p.notas || 0) && pe === (p.pend || 0)) return;
+      p.notas = n; p.pend = pe;
       var card = document.querySelector('.tarjeta[data-id="' + p.id + '"]');
       if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(p); card.replaceWith(nueva.firstChild); }
     });
     if (window.PEDIDO) PEDIDO.pintar();
     filtrar();
+    pintarRol();
   }
   function cargar(){
     var c = claveGuardada();
     if (!REVISION || !SUBIR_FOTOS || !c) return Promise.resolve();
     return fetch(SUBIR_FOTOS + "?accion=notas&clave=" + encodeURIComponent(c)).then(function(r){ return r.json(); }).then(function(r){
-      if (!r || !r.ok || !r.notas) return;
+      if (!r || !r.ok || !r.notas) { if (r && /clave/i.test(r.error || "")) { ROL = ""; pintarRol(); } return; }
+      ROL = r.rol || "trabajador";
+      PEND = {};
+      (r.pendientes || []).forEach(function(x){ var k = x.numero || x.producto; (PEND[k] = PEND[k] || []).push(x); });
       porProducto = {};
       r.notas.forEach(function(n){ var k = n.numero || n.producto; (porProducto[k] = porProducto[k] || []).push(n); });
       cargadas = true; repintar();
@@ -1216,7 +1269,107 @@ var NOTAS = (function(){
          '<button type="button" id="f-guardar-nota">Guardar nota</button></div>';
     return h;
   }
-  return { cargar: cargar, pendientes: pendientes, agregar: agregar, resolver: resolver, html: html };
+  function agregarPendiente(p, x){
+    x.numero = p.numero; x.producto = p.nombre;
+    var k = String(p.numero || p.nombre); (PEND[k] = PEND[k] || []).push(x);
+    repintar();
+  }
+  // Nombre del rol y botón «Por aprobar»
+  function pintarRol(){
+    var el = document.getElementById("rol-rev"), b = document.getElementById("ver-aprobar"); if (!el) return;
+    var total = 0; for (var k in PEND) total += PEND[k].length;
+    var txt = !claveGuardada() ? "Sin clave en este celular." :
+      ROL === "admin" ? "Conectada como <b>administradora</b>: tus cambios pasan directo." :
+      ROL === "trabajador" ? "Conectado como <b>trabajador</b>: fotos, quitar y ocultar quedan por aprobar." : "";
+    el.innerHTML = '<span>' + txt + '</span><button type="button" id="cambiar-clave">' + (claveGuardada() ? "Cambiar clave" : "Poner clave") + '</button>';
+    b.hidden = ROL !== "admin";
+    b.textContent = "Por aprobar (" + total + ")";
+    if (window.APROBAR) APROBAR.pintar();
+  }
+  return { cargar: cargar, pendientes: pendientes, agregar: agregar, resolver: resolver, html: html, agregarPendiente: agregarPendiente, repintar: repintar, pintarRol: pintarRol };
+})();
+
+/* CAMBIO 21 · Aprobar o rechazar los cambios del trabajador (solo con la clave de administradora) */
+var APROBAR = (function(){
+  var dlg = document.getElementById("aprobar"), lista = document.getElementById("ap-lista");
+  function producto(x){
+    for (var i = 0; i < PRODUCTOS.length; i++) if (String(PRODUCTOS[i].numero || PRODUCTOS[i].nombre) === String(x.numero || x.producto)) return PRODUCTOS[i];
+    return null;
+  }
+  function todos(){ var l = []; for (var k in PEND) l = l.concat(PEND[k]); return l; }
+  function img(u, pie){
+    var src = u && u.indexOf("data:") === 0 ? u : urlFoto(u);
+    return '<figure>' + (src ? '<img src="' + esc(src) + '" alt="">' : '<div class="sin">Sin foto</div>') + '<figcaption>' + pie + '</figcaption></figure>';
+  }
+  function pintar(){
+    if (!dlg.open) return;
+    var l = todos();
+    document.getElementById("ap-todo").hidden = l.length < 2;
+    if (!l.length){ lista.innerHTML = '<p class="vacio">No hay cambios por aprobar. 👍</p>'; return; }
+    lista.innerHTML = l.map(function(x){
+      var p = producto(x), nombre = (x.numero ? "N° " + x.numero + " · " : "") + (p ? p.nombre : x.producto);
+      var que = x.accion === "subir" ? "Foto nueva" : x.accion === "quitar" ? "Quitar la foto" : (x.valor === "SÍ" ? "Mostrar en el catálogo" : "Ocultar del catálogo");
+      var h = '<div class="ap-item"><h4>' + esc(nombre) + '</h4><span class="ap-que">' + que + '</span><small>' + esc((x.autor || "") + " · " + (x.fecha || "")) + '</small>';
+      if (x.accion === "subir") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Ahora") + img(x.nueva, "Nueva") + '</div>';
+      if (x.accion === "quitar") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Foto que se quitaría") + '</div>';
+      h += '<div class="ap-btns"><button type="button" class="si" data-id="' + esc(x.id) + '">Aprobar</button><button type="button" class="no" data-id="' + esc(x.id) + '">Rechazar</button></div></div>';
+      return h;
+    }).join("");
+  }
+  function enviar(tipo, ids){
+    var c = claveGuardada();
+    lista.querySelectorAll("button").forEach(function(b){ b.disabled = true; });
+    return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: c, autor: autorGuardado(), accion: tipo, ids: ids }) })
+      .then(function(r){ return r.json(); }).then(function(r){
+        if (!r.ok) throw new Error(r.error || "Error");
+        (r.hechos || []).forEach(function(h){
+          if (!h.ok) return;
+          for (var k in PEND){
+            PEND[k] = PEND[k].filter(function(x){
+              if (x.id !== h.id) return true;
+              var p = producto(x);
+              if (tipo === "aprobar" && p){
+                var cambio = { t: Date.now() };
+                if (x.accion === "subir"){ p.foto = urlFoto(h.url) || p.foto; p.fotoGrande = p.foto && p.foto.replace("=w400", "=w1000"); p.mejorar = false; cambio.url = p.foto; cambio.mejorar = false; }
+                if (x.accion === "quitar"){ p.foto = p.fotoGrande = null; cambio.url = ""; }
+                if (x.accion === "mostrar"){ p.oculto = x.valor !== "SÍ"; cambio.oculto = p.oculto; }
+                SUBIDAS[p.numero || p.nombre] = cambio;
+                try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
+                p.pend = -1;   // obliga a volver a pintar la tarjeta
+              }
+              return false;
+            });
+            if (!PEND[k].length) delete PEND[k];
+          }
+        });
+        var fallos = (r.hechos || []).filter(function(h){ return !h.ok; });
+        if (fallos.length) alert("Algunos no se pudieron aplicar: " + fallos.map(function(f){ return f.error; }).join(", "));
+        NOTAS.repintar();
+      }).catch(function(err){ alert("No se pudo: " + (err.message || "revisa tu conexión")); pintar(); });
+  }
+  lista.addEventListener("click", function(e){
+    var b = e.target.closest("button[data-id]"); if (!b) return;
+    var tipo = b.classList.contains("si") ? "aprobar" : "rechazar";
+    if (tipo === "rechazar" && !confirm("¿Rechazar este cambio? No se publicará.")) return;
+    enviar(tipo, [b.getAttribute("data-id")]);
+  });
+  document.getElementById("ap-todo").addEventListener("click", function(){
+    var ids = todos().map(function(x){ return x.id; });
+    if (ids.length && confirm("¿Aprobar los " + ids.length + " cambios? Se publican en el catálogo.")) enviar("aprobar", ids);
+  });
+  document.getElementById("ver-aprobar").addEventListener("click", function(){
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    pintar();
+    NOTAS.cargar();   // trae lo último que haya mandado el trabajador
+  });
+  document.getElementById("ap-cerrar").addEventListener("click", function(){ dlg.close(); });
+  document.getElementById("rol-rev").addEventListener("click", function(e){
+    if (!e.target.closest("#cambiar-clave")) return;
+    var c = (prompt("Escribe la clave (la de administradora o la de trabajador):") || "").trim(); if (!c) return;
+    try { localStorage.setItem("alumol-clave", c); } catch (e2) {}
+    ROL = ""; NOTAS.cargar();
+  });
+  return { pintar: pintar };
 })();
 
 /* CAMBIO 13 · Instalar como app (y abrir aunque haya poca señal) */
