@@ -85,6 +85,20 @@ nav h2{margin:18px 0 12px;font-size:22px}
 .indice a .n{font-family:"Bree Serif",Georgia,serif;color:var(--rojo);min-width:22px}
 .indice a .t{flex-grow:1}
 .indice a .c{font-size:12px;color:var(--suave)}
+/* CAMBIO 22 · Secciones agrupadas en 3 grupos que se abren al tocarlos */
+.grupos{display:flex;flex-direction:column;gap:10px}
+.grupo-s{background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden}
+.grupo-s summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:64px;cursor:pointer;font-weight:700;font-size:16px;line-height:1.25}
+.grupo-s summary::-webkit-details-marker{display:none}
+.grupo-s summary .ico{flex:none;width:42px;height:42px;border-radius:10px;background:var(--pastilla);display:grid;place-items:center;font-size:21px}
+.grupo-s summary .sub{display:block;font-weight:400;font-size:13px;color:var(--suave);margin-top:2px}
+.grupo-s summary .fl{margin-left:auto;flex:none;color:var(--profundo);font-size:18px;transition:transform .2s}
+.grupo-s[open] summary .fl{transform:rotate(180deg)}
+.grupo-s .chips-s{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px}
+.grupo-s .chips-s a{min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:999px;border:1px solid var(--linea);background:var(--fondo);color:var(--tinta);text-decoration:none;font-size:14px;font-weight:600}
+.grupo-s .chips-s a:hover{border-color:var(--profundo)}
+.grupo-s .chips-s .c,.grupo-s summary .c{font-size:12px;font-weight:600;color:var(--suave)}
+@media (min-width:900px){.grupos{display:grid;grid-template-columns:repeat(3,1fr);align-items:start}}
 
 main{display:flex;flex-direction:column;gap:36px;padding:8px 0 40px}
 section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
@@ -555,6 +569,24 @@ function columna(cabeceras, inicio){
 }
 
 var INDICE_FOTOS = {}, FUENTE = "prueba", PRODUCTOS = [];
+// CAMBIO 22 · Grupos de secciones (la hoja puede tener una columna «Grupo» para cambiarlo)
+var GRUPOS = [
+  { id: "accesorios", ico: "🔩", nombre: "Accesorios para aluminio y vidrio", sub: "Ruedas, cerraduras, bisagras, felpas…" },
+  { id: "herramientas", ico: "🛠️", nombre: "Herramientas", sub: "Manuales, eléctricas, brocas, medición…" },
+  { id: "electricos", ico: "💡", nombre: "Eléctricos", sub: "Iluminación y material eléctrico" }
+];
+function grupoDe(nombreSeccion, grupoHoja){
+  var g = sinTildes(grupoHoja || "");
+  if (g){
+    if (/herramient/.test(g)) return "herramientas";
+    if (/electric|ilumin/.test(g)) return "electricos";
+    if (/accesori|aluminio|vidrio/.test(g)) return "accesorios";
+  }
+  var n = sinTildes(nombreSeccion);
+  if (/herramient|broca|disco|punta|medicion|escalera|elevacion|lija|amarra|cabo|proteccion/.test(n)) return "herramientas";
+  if (/electric|ilumin|foco|cable/.test(n)) return "electricos";
+  return "accesorios";
+}
 // CAMBIO 20 · A qué medida y color corresponde cada código del sistema (archivo codigos.json)
 var CODIGOS = {};
 function etiquetaCodigo(c){ var v = CODIGOS[c]; return v ? [v.m, v.c].filter(Boolean).join(" · ") : ""; }
@@ -635,7 +667,7 @@ function mostrar(texto){
   var cab = filas.shift() || [];
   var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
       cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres"), cMj = columna(cab,"mejorar foto"), cK = columna(cab,"codigos");
+      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres"), cMj = columna(cab,"mejorar foto"), cK = columna(cab,"codigos"), cG = columna(cab,"grupo");
   PRODUCTOS = [];
   var secciones = [], porNombre = {}, USADOS = {};
   filas.forEach(function(f){
@@ -663,20 +695,31 @@ function mostrar(texto){
     // CAMBIO 12: dirección propia de cada producto (#p-nombre) para compartirlo
     var base = "p-" + slug(nombre), sl = base, k = 2; while (USADOS[sl]) sl = base + "-" + (k++); USADOS[sl] = 1; p.slug = sl;
     var clave = sinTildes(sec);
-    if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [] }; secciones.push(porNombre[clave]); }
+    if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [], grupo: grupoDe(sec, v(cG)) }; secciones.push(porNombre[clave]); }
     porNombre[clave].productos.push(p);
   });
   var total = 0, ind = "", cat = "";
   secciones.forEach(function(s, i){
     var n = (i + 1 < 10 ? "0" : "") + (i + 1);
     total += s.productos.length;
-    ind += '<a href="#' + s.id + '"><span class="n">' + n + '</span><span class="t">' + esc(s.nombre) + '</span><span class="c">' + s.productos.length + '</span></a>';
     cat += '<section class="seccion" id="' + s.id + '"><div class="cabecera"><h2 class="serif"><span class="n">' + n + '</span><span>' + esc(s.nombre) +
       '</span></h2><a href="#inicio">Volver a secciones</a></div><div class="grilla">' + s.productos.map(tarjeta).join("") + '</div></section>';
   });
-  document.getElementById("indice").innerHTML = ind;
+  // CAMBIO 22: índice agrupado (los conteos solo se ven en modo revisión)
+  ind = GRUPOS.map(function(g){
+    var secs = secciones.filter(function(s){ return s.grupo === g.id; });
+    if (!secs.length) return "";
+    var tot = secs.reduce(function(a, s){ return a + s.productos.length; }, 0);
+    return '<details class="grupo-s"><summary><span class="ico" aria-hidden="true">' + g.ico + '</span><span>' + esc(g.nombre) +
+      (REVISION ? ' <span class="c">(' + tot + ')</span>' : "") + '<span class="sub">' + esc(g.sub) + '</span></span><span class="fl" aria-hidden="true">▾</span></summary>' +
+      '<div class="chips-s">' + secs.map(function(s){
+        return '<a href="#' + s.id + '">' + esc(s.nombre) + (REVISION ? ' <span class="c">' + s.productos.length + '</span>' : "") + '</a>';
+      }).join("") + '</div></details>';
+  }).join("");
+  var indice = document.getElementById("indice"); indice.className = "grupos"; indice.innerHTML = ind;
   document.getElementById("catalogo").innerHTML = cat + '<div class="aviso" id="sin-resultados" hidden>No encontramos productos con esa búsqueda. Escríbenos por WhatsApp y te ayudamos.</div>';
-  document.getElementById("conteo").textContent = total + " productos";
+  var conteo = document.getElementById("conteo");
+  if (REVISION) conteo.textContent = total + " productos"; else conteo.hidden = true;
   // CAMBIO 5: la línea de origen de datos solo se muestra con ?diagnostico=1
   if (/[?&]diagnostico=1/.test(location.search)) document.getElementById("fuente").textContent = "Datos: " + FUENTE;
   if (window.PEDIDO) PEDIDO.pintar();
