@@ -426,7 +426,7 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
   </div>
 </dialog>
 
-<!-- CAMBIO 21 · Cambios por aprobar (solo administradora) -->
+<!-- CAMBIO 21 · Cambios por aprobar (solo administrador) -->
 <dialog id="aprobar" aria-labelledby="ap-titulo">
   <div class="ap-cab"><h3 class="serif" id="ap-titulo">Por aprobar</h3><button type="button" class="todo" id="ap-todo">Aprobar todo</button><button class="quitar" type="button" id="ap-cerrar" aria-label="Cerrar" style="width:40px;height:40px;border-radius:8px;border:1px solid var(--linea);background:#fff;font-size:20px;cursor:pointer">×</button></div>
   <div class="ap-lista" id="ap-lista"></div>
@@ -570,7 +570,7 @@ function codigosDe(p, m, c){
 }
 // Modo revisión (temporal): ?revision=1 muestra el N° de cada producto y también los ocultos
 var REVISION = /[?&]revision=1/.test(location.search);
-// CAMBIO 21 · Rol según la clave (administradora o trabajador) y cambios que esperan aprobación
+// CAMBIO 21 · Rol según la clave (administrador o trabajador) y cambios que esperan aprobación
 var ROL = "", PEND = {};
 function pendientesDe(p){ return PEND[String(p.numero || p.nombre)] || []; }
 // Clave y nombre de quien trabaja en modo revisión (se piden una sola vez por celular)
@@ -1115,7 +1115,7 @@ var FOTOS = (function(){
         if (r.rol) ROL = r.rol;
         if (r.pendiente){
           NOTAS.agregarPendiente(producto, { id: r.id, accion: "subir", nueva: imagen, anterior: "", autor: autorGuardado(), fecha: "ahora" });
-          decir("✓ Foto enviada. El cliente la verá cuando la administradora la apruebe.");
+          decir("✓ Foto enviada. El cliente la verá cuando el administrador la apruebe.");
           btnSubir.textContent = "Listo";
           setTimeout(function(){ if (dlg.open) dlg.close(); }, 1800);
           return;
@@ -1279,7 +1279,7 @@ var NOTAS = (function(){
     var el = document.getElementById("rol-rev"), b = document.getElementById("ver-aprobar"); if (!el) return;
     var total = 0; for (var k in PEND) total += PEND[k].length;
     var txt = !claveGuardada() ? "Sin clave en este celular." :
-      ROL === "admin" ? "Conectada como <b>administradora</b>: tus cambios pasan directo." :
+      ROL === "admin" ? "Conectado como <b>administrador</b>: tus cambios pasan directo." :
       ROL === "trabajador" ? "Conectado como <b>trabajador</b>: fotos, quitar y ocultar quedan por aprobar." : "";
     el.innerHTML = '<span>' + txt + '</span><button type="button" id="cambiar-clave">' + (claveGuardada() ? "Cambiar clave" : "Poner clave") + '</button>';
     b.hidden = ROL !== "admin";
@@ -1289,7 +1289,7 @@ var NOTAS = (function(){
   return { cargar: cargar, pendientes: pendientes, agregar: agregar, resolver: resolver, html: html, agregarPendiente: agregarPendiente, repintar: repintar, pintarRol: pintarRol };
 })();
 
-/* CAMBIO 21 · Aprobar o rechazar los cambios del trabajador (solo con la clave de administradora) */
+/* CAMBIO 21 · Aprobar o rechazar los cambios del trabajador (solo con la clave de administrador) */
 var APROBAR = (function(){
   var dlg = document.getElementById("aprobar"), lista = document.getElementById("ap-lista");
   function producto(x){
@@ -1365,7 +1365,7 @@ var APROBAR = (function(){
   document.getElementById("ap-cerrar").addEventListener("click", function(){ dlg.close(); });
   document.getElementById("rol-rev").addEventListener("click", function(e){
     if (!e.target.closest("#cambiar-clave")) return;
-    var c = (prompt("Escribe la clave (la de administradora o la de trabajador):") || "").trim(); if (!c) return;
+    var c = (prompt("Escribe la clave (la de administrador o la de trabajador):") || "").trim(); if (!c) return;
     try { localStorage.setItem("alumol-clave", c); } catch (e2) {}
     ROL = ""; NOTAS.cargar();
   });

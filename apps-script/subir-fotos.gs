@@ -4,9 +4,9 @@
  *
  * DOS CLAVES:
  *  - CLAVE (trabajador): puede proponer cambios. Fotos nuevas, quitar fotos y ocultar/mostrar productos
- *    NO llegan al catálogo: quedan en la pestaña «Por aprobar» hasta que la administradora los apruebe.
+ *    NO llegan al catálogo: quedan en la pestaña «Por aprobar» hasta que el administrador los apruebe.
  *    Notas y «marcar para mejorar» sí se guardan directo (el cliente no las ve).
- *  - CLAVE_ADMIN (administradora): sus cambios pasan directo y es la única que puede aprobar o rechazar.
+ *  - CLAVE_ADMIN (administrador): sus cambios pasan directo y es el único que puede aprobar o rechazar.
  *
  * Qué hace cada acción (cuando se aplica):
  *  - Subir foto: la guarda en Drive, la comparte como «cualquiera con el enlace puede ver» y pega el enlace
@@ -65,9 +65,9 @@ function doPost(e) {
       return salida({ ok: true, rol: rol });
     }
 
-    // ---- Aprobar / rechazar (solo administradora) ----
+    // ---- Aprobar / rechazar (solo administrador) ----
     if (accion === "aprobar" || accion === "rechazar") {
-      if (rol !== "admin") return salida({ ok: false, error: "Solo la administradora puede aprobar o rechazar." });
+      if (rol !== "admin") return salida({ ok: false, error: "Solo el administrador puede aprobar o rechazar." });
       var ids = [].concat(d.ids || d.id || []).map(String), hechos = [];
       var ha = pestana(HOJA_APROBAR, CAB_APROBAR);
       if (ha.getLastRow() < 2) return salida({ ok: true, hechos: [] });
