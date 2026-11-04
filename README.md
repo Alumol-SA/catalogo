@@ -1,7 +1,14 @@
-# Catálogo de accesorios · Alumol S.A.
+# Alumol S.A. · página web y catálogo
+
+Dominio: https://alumolsa.com.ec (archivo CNAME).
+- `/` → página web de Alumol (`index.html` de la raíz).
+- `/catalogo/` → catálogo de accesorios (carpeta `catalogo/`). Modo revisión: `/catalogo/?revision=1`.
+- `web/` solo redirige a la raíz (dirección vieja). `sw.js` de la raíz solo da de baja el service worker anterior.
+
+## Catálogo de accesorios
 
 Página pública del catálogo (GitHub Pages). Los productos se leen en vivo desde la hoja de Google
-"Catálogo Alumol – Productos" publicada como CSV; si la hoja no responde, se usa `productos-respaldo.csv`.
+"Catálogo Alumol – Productos" publicada como CSV; si la hoja no responde, se usa `catalogo/productos-respaldo.csv`.
 
 - Para agregar, cambiar u ocultar productos: editar la hoja de Google (no hace falta tocar este repositorio).
 - Fotos: en la columna "Foto" se pega el enlace de la foto en Google Drive (carpeta compartida como lector),

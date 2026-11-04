@@ -3,1452 +3,374 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Catálogo de accesorios · Alumol S.A.</title>
-<meta name="description" content="Catálogo de accesorios, herramientas y materiales eléctricos de Alumol S.A. Consulta por WhatsApp.">
-<link rel="icon" href="logo.png">
-<!-- CAMBIO 4 · Vista previa al compartir el enlace (WhatsApp, Facebook) e ícono del celular -->
-<meta name="theme-color" content="#56C5D0">
-<link rel="apple-touch-icon" href="icono.png">
-<meta name="apple-mobile-web-app-title" content="Alumol">
-<!-- CAMBIO 13 · Instalar como app -->
-<link rel="manifest" id="manifest" href="manifest.webmanifest">
 <script>
-// Si se abre en modo revisión, se instala como otra app aparte: «Alumol Revisión» (ícono amarillo)
-if (/[?&]revision=1/.test(location.search)) {
-  document.getElementById("manifest").href = "manifest-revision.webmanifest";
-  document.querySelector('meta[name="theme-color"]').content = "#FFE14D";
-  document.querySelector('link[rel="apple-touch-icon"]').href = "icono-rev-192.png";
-  document.title = "Alumol Revisión";
-  document.querySelector('meta[name="apple-mobile-web-app-title"]').content = "Alumol Rev.";
-}
+// Enlaces viejos del catálogo (revisión, productos compartidos, pruebas) se mandan al catálogo
+if (location.search || /^#p-/.test(location.hash)) location.replace("catalogo/" + location.search + location.hash);
 </script>
+<title>Alumol S.A. · Aluminio y vidrio en Guayaquil</title>
+<meta name="description" content="Aluminio, vidrio y accesorios en Guayaquil. Cortamos a tu medida y vendemos desde una pieza hasta el material de una obra completa. Lizardo García y Portete.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Alumol S.A.">
-<meta property="og:title" content="Catálogo de accesorios · Alumol S.A.">
-<meta property="og:description" content="Accesorios, herramientas y materiales eléctricos. Revisa medidas y colores y consúltanos por WhatsApp.">
-<meta property="og:url" content="https://alumol-sa.github.io/catalogo/">
-<meta property="og:image" content="https://alumol-sa.github.io/catalogo/vista-previa.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Alumol S.A. · Aluminio y vidrio en Guayaquil">
+<meta property="og:description" content="Aluminio, vidrio y accesorios. Cortamos a tu medida. Lizardo García y Portete, Guayaquil.">
+<meta property="og:url" content="https://alumolsa.com.ec/">
+<meta property="og:image" content="https://alumolsa.com.ec/catalogo/vista-previa.jpg">
+<link rel="icon" href="catalogo/icono.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ====== Colores de la marca (se pueden cambiar aquí) ====== */
 :root{
-  --acento:#56C5D0;      /* celeste Alumol */
-  --tinta:#12282B;       /* texto principal */
-  --profundo:#0E5F67;    /* títulos y botones */
-  --rojo:#C62828;        /* números de sección */
-  --linea:#D5E6E8;
-  --pastilla:#E2F2F3;
+  --acento:#56C5D0;   /* celeste Alumol */
+  --profundo:#0E5F67; /* azul petróleo */
+  --noche:#0A3F45;    /* fondo del plano */
+  --rojo:#C62828;     /* rojo del logo */
+  --tinta:#12282B;
   --suave:#4A5E61;
-  --fondo:#F4F8F8;
+  --aluminio:#EEF3F3; /* fondo general, gris aluminio frío */
+  --linea:#CFDFE1;
   --whatsapp:#14703C;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Figtree,"Segoe UI",sans-serif;color:var(--tinta);background:var(--fondo)}
-a{color:var(--profundo)}
-.envoltura{max-width:1180px;margin:0 auto;padding:0 16px}
-.serif{font-family:"Bree Serif",Georgia,serif;font-weight:400}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:Figtree,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;color:var(--tinta);background:var(--aluminio)}
+h1,h2,h3{font-family:"Bree Serif",Georgia,serif;font-weight:400;line-height:1.15;margin:0}
+a{color:inherit}
+img{max-width:100%;display:block}
+:focus-visible{outline:3px solid var(--acento);outline-offset:3px}
+.ancho{max-width:1120px;margin:0 auto;padding:0 20px}
 
-header{background:#fff;border-bottom:1px solid var(--linea)}
-header .envoltura{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
-.marca{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
-/* Enlaces a la página web: ocultos hasta que se lance la web (se ven con ?web=1) */
-.solo-web{display:none !important}
-html.con-web .volver-web.solo-web{display:block !important}
-html.con-web a.solo-web{display:inline !important}
-.volver-web{background:#0A3F45}
-.volver-web a{display:inline-flex;align-items:center;min-height:36px;color:#fff;font-size:14px;font-weight:600;text-decoration:none}
-.volver-web a:hover{text-decoration:underline}
-.marca img{height:56px;width:auto;display:block}
-.marca b{display:block;font-size:20px;line-height:1.1}
-.marca span{font-size:13px;color:var(--suave)}
-.btn-wa{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:var(--whatsapp);color:#fff;font-weight:700;font-size:15px;text-decoration:none}
+/* ---------- Cabecera ---------- */
+header{background:#fff;border-bottom:1px solid var(--linea);position:sticky;top:0;z-index:10}
+header .ancho{display:flex;align-items:center;gap:16px;min-height:68px}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none}
+.marca img{width:44px;height:44px;object-fit:contain}
+.marca b{font-family:"Bree Serif",Georgia,serif;font-weight:400;font-size:21px}
+nav{margin-left:auto;display:flex;gap:22px}
+nav a{text-decoration:none;font-weight:600;font-size:15px;color:var(--suave)}
+nav a:hover{color:var(--profundo)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 22px;border-radius:10px;font-weight:700;font-size:16px;text-decoration:none;border:2px solid transparent}
+.btn svg{width:20px;height:20px;flex:none}
+.btn-wa{background:var(--whatsapp);color:#fff}
+.btn-wa:hover{background:#0f5a30}
+.btn-cat{background:var(--acento);color:var(--noche)}
+.btn-cat:hover{background:#7ad3dc}
+.btn-borde{border-color:#fff;color:#fff}
+.btn-borde:hover{background:rgba(255,255,255,.1)}
+header .btn{min-height:42px;padding:0 16px;font-size:15px}
+@media (max-width:760px){nav{display:none} header .btn{margin-left:auto}}
+@media (max-width:380px){header .btn span{display:none}}
 
-.portada{background:var(--acento)}
-.portada .envoltura{padding-top:36px;padding-bottom:32px}
-.portada small{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
-.portada h1{margin:8px 0;font-size:clamp(32px,7vw,56px);line-height:1.05}
-.portada p{margin:0;font-size:17px;line-height:1.45;max-width:620px}
+/* ---------- Portada: el plano del perfil ---------- */
+.portada{background:var(--noche);color:#fff;overflow:hidden;
+  background-image:linear-gradient(rgba(86,197,208,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(86,197,208,.09) 1px,transparent 1px);
+  background-size:28px 28px}
+.portada .ancho{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding-top:72px;padding-bottom:80px}
+.portada h1{font-size:clamp(36px,5.4vw,60px);max-width:15ch}
+.portada p{font-size:19px;color:#CFE9EC;max-width:34ch;margin:20px 0 32px}
+.acciones{display:flex;flex-wrap:wrap;gap:12px}
+.plano{width:100%;max-width:500px;justify-self:center}
+.plano .perfil{fill:rgba(86,197,208,.12);stroke:var(--acento);stroke-width:2.5;stroke-linejoin:round}
+.plano .vidrio{fill:rgba(255,255,255,.08);stroke:#fff;stroke-width:1.5}
+.plano .cota{stroke:#fff;stroke-width:1.2;fill:none}
+.plano text{fill:#fff;font-family:Figtree,sans-serif;font-size:15px;font-weight:600}
+.plano .nota{fill:var(--acento);font-size:13px;font-weight:400}
+.plano .corte{stroke:var(--rojo);stroke-width:2;stroke-dasharray:8 6}
+@media (prefers-reduced-motion:no-preference){
+  .plano .perfil{stroke-dasharray:1400;stroke-dashoffset:1400;animation:trazo 2.2s ease-out .2s forwards}
+  .plano .aparece{opacity:0;animation:aparece .6s ease-out 2s forwards}
+  @keyframes trazo{to{stroke-dashoffset:0}}
+  @keyframes aparece{to{opacity:1}}
+}
+@media (max-width:820px){
+  .portada .ancho{grid-template-columns:1fr;padding-top:44px;padding-bottom:52px;gap:28px}
+  .plano{max-width:380px}
+}
 
-.buscador{margin:22px 0 4px}
-.buscador label{display:block;font-weight:700;margin-bottom:6px}
-.buscador input{width:100%;min-height:48px;border:1.5px solid var(--linea);border-radius:12px;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:var(--tinta)}
-.buscador input:focus{outline:2px solid var(--profundo);border-color:var(--profundo)}
+/* ---------- Secciones ---------- */
+section{padding:76px 0}
+.titulo{font-size:clamp(28px,3.6vw,40px);margin-bottom:14px;max-width:22ch}
+.intro{color:var(--suave);max-width:58ch;margin:0 0 40px}
 
-nav h2{margin:18px 0 12px;font-size:22px}
-.indice{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:8px}
-.indice a{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 12px;background:#fff;border:1px solid var(--linea);border-radius:12px;text-decoration:none;color:var(--tinta);font-weight:600;font-size:15px}
-.indice a .n{font-family:"Bree Serif",Georgia,serif;color:var(--rojo);min-width:22px}
-.indice a .t{flex-grow:1}
-.indice a .c{font-size:12px;color:var(--suave)}
-/* CAMBIO 22 · Secciones agrupadas en 3 grupos que se abren al tocarlos */
-.grupos{display:flex;flex-direction:column;gap:10px}
-.grupo-s{background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden}
-.grupo-s summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:64px;cursor:pointer;font-weight:700;font-size:16px;line-height:1.25}
-.grupo-s summary::-webkit-details-marker{display:none}
-.grupo-s summary .ico{flex:none;width:42px;height:42px;border-radius:10px;background:var(--pastilla);display:grid;place-items:center;font-size:21px}
-.grupo-s summary .sub{display:block;font-weight:400;font-size:13px;color:var(--suave);margin-top:2px}
-.grupo-s summary .fl{margin-left:auto;flex:none;color:var(--profundo);font-size:18px;transition:transform .2s}
-.grupo-s[open] summary .fl{transform:rotate(180deg)}
-.grupo-s .chips-s{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px}
-.grupo-s .chips-s a{min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:999px;border:1px solid var(--linea);background:var(--fondo);color:var(--tinta);text-decoration:none;font-size:14px;font-weight:600}
-.grupo-s .chips-s a:hover{border-color:var(--profundo)}
-.grupo-s .chips-s .c,.grupo-s summary .c{font-size:12px;font-weight:600;color:var(--suave)}
-@media (min-width:900px){.grupos{display:grid;grid-template-columns:repeat(3,1fr);align-items:start}}
+/* Qué vendemos */
+.lineas{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--tinta)}
+.linea{padding:28px 28px 32px 0;border-right:1px solid var(--linea)}
+.linea + .linea{padding-left:28px}
+.linea:last-child{border-right:0}
+.linea svg{width:64px;height:64px;margin-bottom:18px}
+.linea h3{font-size:25px;margin-bottom:8px}
+.linea p{margin:0 0 14px;color:var(--suave)}
+.linea .pronto{font-size:14px;color:var(--suave);font-style:italic}
+.linea a.enlace{font-weight:700;color:var(--profundo);text-underline-offset:4px}
+@media (max-width:820px){
+  .lineas{grid-template-columns:1fr}
+  .linea,.linea + .linea{padding:26px 0;border-right:0;border-bottom:1px solid var(--linea)}
+  .linea:last-child{border-bottom:0}
+}
 
-main{display:flex;flex-direction:column;gap:36px;padding:8px 0 40px}
-section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
-.cabecera{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:3px solid var(--acento);padding-bottom:8px}
-.cabecera h2{margin:0;font-size:26px;line-height:1.15;display:flex;gap:10px;align-items:baseline}
-.cabecera h2 .n{color:var(--rojo)}
-.cabecera a{font-size:14px;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
-.grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:12px}
+/* Franja del catálogo */
+.catalogo{background:#fff;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.catalogo .ancho{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center}
+.muestras{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.muestras img{aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--aluminio);border:1px solid var(--linea)}
+.catalogo ul{padding:0;margin:0 0 30px;list-style:none;columns:2;column-gap:24px;color:var(--suave);font-size:15px}
+.catalogo li{padding:3px 0;break-inside:avoid}
+@media (max-width:820px){.catalogo .ancho{grid-template-columns:1fr;gap:32px}.muestras{order:-1}}
 
-.tarjeta{background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
-.foto{width:100%;aspect-ratio:1/1;background:#fff;display:flex;align-items:center;justify-content:center}
-.foto img{width:100%;height:100%;object-fit:contain;padding:8px;display:block}
-.foto.vacia{background:#EEF4F5;flex-direction:column;gap:6px;color:var(--suave);font-size:13px;font-weight:600}
-.cuerpo{padding:12px 12px 14px;display:flex;flex-direction:column;gap:8px;flex-grow:1}
-.cuerpo h3{margin:0;font-size:16px;line-height:1.25}
-.cuerpo p{margin:0;font-size:13px;line-height:1.4;color:var(--suave)}
-.etiqueta{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--profundo)}
-.grupo{display:flex;flex-direction:column;gap:5px}
-.pastillas{display:flex;flex-wrap:wrap;gap:5px}
-.pastillas span{background:var(--pastilla);color:var(--profundo);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap}
-.colores{display:flex;flex-wrap:wrap;gap:4px 10px}
-.colores span{display:inline-flex;align-items:center;gap:5px;font-size:12px}
-.colores i{width:12px;height:12px;border-radius:50%;border:1px solid #9AA9AB;display:inline-block}
-.relleno{flex-grow:1}
-.consultar{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:10px;border:1.5px solid var(--profundo);color:var(--profundo);font-size:14px;font-weight:700;text-decoration:none}
+/* Para quién */
+.clientes{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.cliente{background:#fff;border-radius:14px;padding:30px;border:1px solid var(--linea)}
+.cliente .escala{font-family:"Bree Serif",Georgia,serif;font-size:44px;color:var(--profundo);line-height:1;margin-bottom:14px}
+.cliente h3{font-size:22px;margin-bottom:8px}
+.cliente p{margin:0;color:var(--suave)}
+@media (max-width:700px){.clientes{grid-template-columns:1fr}}
 
-.aviso{padding:24px;background:#fff;border:1px solid var(--linea);border-radius:14px;text-align:center;color:var(--suave)}
-[hidden]{display:none !important}
+/* Cómo comprar: secuencia real */
+.pasos{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;counter-reset:paso}
+.pasos li{counter-increment:paso;position:relative;padding-top:56px}
+.pasos li::before{content:counter(paso);position:absolute;top:0;left:0;width:42px;height:42px;border-radius:50%;background:var(--rojo);color:#fff;display:grid;place-items:center;font-family:"Bree Serif",Georgia,serif;font-size:22px}
+.pasos li:not(:last-child)::after{content:"";position:absolute;top:21px;left:54px;right:-16px;border-top:2px dashed var(--linea)}
+.pasos h3{font-size:22px;margin-bottom:6px}
+.pasos p{margin:0;color:var(--suave)}
+@media (max-width:760px){.pasos{grid-template-columns:1fr}.pasos li:not(:last-child)::after{display:none}}
 
-/* Botón «+N más» en medidas y colores */
-.mas{background:#fff;border:1.5px dashed var(--profundo);color:var(--profundo);border-radius:999px;padding:2px 9px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;min-height:26px}
+/* Nosotros */
+.nosotros{background:var(--profundo);color:#fff}
+.nosotros .ancho{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.nosotros .intro{color:#D5ECEE}
+.nosotros p{max-width:52ch}
+.lema{font-family:"Bree Serif",Georgia,serif;font-size:26px;color:var(--acento);margin-top:26px}
+.logo-nos{background:#fff;border-radius:14px;padding:28px;display:grid;place-items:center;max-width:360px;justify-self:center}
+.logo-nos img{width:100%;max-width:260px;height:auto}
+.foto-pend{aspect-ratio:4/3;border:2px dashed rgba(255,255,255,.45);border-radius:14px;display:grid;place-items:center;text-align:center;color:#D5ECEE;padding:20px;font-size:15px}
+.marcas{margin-top:36px;padding-top:24px;border-top:1px solid rgba(255,255,255,.25)}
+.marcas p{margin:0 0 10px;color:#D5ECEE;font-size:15px}
+.marcas ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px}
+.marcas li{border:1.5px solid rgba(255,255,255,.6);border-radius:8px;padding:6px 14px;font-weight:700;letter-spacing:.04em}
+@media (max-width:820px){.nosotros .ancho{grid-template-columns:1fr;gap:32px}}
 
-/* Modo revisión (temporal) */
-.rev-num{position:absolute;top:10px;right:10px;z-index:3;background:#FFE14D;color:#12282B;font-size:12px;font-weight:800;padding:4px 8px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.25);pointer-events:none}
-#ficha .rev-num{position:static;align-self:flex-start}
-.rev-num.mejorar{background:#F59E0B}
-/* CAMBIO 17 · Quitar foto y marcar para mejorar (modo revisión) */
-#ficha .rev-acciones{display:flex;flex-wrap:wrap;gap:6px}
-#ficha .rev-acciones .btn-subir{margin-top:0}
-.btn-subir.suave{background:#fff;color:var(--profundo);border:1.5px solid var(--profundo)}
-.btn-subir.peligro{background:#fff;color:var(--rojo);border:1.5px solid var(--rojo)}
-.btn-subir.naranja{background:#FFF4E0;color:#8A4B00;border:1.5px solid #F59E0B}
-/* CAMBIO 21 · Cambios por aprobar */
-.rev-num.pend{box-shadow:0 0 0 2px #C62828,0 1px 3px rgba(0,0,0,.25)}
-.rol-rev{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--suave)}
-.rol-rev b{color:var(--tinta)}
-.rol-rev button{background:none;border:0;padding:0;font:inherit;font-size:13px;font-weight:700;color:var(--profundo);text-decoration:underline;cursor:pointer;min-height:32px}
-#ver-aprobar{border-color:#C62828 !important;background:#FDECEA !important;color:#C62828 !important}
-dialog#aprobar{border:0;border-radius:18px;padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
-dialog#aprobar::backdrop{background:rgba(18,40,43,.55)}
-#aprobar .ap-cab{position:sticky;top:0;z-index:2;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--linea)}
-#aprobar .ap-cab h3{margin:0;font-size:22px}
-#aprobar .ap-lista{padding:12px 18px 18px;display:flex;flex-direction:column;gap:12px}
-#aprobar .ap-item{border:1px solid var(--linea);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
-#aprobar .ap-item h4{margin:0;font-size:16px}
-#aprobar .ap-item small{color:var(--suave)}
-#aprobar .ap-que{font-weight:700;font-size:14px}
-#aprobar .ap-fotos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#aprobar .ap-fotos figure{margin:0;display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--suave);text-align:center}
-#aprobar .ap-fotos img,#aprobar .ap-fotos .sin{width:100%;aspect-ratio:1;object-fit:contain;background:#F3F5F5;border-radius:8px;display:grid;place-items:center}
-#aprobar .ap-btns{display:flex;gap:8px}
-#aprobar .ap-btns button,#aprobar .todo{flex:1;min-height:44px;border-radius:10px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
-#aprobar .si{border:0;background:var(--whatsapp);color:#fff}
-#aprobar .no{border:1.5px solid var(--rojo);background:#fff;color:var(--rojo)}
-#aprobar .todo{flex:0 0 auto;padding:0 14px;border:0;background:var(--whatsapp);color:#fff;min-height:40px;font-size:14px}
-#aprobar .vacio{color:var(--suave);text-align:center;padding:20px 0}
-/* CAMBIO 20 · Código del producto */
-.tarjeta .cod{margin:-2px 0 0;font-size:12px;color:var(--suave);font-variant-numeric:tabular-nums}
-#ficha .cod-elegido{margin:0;padding:8px 12px;border-radius:10px;background:var(--pastilla);color:var(--profundo);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
-#ficha .cod-elegido.pendiente{background:#F3F5F5;color:var(--suave);font-weight:600}
-#ficha details.todos-cod summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--profundo);min-height:32px;display:flex;align-items:center}
-#ficha details.todos-cod ul{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
-#ficha details.todos-cod li{display:flex;gap:10px;font-size:13px;color:var(--suave);border-bottom:1px dashed var(--linea);padding:4px 0}
-#ficha details.todos-cod li b{color:var(--tinta);font-variant-numeric:tabular-nums;min-width:92px}
-/* CAMBIO 19 · Ocultar / mostrar producto (modo revisión) */
-.tarjeta[data-oculto]{background:#ECEFF1;border:2px dashed #90A4AE}
-.tarjeta[data-oculto] .foto{opacity:.55}
-.tarjeta[data-oculto] h3{color:#546E7A}
-.rev-num.oculto{background:#546E7A;color:#fff}
-.vista-rev{display:flex;gap:4px;background:#fff;border:1px solid var(--linea);border-radius:999px;padding:3px;width:100%;max-width:440px}
-.vista-rev button{flex:1;min-height:36px;border:0;border-radius:999px;background:transparent;color:var(--suave);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
-.vista-rev button[aria-pressed="true"]{background:var(--tinta);color:#fff}
-.btn-subir.gris{background:#fff;color:#546E7A;border:1.5px solid #546E7A}
-/* CAMBIO 18 · Notas de revisión */
-.rev-num.con-nota{box-shadow:0 0 0 2px #1F5FBF,0 1px 3px rgba(0,0,0,.25)}
-#ficha .notas-rev{display:flex;flex-direction:column;gap:8px;background:#F3F7FF;border:1px solid #C9D8F5;border-radius:12px;padding:12px}
-#ficha .notas-rev .etiqueta{color:#1F5FBF}
-#ficha .nota-item{background:#fff;border:1px solid #D7E2F7;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px}
-#ficha .nota-item p{margin:0;color:var(--tinta);font-size:14px;white-space:pre-line}
-#ficha .nota-item small{color:var(--suave);font-size:12px}
-#ficha .nota-item .resolver{align-self:flex-start;min-height:32px;padding:0 10px;border-radius:999px;border:1.5px solid var(--whatsapp);background:#fff;color:var(--whatsapp);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
-#ficha .chips-nota{display:flex;flex-wrap:wrap;gap:6px}
-#ficha .chips-nota button{min-height:32px;padding:0 10px;border-radius:999px;border:1px solid #C9D8F5;background:#fff;color:#1F5FBF;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
-#ficha #f-nota{width:100%;min-height:60px;border:1px solid #C9D8F5;border-radius:10px;padding:8px 10px;font:inherit;font-size:15px;resize:vertical}
-#ficha #f-guardar-nota{min-height:42px;border-radius:10px;border:0;background:#1F5FBF;color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
-#ficha .resueltas{font-size:12px;color:var(--suave)}
-#solo-notas{border-color:#1F5FBF !important;background:#EEF4FF !important;color:#1F5FBF !important}
-#solo-notas[aria-pressed="true"]{background:#1F5FBF !important;color:#fff !important}
-.aviso-rev{background:#FFE14D;color:#12282B;text-align:center;font-weight:700;padding:8px 16px;font-size:14px}
+/* Visítanos */
+.visita{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:start}
+.datos{background:#fff;border-radius:14px;border:1px solid var(--linea);padding:30px}
+.datos dl{margin:0}
+.datos dt{font-weight:700;margin-top:18px}
+.datos dt:first-child{margin-top:0}
+.datos dd{margin:2px 0 0;color:var(--suave)}
+.datos dd a{color:var(--profundo);font-weight:600}
+.datos .btn{margin-top:26px}
+.mapa{border-radius:14px;overflow:hidden;border:1px solid var(--linea);min-height:380px;background:#dfe9ea}
+.mapa iframe{width:100%;height:100%;min-height:380px;border:0;display:block}
+@media (max-width:820px){.visita{grid-template-columns:1fr}}
 
-/* CAMBIO 9 · Recomendados (columna «Destacar» = SÍ en la hoja) */
-#recomendados h2{margin:18px 0 10px;font-size:22px}
-.reco-fila{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 8px}
-.reco-fila::-webkit-scrollbar{display:none}
-.reco{flex:0 0 140px;position:relative;background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden;padding:0;font:inherit;color:var(--tinta);text-align:left;cursor:pointer;display:flex;flex-direction:column}
-.reco .foto{aspect-ratio:1/1}
-.reco span.nom{padding:8px 10px 10px;font-size:14px;font-weight:600;line-height:1.25}
+/* Marcador de dato por confirmar (solo borrador) */
+.falta{background:#FFF3B0;color:#5a4a00;border-radius:4px;padding:0 4px}
 
-/* CAMBIO 7 · Botón flotante de WhatsApp */
-#wa-flotante{position:fixed;right:14px;bottom:14px;z-index:21;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.28)}
-#wa-flotante svg{width:30px;height:30px}
-#barra-pedido{max-width:calc(100% - 150px)}
+footer{background:var(--noche);color:#CFE9EC;padding:36px 0;font-size:15px}
+footer .ancho{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+footer a{color:#fff}
+footer .der{margin-left:auto}
 
-/* CAMBIO 8 · Etiquetas en las tarjetas (columna «Etiqueta» de la hoja) */
-.tarjeta{position:relative}
-.cinta{position:absolute;top:10px;left:10px;z-index:2;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:var(--tinta);box-shadow:0 1px 3px rgba(0,0,0,.2);pointer-events:none}
-.cinta.nuevo{background:#1F5FBF}
-.cinta.mas-vendido{background:#B45309}
-.cinta.oferta{background:#C62828}
-#ficha .cinta{position:static;align-self:flex-start}
-
-/* CAMBIO 5 · Carga más agradable */
-@keyframes brillo{0%{background-position:-200px 0}100%{background-position:200px 0}}
-.esqueleto{background:linear-gradient(90deg,#E8F0F1 0,#F5F9F9 50%,#E8F0F1 100%);background-size:400px 100%;animation:brillo 1.2s infinite linear;border-radius:14px}
-.esq-grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:12px;padding-top:18px}
-.esq-grilla div{aspect-ratio:3/4}
-.foto img{opacity:0;transition:opacity .35s ease}
-.foto img.cargada{opacity:1}
-.foto:not(.vacia){background:linear-gradient(90deg,#F3F7F7 0,#FFFFFF 50%,#F3F7F7 100%);background-size:400px 100%;animation:brillo 1.2s infinite linear}
-.foto.lista{animation:none;background:#fff}
-@media (prefers-reduced-motion: reduce){.esqueleto,.foto:not(.vacia){animation:none}.foto img{transition:none}}
-
-/* CAMBIO 3 · Barra de secciones fija y botón para subir */
-#chips{position:sticky;top:0;z-index:15;background:rgba(244,248,248,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--linea);margin:0 -16px;padding:8px 0 8px 16px;display:flex;gap:8px;align-items:center}
-#chips-lista{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;padding-right:16px}
-#chips-lista::-webkit-scrollbar{display:none}
-#chips a{flex:0 0 auto;min-height:38px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--linea);background:#fff;color:var(--tinta);text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
-#chips a.activo{background:var(--tinta);border-color:var(--tinta);color:#fff}
-#chips a.ir-inicio{background:var(--acento);border-color:var(--acento);color:var(--tinta);font-weight:700}
-section.seccion{scroll-margin-top:64px}
-#subir{position:fixed;right:14px;bottom:80px;z-index:19;width:48px;height:48px;border-radius:50%;border:0;background:#fff;color:var(--tinta);box-shadow:0 3px 12px rgba(0,0,0,.2);font-size:22px;cursor:pointer}
-
-/* CAMBIO 2 · Lista de pedido */
-.acciones{display:flex;gap:6px}
-.acciones .consultar{flex:1}
-.agregar{flex:0 0 44px;min-height:44px;border-radius:10px;border:0;background:var(--profundo);color:#fff;font-size:22px;font-weight:700;cursor:pointer}
-.agregar.en-lista{background:var(--whatsapp)}
-#barra-pedido{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:20;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 20px;border:0;border-radius:999px;background:var(--tinta);color:#fff;font:inherit;font-weight:700;font-size:15px;box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer}
-#barra-pedido b{background:var(--acento);color:var(--tinta);border-radius:999px;min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
-dialog#pedido{border:0;border-radius:18px;padding:0;width:min(520px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
-dialog#pedido::backdrop{background:rgba(18,40,43,.55)}
-#pedido .ped-cab{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--linea)}
-#pedido .ped-cab h3{margin:0;font-size:22px}
-#pedido ul{list-style:none;margin:0;padding:8px 18px;display:flex;flex-direction:column;gap:8px}
-#pedido li{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--linea)}
-#pedido li span.nom{flex:1;font-weight:600;font-size:15px}
-#pedido .cant{display:flex;align-items:center;gap:4px}
-#pedido .cant button,#pedido .quitar{width:36px;height:36px;border-radius:8px;border:1px solid var(--linea);background:#fff;font-size:18px;cursor:pointer;color:var(--tinta)}
-#pedido .cant output{min-width:24px;text-align:center;font-weight:700}
-#pedido .ped-pie{padding:12px 18px 18px;display:flex;flex-direction:column;gap:8px}
-#pedido .ped-pie .consultar{background:var(--whatsapp);border-color:var(--whatsapp);color:#fff}
-#pedido .vaciar{background:none;border:0;color:var(--suave);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;min-height:40px}
-
-/* CAMBIO 1 · Ficha del producto al tocarlo */
-.tarjeta .foto, .tarjeta h3{cursor:pointer}
-.ver-mas{align-self:flex-start;background:none;border:0;padding:4px 0;min-height:32px;font:inherit;font-size:13px;font-weight:700;color:var(--profundo);text-decoration:underline;cursor:pointer}
-dialog#ficha{border:0;border-radius:18px;padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
-dialog#ficha::backdrop{background:rgba(18,40,43,.55)}
-#ficha .ficha-foto{background:#fff;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--linea)}
-#ficha .ficha-foto img{width:100%;height:100%;object-fit:contain;padding:12px}
-#ficha .ficha-cuerpo{padding:16px 18px 20px;display:flex;flex-direction:column;gap:12px}
-#ficha .ficha-sec{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rojo)}
-#ficha h3{margin:0;font-size:24px;line-height:1.2}
-#ficha p{margin:0;font-size:15px;line-height:1.5;color:var(--suave);white-space:pre-line}
-#ficha .cerrar{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-size:24px;line-height:1;cursor:pointer;color:var(--tinta)}
-
-/* CAMBIO 10 · Elegir medida, color y cantidad en la ficha */
-#ficha .opc{background:var(--pastilla);color:var(--profundo);border:1.5px solid transparent;border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:34px}
-#ficha .colores .opc{background:#fff;border-color:var(--linea);color:var(--tinta);display:inline-flex;align-items:center;gap:6px;font-weight:600}
-#ficha .opc.sel{background:var(--profundo);border-color:var(--profundo);color:#fff}
-#ficha .elige{font-size:13px;color:var(--suave);margin:-4px 0 0}
-#ficha .fila-cant{display:flex;align-items:center;gap:10px}
-#ficha .fila-cant span{font-weight:700;font-size:14px}
-#ficha .stepper{display:flex;align-items:center;gap:4px}
-#ficha .stepper button{width:40px;height:40px;border-radius:10px;border:1px solid var(--linea);background:#fff;font-size:20px;cursor:pointer;color:var(--tinta)}
-#ficha .stepper input{width:56px;height:40px;text-align:center;font:inherit;font-weight:700;font-size:16px;border:1px solid var(--linea);border-radius:10px}
-#ficha .btn-agregar{min-height:48px;border-radius:10px;border:0;background:var(--profundo);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
-#ficha .btn-agregar.listo{background:var(--whatsapp)}
-#ficha .fila-btns{display:flex;gap:8px}
-#ficha .fila-btns .consultar{flex:1}
-/* CAMBIO 12 · Compartir */
-#ficha .compartir{flex:0 0 auto;min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid var(--linea);background:#fff;color:var(--tinta);font:inherit;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.aviso-flota{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:30;background:var(--tinta);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.25)}
-/* CAMBIO 13 · Instalar como app */
-.instalar{margin-top:14px;display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid var(--tinta);background:rgba(255,255,255,.55);color:var(--tinta);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.instalar-ios{margin:10px 0 0;font-size:14px;background:#fff;border-radius:10px;padding:10px 12px;color:var(--tinta)}
-
-/* CAMBIO 15 · Filtro «Faltan fotos» (modo revisión) */
-.filtro-fotos{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0}
-.filtro-fotos > button{min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid #B8860B;background:#FFF7D6;color:#5a4a00;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.filtro-fotos > button[aria-pressed="true"]{background:#FFE14D;border-color:#FFE14D;color:#12282B}
-.filtro-fotos small{color:var(--suave);font-size:13px}
-/* CAMBIO 16 · Subir foto desde la app (modo revisión) */
-.btn-subir{display:inline-flex;align-items:center;gap:6px;margin-top:6px;min-height:36px;padding:0 12px;border-radius:999px;border:0;background:var(--profundo);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
-.foto.vacia .btn-subir{position:relative;z-index:2}
-#ficha .btn-subir{align-self:flex-start}
-dialog#subir-foto{border:0;border-radius:18px;padding:0;width:min(520px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
-dialog#subir-foto::backdrop{background:rgba(18,40,43,.55)}
-#subir-foto .sf-cuerpo{padding:18px;display:flex;flex-direction:column;gap:12px}
-#subir-foto h3{margin:0;font-size:22px;padding-right:44px}
-#subir-foto .sf-nombre{color:var(--suave);font-size:14px;margin:-6px 0 0}
-#subir-foto .consejo{background:var(--pastilla);border-radius:10px;padding:10px 12px;font-size:14px;margin:0}
-#subir-foto .opciones-foto{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-#subir-foto .opciones-foto button{border:2px solid var(--linea);border-radius:12px;background:#fff;padding:6px;cursor:pointer;font:inherit;font-size:13px;font-weight:700;color:var(--tinta);display:flex;flex-direction:column;gap:6px;align-items:center}
-#subir-foto .opciones-foto button[aria-pressed="true"]{border-color:var(--profundo);box-shadow:0 0 0 2px var(--profundo)}
-#subir-foto .opciones-foto img{width:100%;aspect-ratio:1;object-fit:contain;background:#fff;border-radius:8px}
-#subir-foto .estado{font-size:14px;font-weight:600;color:var(--profundo);margin:0}
-#subir-foto .estado.error{color:var(--rojo)}
-#subir-foto .barra{height:8px;border-radius:99px;background:var(--linea);overflow:hidden}
-#subir-foto .barra i{display:block;height:100%;width:0;background:var(--acento);transition:width .2s}
-#subir-foto .sf-btns{display:flex;flex-direction:column;gap:8px}
-#subir-foto .principal{min-height:48px;border-radius:10px;border:0;background:var(--profundo);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
-#subir-foto .principal:disabled{opacity:.5;cursor:default}
-#subir-foto .secundario{min-height:44px;border-radius:10px;border:1.5px solid var(--linea);background:#fff;color:var(--tinta);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
-#subir-foto label.secundario{display:flex;align-items:center;justify-content:center}
-#subir-foto .cerrar{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);font-size:24px;cursor:pointer;color:var(--tinta)}
-
-footer{background:var(--tinta);color:#fff}
-footer .envoltura{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px;padding-top:32px;padding-bottom:40px}
-footer .col{display:flex;flex-direction:column;gap:6px}
-footer .tit{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9FD8DE}
-footer a{color:#fff;font-size:16px;min-height:36px;display:inline-flex;align-items:center}
-footer span{font-size:16px}
+.wa-flotante{position:fixed;right:18px;bottom:18px;width:58px;height:58px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:20}
+.wa-flotante svg{width:30px;height:30px;fill:#fff}
 </style>
 </head>
 <body>
-<script>
-// ENLACES A LA PÁGINA WEB: escondidos hasta el lanzamiento. Para lanzarlos, poner WEB_LANZADA = true.
-var WEB_LANZADA = false;
-if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
-  document.documentElement.classList.add("con-web");
-  document.addEventListener("DOMContentLoaded", function(){
-    var m = document.getElementById("marca-web");
-    if (m) { m.href = "web/"; m.title = "Ir a la página principal de Alumol"; }
-  });
-}
-</script>
-<div id="inicio"></div>
-<div class="aviso-rev" id="aviso-rev" hidden>MODO REVISIÓN · se ven los números y también los productos ocultos</div>
-<nav class="volver-web solo-web" aria-label="Página principal"><div class="envoltura"><a href="web/">‹ Página principal de Alumol</a></div></nav>
+
 <header>
-  <div class="envoltura">
-    <a class="marca" id="marca-web">
-      <img src="logo.png" alt="Alumol S.A." width="50" height="56">
-      <div><b class="serif">Alumol S.A.</b><span>Lizardo García y Portete</span></div>
-    </a>
-    <a class="btn-wa" id="wa-general" href="#" target="_blank" rel="noopener">
-      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>
+  <div class="ancho">
+    <a class="marca" href="#inicio"><img src="catalogo/logo.png" alt=""><b>Alumol S.A.</b></a>
+    <nav aria-label="Secciones">
+      <a href="#productos">Productos</a>
+      <a href="#como-comprar">Cómo comprar</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#visitanos">Visítanos</a>
+    </nav>
+    <a class="btn btn-wa" href="https://wa.me/593958918180" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.2Z"/></svg>
       <span>0958918180</span>
     </a>
   </div>
 </header>
 
-<section class="portada">
-  <div class="envoltura">
-    <small id="conteo">Catálogo</small>
-    <h1 class="serif">Catálogo de accesorios</h1>
-    <p>Perseverancia, experiencia… nuestro éxito. Busca un producto o elige una sección, revisa medidas y colores, y consúltanos por WhatsApp con un toque.</p>
-    <button class="instalar" id="instalar" type="button" hidden><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>Instalar en tu celular</button>
-    <p class="instalar-ios" id="instalar-ios" hidden>En iPhone: toca el botón <b>Compartir</b> (el cuadro con la flecha hacia arriba) y luego <b>«Agregar a inicio»</b>.</p>
+<main id="inicio">
+
+<!-- PORTADA -->
+<div class="portada">
+  <div class="ancho">
+    <div>
+      <h1>Aluminio y vidrio en Guayaquil, cortados a tu medida.</h1>
+      <p>Perfiles, vidrio, accesorios y herramientas para quien arma puertas, ventanas y mamparas. Desde una pieza hasta el material de una obra completa.</p>
+      <div class="acciones">
+        <a class="btn btn-cat" href="catalogo/">Ver catálogo de accesorios</a>
+        <a class="btn btn-borde" href="https://wa.me/593958918180?text=Hola%20Alumol%2C%20quisiera%20cotizar%20material" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
+      </div>
+    </div>
+
+    <!-- Corte de un perfil de aluminio con su vidrio, dibujado como plano -->
+    <svg class="plano" viewBox="50 10 330 335" role="img" aria-label="Dibujo técnico del corte de un perfil de aluminio con vidrio y su medida">
+      <rect class="vidrio" x="187" y="20" width="16" height="150"/>
+      <path class="perfil" d="M110 150 H175 V60 H183 V160 H207 V60 H215 V150 H280 V250 H262 V168 H232 V250 H158 V168 H128 V250 H110 Z M168 196 H222 V232 H168 Z"/>
+      <line class="corte" x1="60" y1="290" x2="330" y2="290"/>
+      <g class="aparece">
+        <path class="cota" d="M110 270 V310 M280 270 V310 M110 300 H280"/>
+        <path class="cota" d="M110 300 l10 -5 v10 z M280 300 l-10 -5 v10 z" fill="#fff"/>
+        <text x="195" y="330" text-anchor="middle">a tu medida</text>
+        <path class="cota" d="M300 150 H330 M300 250 H330 M320 150 V250"/>
+        <text class="nota" x="214" y="44">vidrio</text>
+        <text class="nota" x="372" y="138" text-anchor="end">perfil de aluminio</text>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- QUÉ VENDEMOS -->
+<section id="productos">
+  <div class="ancho">
+    <h2 class="titulo">Materia prima para quien construye</h2>
+    <p class="intro">Compramos al por mayor y te vendemos lo que necesitas, en barra completa, en plancha o cortado a medida. No vendemos productos armados: te damos el material para que tú o tu maestro lo armen.</p>
+
+    <div class="lineas">
+      <div class="linea">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#0E5F67" stroke-width="3" stroke-linejoin="round" aria-hidden="true"><path d="M8 22h48v20H44V30H20v12H8z"/></svg>
+        <h3>Aluminio</h3>
+        <p>Perfiles para ventanas, puertas, mamparas y divisiones, en varios colores y acabados.</p>
+        <span class="pronto">Catálogo de perfiles próximamente</span>
+      </div>
+      <div class="linea">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#0E5F67" stroke-width="3" aria-hidden="true"><rect x="12" y="8" width="40" height="48"/><path d="M22 20l-4 4M34 18L20 32M44 24L26 42" stroke-width="2"/></svg>
+        <h3>Vidrio</h3>
+        <p>Vidrio y espejo, cortados según las medidas de tu trabajo.</p>
+        <span class="pronto">Catálogo de vidrios próximamente</span>
+      </div>
+      <div class="linea">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#0E5F67" stroke-width="3" aria-hidden="true"><circle cx="24" cy="40" r="12"/><circle cx="24" cy="40" r="4"/><path d="M36 40h20M46 20v-8h10v8z"/></svg>
+        <h3>Accesorios y herramientas</h3>
+        <p>Ruedas, cerraduras, bisagras, felpas, tornillería, silicones, herramientas y material eléctrico.</p>
+        <a class="enlace" href="catalogo/">Ver catálogo de accesorios</a>
+      </div>
+    </div>
   </div>
 </section>
 
-<div class="envoltura">
-  <div class="buscador">
-    <label for="buscar">Buscar producto</label>
-    <input id="buscar" type="search" placeholder="Ej.: bisagra, tornillo, 1/4…" autocomplete="off">
-    <div class="filtro-fotos" id="filtro-fotos" hidden>
-      <div class="vista-rev" role="group" aria-label="Qué productos ver">
-        <button type="button" data-vista="todos" aria-pressed="true">Todos</button>
-        <button type="button" data-vista="cliente" aria-pressed="false">Como el cliente</button>
-        <button type="button" data-vista="ocultos" aria-pressed="false">Solo ocultos</button>
-      </div>
-      <button type="button" id="solo-sin-foto" aria-pressed="false">Ver los que faltan o hay que mejorar</button>
-      <button type="button" id="solo-notas" aria-pressed="false">Ver los que tienen notas</button>
-      <button type="button" id="ver-aprobar" hidden>Por aprobar (0)</button>
-      <small id="faltan-n"></small>
-      <div class="rol-rev" id="rol-rev"></div>
+<!-- CATÁLOGO -->
+<section class="catalogo">
+  <div class="ancho">
+    <div>
+      <h2 class="titulo">Todo el catálogo de accesorios en tu celular</h2>
+      <p class="intro">Busca por nombre, revisa medidas y colores, y arma tu lista para mandarla por WhatsApp.</p>
+      <ul>
+        <li>Ruedas y carritos</li>
+        <li>Seguros y picaportes</li>
+        <li>Cerraduras</li>
+        <li>Viniles y felpas</li>
+        <li>Bisagras y cierrapuertas</li>
+        <li>Soportes para vidrio</li>
+        <li>Tornillería y fijación</li>
+        <li>Silicones y cintas</li>
+        <li>Herramientas</li>
+        <li>Material eléctrico</li>
+      </ul>
+      <a class="btn btn-cat" href="catalogo/">Abrir el catálogo</a>
+    </div>
+    <div class="muestras">
+      <img src="catalogo/fotos/rueda-doble.jpg" alt="Rueda doble" loading="lazy">
+      <img src="catalogo/fotos/cerradura-para-vidrio.jpg" alt="Cerradura para vidrio" loading="lazy">
+      <img src="catalogo/fotos/bisagra-piso-induma.jpg" alt="Bisagra de piso" loading="lazy">
+      <img src="catalogo/fotos/felpa-v-c.jpg" alt="Felpa" loading="lazy">
+      <img src="catalogo/fotos/pistola-para-silicon.jpg" alt="Pistola para silicón" loading="lazy">
+      <img src="catalogo/fotos/brocas-de-alta-velocidad.jpg" alt="Brocas" loading="lazy">
     </div>
   </div>
-  <section id="recomendados" aria-labelledby="reco-titulo" hidden>
-    <h2 class="serif" id="reco-titulo">Recomendados</h2>
-    <div class="reco-fila" id="reco-fila"></div>
-  </section>
-  <nav aria-label="Secciones" id="nav">
-    <h2 class="serif">Secciones</h2>
-    <div class="indice" id="indice"></div>
-  </nav>
-  <div id="chips" aria-label="Ir a sección" hidden></div>
-  <main id="catalogo"><div class="esq-grilla" aria-label="Cargando catálogo"><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div></div></main>
-</div>
+</section>
+
+<!-- PARA QUIÉN -->
+<section>
+  <div class="ancho">
+    <h2 class="titulo">Atendemos el pedido chico y el pedido grande</h2>
+    <p class="intro">Aquí compra el vecino que va a cambiar la puerta del baño y también el maestro o el negocio que necesita material para un proyecto grande.</p>
+    <div class="clientes">
+      <div class="cliente">
+        <div class="escala">1 pieza</div>
+        <h3>Para tu casa o tu taller</h3>
+        <p>Trae la lista que te dio tu maestro o la medida que necesitas, y te ayudamos a completarla.</p>
+      </div>
+      <div class="cliente">
+        <div class="escala">Por volumen</div>
+        <h3>Para obras y proyectos</h3>
+        <p>Maestros, talleres y negocios que necesitan material en cantidad, con bodega propia para tenerlo disponible.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO COMPRAR -->
+<section id="como-comprar" style="padding-top:0">
+  <div class="ancho">
+    <h2 class="titulo">Cómo comprar</h2>
+    <p class="intro">Tres pasos, sin complicaciones.</p>
+    <ol class="pasos">
+      <li><h3>Cuéntanos qué necesitas</h3><p>Por WhatsApp, por teléfono o en el local. Si tienes la lista o las medidas, mejor.</p></li>
+      <li><h3>Lo preparamos</h3><p>Separamos el material y cortamos el aluminio y el vidrio a la medida que pediste.</p></li>
+      <li><h3>Retiras o te lo llevamos</h3><p>Puedes llevarlo en tu propio vehículo o lo enviamos en nuestro camión dentro de la zona.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros" class="nosotros">
+  <div class="ancho">
+    <div>
+      <h2 class="titulo">Una empresa de Guayaquil</h2>
+      <p class="intro">Desde Lizardo García y Portete vendemos aluminio, vidrio y accesorios, con bodega propia cruzando la calle para tener el material disponible cuando lo necesitas.</p>
+      <p class="lema">Perseverancia, experiencia… nuestro éxito.</p>
+      <div class="marcas">
+        <p>Trabajamos de la mano con</p>
+        <ul><li>FISA</li><li>FEMEC</li><li>ALUNECSA</li></ul>
+      </div>
+    </div>
+    <div class="logo-nos"><img src="catalogo/logo.png" alt="Logo de Alumol S.A."></div>
+  </div>
+</section>
+
+<!-- VISÍTANOS -->
+<section id="visitanos">
+  <div class="ancho">
+    <h2 class="titulo">Visítanos</h2>
+    <p class="intro">Ven al local, trae tus medidas y te ayudamos a completar tu lista.</p>
+    <div class="visita">
+      <div class="datos">
+        <dl>
+          <dt>Dirección</dt>
+          <dd>Lizardo García y Portete, Guayaquil<br><a href="https://www.google.com/maps/search/?api=1&query=Lizardo%20Garc%C3%ADa%20y%20Portete%2C%20Guayaquil" target="_blank" rel="noopener">Cómo llegar</a></dd>
+          <dt>Horario</dt>
+          <dd>Lunes a viernes, de 8:00 a 17:00<br>Sábado: horario reducido</dd>
+          <dt>WhatsApp y teléfono</dt>
+          <dd><a href="https://wa.me/593958918180" target="_blank" rel="noopener">0958918180</a></dd>
+          <dt>Redes</dt>
+          <dd><a href="https://www.instagram.com/alumolsa" target="_blank" rel="noopener">Instagram @alumolsa</a> · <a href="https://www.tiktok.com/@alumol.s.a" target="_blank" rel="noopener">TikTok @alumol.s.a</a></dd>
+        </dl>
+        <a class="btn btn-wa" href="https://wa.me/593958918180?text=Hola%20Alumol%2C%20quisiera%20cotizar%20material" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+      </div>
+      <div class="mapa">
+        <iframe title="Mapa: Lizardo García y Portete, Guayaquil" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=Lizardo%20Garc%C3%ADa%20y%20Portete%2C%20Guayaquil%2C%20Ecuador&z=16&output=embed"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
 
 <footer>
-  <div class="envoltura">
-    <div class="col"><span class="serif" style="font-size:24px">Alumol S.A.</span><span style="color:#CFE3E5">Perseverancia, experiencia… nuestro éxito.</span></div>
-    <div class="col">
-      <span class="tit">Contacto</span>
-      <a id="wa-pie" href="#" target="_blank" rel="noopener">WhatsApp 0958918180</a>
-      <a class="solo-web" href="web/">Página principal de Alumol</a>
-      <a href="https://www.instagram.com/alumolsa" target="_blank" rel="noopener">Instagram @alumolsa</a>
-      <a href="https://www.tiktok.com/@alumol.s.a" target="_blank" rel="noopener">TikTok @alumol.s.a</a>
-      <span>Facebook: Alumol SA</span>
-    </div>
-    <div class="col">
-      <span class="tit">Dirección</span>
-      <span>Lizardo García y Portete</span>
-      <a href="https://www.google.com/maps/search/?api=1&query=Lizardo%20Garc%C3%ADa%20y%20Portete%2C%20Guayaquil" target="_blank" rel="noopener">Cómo llegar (Google Maps)</a>
-    </div>
+  <div class="ancho">
+    <span>© Alumol S.A. · Guayaquil, Ecuador</span>
+    <a href="catalogo/">Catálogo de accesorios</a>
+    <a class="der" href="#inicio">Volver arriba</a>
   </div>
-  <div class="envoltura" style="padding-bottom:16px"><small id="fuente" style="color:#7FA3A7;font-size:12px"></small></div>
 </footer>
 
-<!-- CAMBIO 7 · Botón flotante de WhatsApp -->
-<a id="wa-flotante" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
-  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>
+<a class="wa-flotante" href="https://wa.me/593958918180" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.2Z"/></svg>
 </a>
-
-<!-- CAMBIO 3 · Botón para subir -->
-<button id="subir" type="button" aria-label="Volver arriba" hidden>↑</button>
-
-<!-- CAMBIO 2 · Lista de pedido -->
-<button id="barra-pedido" type="button" hidden>Mi pedido <b id="pedido-n">0</b></button>
-<dialog id="pedido" aria-labelledby="pedido-titulo">
-  <div class="ped-cab"><h3 class="serif" id="pedido-titulo">Mi pedido</h3><button class="quitar" type="button" id="pedido-cerrar" aria-label="Cerrar">×</button></div>
-  <ul id="pedido-lista"></ul>
-  <div class="ped-pie">
-    <a class="consultar" id="pedido-enviar" href="#" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>
-    <button class="vaciar" type="button" id="pedido-vaciar">Vaciar lista</button>
-  </div>
-</dialog>
-
-<!-- CAMBIO 21 · Cambios por aprobar (solo administrador) -->
-<dialog id="aprobar" aria-labelledby="ap-titulo">
-  <div class="ap-cab"><h3 class="serif" id="ap-titulo">Por aprobar</h3><button type="button" class="todo" id="ap-todo">Aprobar todo</button><button class="quitar" type="button" id="ap-cerrar" aria-label="Cerrar" style="width:40px;height:40px;border-radius:8px;border:1px solid var(--linea);background:#fff;font-size:20px;cursor:pointer">×</button></div>
-  <div class="ap-lista" id="ap-lista"></div>
-</dialog>
-
-<!-- CAMBIO 16 · Subir foto (modo revisión) -->
-<dialog id="subir-foto" aria-labelledby="sf-titulo">
-  <button class="cerrar" type="button" aria-label="Cerrar">×</button>
-  <div class="sf-cuerpo">
-    <h3 class="serif" id="sf-titulo">Subir foto</h3>
-    <p class="sf-nombre" id="sf-nombre"></p>
-    <div id="sf-paso1">
-      <p class="consejo">Consejo: producto entero y centrado, con buena luz y sin flash. No importa el fondo: lo quitamos y lo ponemos blanco.</p>
-      <div class="sf-btns" style="margin-top:12px">
-        <label class="principal" style="display:flex;align-items:center;justify-content:center">Tomar foto con la cámara<input type="file" accept="image/*" capture="environment" id="sf-archivo" hidden></label>
-        <label class="secundario">Elegir de la galería<input type="file" accept="image/*" id="sf-galeria" hidden></label>
-      </div>
-    </div>
-    <div id="sf-paso2" hidden>
-      <p class="estado" id="sf-estado"></p>
-      <div class="barra" id="sf-barra" hidden><i></i></div>
-      <div class="opciones-foto" id="sf-opciones" hidden>
-        <button type="button" data-o="limpia" aria-pressed="true"><img alt="Foto con fondo blanco"><span>Fondo blanco</span></button>
-        <button type="button" data-o="original" aria-pressed="false"><img alt="Foto original"><span>Original</span></button>
-      </div>
-      <div class="sf-btns">
-        <button type="button" class="principal" id="sf-subir" disabled>Usar esta foto</button>
-        <label class="secundario">Tomar otra<input type="file" accept="image/*" capture="environment" id="sf-archivo2" hidden></label>
-      </div>
-    </div>
-  </div>
-</dialog>
-
-<!-- CAMBIO 1 · Ficha del producto -->
-<dialog id="ficha" aria-labelledby="ficha-titulo">
-  <button class="cerrar" type="button" aria-label="Cerrar">×</button>
-  <div id="ficha-contenido"></div>
-</dialog>
-
-<script>
-/* ================= CONFIGURACIÓN ================= */
-// Enlace de la hoja de Google publicada en la web como CSV (Archivo › Compartir › Publicar en la web).
-var HOJA_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaWomSRtCQnm4-QMc_y947wx7aqCHwsnZAHTemvaIqDTK_0PiEMLHAtgTs8D_mUjFN6IUHCDCj25mM/pub?gid=1814359891&single=true&output=csv";
-// Número de WhatsApp con código de país, sin + ni espacios.
-var WHATSAPP = "593958918180";
-// CAMBIO 14 · Estadísticas en un formulario de Google (vacío = apagado).
-// FORMULARIO: enlace .../formResponse del formulario. CAMPO_TIPO y CAMPO_VALOR: los "entry.123..." de sus 2 preguntas.
-var FORMULARIO = "", CAMPO_TIPO = "", CAMPO_VALOR = "";
-// CAMBIO 16 · Enlace de la «aplicación web» de Apps Script que guarda las fotos (vacío = todavía no configurado).
-var SUBIR_FOTOS = "https://script.google.com/macros/s/AKfycbwc2no-xJ2C4chAEw9HIoNg3DEIugc4dYcIwPwAFDdmeO43GYxnZotMOp_bd_TNGJPe/exec";
-/* ================================================= */
-
-var COLORES = {"blanco":"#FFFFFF","natural":"#C9CED3","madera":"#B9844F","negro":"#1B1B1B","bronce":"#6A4A2C","gris":"#8E9399",
-  "transparente":"#F2F6F7","silver":"#C9CED3","plateado":"#C9CED3","platino":"#D9DCDF","rojo":"#D62E2E","azul":"#1F5FBF",
-  "dorado":"#C9A13B","verde":"#2E8B57","amarillo":"#F2C230","cafe":"#6B4A2C","café":"#6B4A2C","cromado":"#D0D4D8","gris oscuro":"#555B61","marfil":"#F1E9D2","naranja":"#E8772E","opal":"#EDEFF0","gris ratón":"#6E7378","gris raton":"#6E7378","negro-rojo":"#7A1E1E"};
-var ICONO_WA = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>';
-var ICONO_CAMARA = '<svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6F8689" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
-
-function wa(texto){ return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(texto); }
-function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function slug(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "seccion"; }
-function sinTildes(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(); }
-
-/* CAMBIO 11 · Búsqueda que perdona errores
-   Se escribe "como suena": v=b, z=s, ce/ci=se/si, ll=y, sin h, sin letras dobles. Así «visagra» encuentra «bisagra». */
-function normal(s){
-  s = sinTildes(String(s)).replace(/(\d)\s*[x×*]\s*(\d)/g, "$1x$2");
-  s = s.replace(/ll/g, "y").replace(/v/g, "b").replace(/z/g, "s").replace(/c([ei])/g, "s$1").replace(/h/g, "").replace(/([a-z])\1+/g, "$1");
-  return s.replace(/[^a-z0-9#°\/.x ]+/g, " ").replace(/\s+/g, " ").trim();
-}
-// Nombres de la calle → nombre en el catálogo (se pueden agregar más aquí, o usar la columna «Otros nombres» de la hoja)
-var SINONIMOS = { "chapa":"cerradura", "chapas":"cerradura", "manija":"tiradera", "jaladera":"tiradera", "haladera":"tiradera", "halador":"tiradera",
-  "jalador":"tiradera", "tarugo":"taco", "silicona":"silicon", "siliconas":"silicon", "foco":"foco", "garrucha":"garrucha", "taladro":"taladro" };
-var SIN_N = {}; for (var _k in SINONIMOS) SIN_N[normal(_k)] = normal(SINONIMOS[_k]);
-function raiz(w){ return w.length > 4 ? w.replace(/(es|s)$/, "") : w; }
-function distancia(a, b){  // cuántas letras hay que cambiar para pasar de a a b
-  if (Math.abs(a.length - b.length) > 2) return 9;
-  var d = []; for (var i = 0; i <= a.length; i++){ d[i] = [i]; }
-  for (var j = 1; j <= b.length; j++) d[0][j] = j;
-  for (i = 1; i <= a.length; i++) for (j = 1; j <= b.length; j++)
-    d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
-  return d[a.length][b.length];
-}
-function palabraCalza(w, texto, palabras){
-  if (texto.indexOf(w) !== -1) return true;
-  var r = raiz(w); if (r !== w && texto.indexOf(r) !== -1) return true;
-  if (SIN_N[w] && texto.indexOf(SIN_N[w]) !== -1) return true;
-  if (w.length < 5 || /\d/.test(w)) return false;
-  var tope = w.length >= 9 ? 2 : 1;
-  for (var i = 0; i < palabras.length; i++){
-    var p = palabras[i]; if (p.length < 4) continue;
-    if (distancia(r, p.slice(0, r.length)) <= tope || distancia(w, p) <= tope) return true;
-  }
-  return false;
-}
-
-document.getElementById("wa-general").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
-document.getElementById("wa-pie").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
-document.getElementById("wa-flotante").href = wa("Hola Alumol, vi el catálogo de accesorios y quiero hacer una consulta.");
-
-// Lector de CSV (respeta comillas y comas dentro de los textos)
-function leerCSV(texto){
-  var filas = [], fila = [], campo = "", comillas = false;
-  texto = texto.replace(/^﻿/, "");
-  for (var i = 0; i < texto.length; i++){
-    var c = texto[i];
-    if (comillas){
-      if (c === '"'){ if (texto[i+1] === '"'){ campo += '"'; i++; } else comillas = false; }
-      else campo += c;
-    } else if (c === '"') comillas = true;
-    else if (c === ",") { fila.push(campo); campo = ""; }
-    else if (c === "\n" || c === "\r"){
-      if (c === "\r" && texto[i+1] === "\n") i++;
-      fila.push(campo); filas.push(fila); fila = []; campo = "";
-    } else campo += c;
-  }
-  if (campo !== "" || fila.length){ fila.push(campo); filas.push(fila); }
-  return filas;
-}
-
-// Busca la columna por el inicio de su título, así se pueden renombrar un poco
-function columna(cabeceras, inicio){
-  inicio = sinTildes(inicio);
-  for (var i = 0; i < cabeceras.length; i++) if (sinTildes(cabeceras[i].trim()).indexOf(inicio) === 0) return i;
-  return -1;
-}
-
-var INDICE_FOTOS = {}, FUENTE = "prueba", PRODUCTOS = [];
-// CAMBIO 22 · Grupos de secciones (la hoja puede tener una columna «Grupo» para cambiarlo)
-var GRUPOS = [
-  { id: "accesorios", ico: "🔩", nombre: "Accesorios para aluminio y vidrio", sub: "Ruedas, cerraduras, bisagras, felpas…" },
-  { id: "herramientas", ico: "🛠️", nombre: "Herramientas", sub: "Manuales, eléctricas, brocas, medición…" },
-  { id: "electricos", ico: "💡", nombre: "Eléctricos", sub: "Iluminación y material eléctrico" }
-];
-function grupoDe(nombreSeccion, grupoHoja){
-  var g = sinTildes(grupoHoja || "");
-  if (g){
-    if (/herramient/.test(g)) return "herramientas";
-    if (/electric|ilumin/.test(g)) return "electricos";
-    if (/accesori|aluminio|vidrio/.test(g)) return "accesorios";
-  }
-  var n = sinTildes(nombreSeccion);
-  if (/herramient|broca|disco|punta|medicion|escalera|elevacion|lija|amarra|cabo|proteccion/.test(n)) return "herramientas";
-  if (/electric|ilumin|foco|cable/.test(n)) return "electricos";
-  return "accesorios";
-}
-// CAMBIO 20 · A qué medida y color corresponde cada código del sistema (archivo codigos.json)
-var CODIGOS = {};
-function etiquetaCodigo(c){ var v = CODIGOS[c]; return v ? [v.m, v.c].filter(Boolean).join(" · ") : ""; }
-// Códigos que corresponden a la medida y color elegidos (si el producto tiene un solo código, siempre ese)
-function codigosDe(p, m, c){
-  if (p.codigos.length <= 1) return p.codigos.slice();
-  return p.codigos.filter(function(k){
-    var v = CODIGOS[k]; if (!v) return false;
-    var okM = !p.medidas.length || !v.m || !m || v.m === m;
-    var okC = !p.colores.length || !v.c || !c || v.c.toLowerCase() === String(c).toLowerCase();
-    return okM && okC;
-  });
-}
-// Modo revisión (temporal): ?revision=1 muestra el N° de cada producto y también los ocultos
-var REVISION = /[?&]revision=1/.test(location.search);
-// CAMBIO 21 · Rol según la clave (administrador o trabajador) y cambios que esperan aprobación
-var ROL = "", PEND = {};
-function pendientesDe(p){ return PEND[String(p.numero || p.nombre)] || []; }
-// Clave y nombre de quien trabaja en modo revisión (se piden una sola vez por celular)
-function claveGuardada(){ try { return localStorage.getItem("alumol-clave") || ""; } catch (e) { return ""; } }
-function autorGuardado(){
-  var a = ""; try { a = localStorage.getItem("alumol-autor") || ""; } catch (e) {}
-  if (!a){ a = (prompt("¿Cómo te llamas? (para saber quién hizo cada cambio)") || "").trim(); if (a) try { localStorage.setItem("alumol-autor", a); } catch (e) {} }
-  return a;
-}
-// Fotos recién subidas desde este celular (se muestran mientras la hoja publicada se actualiza)
-var SUBIDAS = {}; try { SUBIDAS = JSON.parse(localStorage.getItem("alumol-subidas") || "{}") || {}; } catch (e) {}
-if (REVISION) document.getElementById("aviso-rev").hidden = false;
-function urlFoto(valor){
-  valor = (valor || "").trim();
-  if (!valor) return null;
-  // Enlace de Google Drive: .../file/d/ID/... o ...?id=ID
-  var m = valor.match(/\/d\/([A-Za-z0-9_-]{20,})/) || valor.match(/[?&]id=([A-Za-z0-9_-]{20,})/);
-  if (m) return "https://lh3.googleusercontent.com/d/" + m[1] + "=w400";
-  if (/^https?:\/\//i.test(valor)) return valor;
-  return INDICE_FOTOS[valor.toLowerCase()] || null;
-}
-
-function tarjeta(p){
-  var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + (p.mejorar ? ' data-mejorar="1"' : "") + (p.notas ? ' data-nota="1"' : "") + (REVISION && p.oculto ? ' data-oculto="1"' : "") + (p.pend ? ' data-pend="1"' : "") + '>' + cinta(p);
-  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
-  else h += REVISION ? FOTO_VACIA.replace("</div>", BTN_SUBIR + "</div>") : FOTO_VACIA;
-  h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
-  if (p.codigos.length === 1) h += '<p class="cod">Cód. ' + esc(p.codigos[0]) + '</p>';
-  if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
-  if (p.medidas.length){
-    h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">';
-    // Si hay muchas medidas, la tarjeta muestra las primeras y el resto se ve en la ficha
-    var mv = p.medidas.length > MAX_TARJETA ? p.medidas.slice(0, MAX_TARJETA - 1) : p.medidas;
-    mv.forEach(function(m){ h += '<span>' + esc(m) + '</span>'; });
-    if (mv.length < p.medidas.length) h += '<button type="button" class="mas">+' + (p.medidas.length - mv.length) + ' más</button>';
-    h += '</div></div>';
-  }
-  if (p.colores.length){
-    h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">';
-    var cv = p.colores.length > MAX_TARJETA ? p.colores.slice(0, MAX_TARJETA - 1) : p.colores;
-    cv.forEach(function(c){ h += '<span><i style="background:' + (COLORES[c.toLowerCase()] || "#CCCCCC") + '"></i>' + esc(c) + '</span>'; });
-    if (cv.length < p.colores.length) h += '<button type="button" class="mas">+' + (p.colores.length - cv.length) + ' más</button>';
-    h += '</div></div>';
-  }
-  h += '<button class="ver-mas" type="button">Ver detalles</button>';
-  h += '<div class="relleno"></div><div class="acciones"><a class="consultar" href="' + esc(wa("Hola Alumol, quiero consultar por: " + p.nombre + (p.codigos.length === 1 ? " (Cód. " + p.codigos[0] + ")" : ""))) + '" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a>' +
-    '<button class="agregar" type="button" aria-label="Agregar ' + esc(p.nombre) + ' a mi pedido" title="Agregar a mi pedido">+</button></div></div></article>';
-  return h;
-}
-function marcaRevision(p){
-  if (!REVISION) return "";
-  return '<span class="rev-num' + (p.oculto ? " oculto" : (p.mejorar && p.foto ? " mejorar" : "")) + (p.notas ? " con-nota" : "") + (p.pend ? " pend" : "") + '">N° ' + esc(p.numero || "?") + (p.oculto ? " · OCULTO" : "") +
-    (p.foto ? (p.mejorar ? " · MEJORAR FOTO" : "") : " · SIN FOTO") + (p.notas ? " · 📝 NOTA" : "") + (p.pend ? " · ⏳ POR APROBAR" : "") + '</span>';
-}
-function cinta(p){ return marcaRevision(p) + (p.etiqueta ? '<span class="cinta ' + slug(p.etiqueta) + '">' + esc(p.etiqueta) + '</span>' : ""); }
-var MAX_TARJETA = 6;  // máximo de medidas o colores visibles en la tarjeta
-var FOTO_VACIA = '<div class="foto vacia">' + ICONO_CAMARA + '<span>Foto pendiente</span></div>';
-var BTN_SUBIR = '<button type="button" class="btn-subir">Subir foto</button>';
-
-function mostrar(texto){
-  var filas = leerCSV(texto).filter(function(f){ return f.some(function(x){ return x.trim() !== ""; }); });
-  var cab = filas.shift() || [];
-  var cS = columna(cab,"secci"), cP = columna(cab,"producto"), cD = columna(cab,"descripci"), cT = columna(cab,"titulo de medidas"),
-      cM = columna(cab,"medidas"), cC = columna(cab,"colores"), cF = columna(cab,"foto"), cV = columna(cab,"mostrar"),
-      cX = columna(cab,"detalle"), cE = columna(cab,"etiqueta"), cR = columna(cab,"destacar"), cN = columna(cab,"n°"), cO = columna(cab,"otros nombres"), cMj = columna(cab,"mejorar foto"), cK = columna(cab,"codigos"), cG = columna(cab,"grupo");
-  PRODUCTOS = [];
-  var secciones = [], porNombre = {}, USADOS = {};
-  filas.forEach(function(f){
-    function v(i){ return i >= 0 && f[i] ? f[i].trim() : ""; }
-    var nombre = v(cP), sec = v(cS);
-    if (!nombre || !sec) return;
-    var oculto = sinTildes(v(cV)).indexOf("no") === 0;
-    if (oculto && !REVISION) return;
-    var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
-      medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
-      colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto, mejorar: /^s/.test(sinTildes(v(cMj))),
-      codigos: v(cK).split(/[\s,;]+/).filter(function(x){ return /^\d{6,}$/.test(x); }) };
-    // Cambios hechos desde este celular: se respetan 15 minutos mientras la hoja publicada se actualiza
-    var sub = REVISION && SUBIDAS[p.numero || p.nombre];
-    if (sub && sub.t && Date.now() - sub.t < 15 * 60 * 1000){
-      if ("url" in sub) p.foto = p.fotoGrande = sub.url || null;
-      if ("mejorar" in sub) p.mejorar = sub.mejorar;
-      if ("oculto" in sub) p.oculto = sub.oculto;
-    }
-    if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
-    p.id = PRODUCTOS.push(p) - 1;
-    p.notas = REVISION && window.NOTAS ? NOTAS.pendientes(p).length : 0;
-    p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), p.codigos.join(" "), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
-    // CAMBIO 12: dirección propia de cada producto (#p-nombre) para compartirlo
-    var base = "p-" + slug(nombre), sl = base, k = 2; while (USADOS[sl]) sl = base + "-" + (k++); USADOS[sl] = 1; p.slug = sl;
-    var clave = sinTildes(sec);
-    if (!porNombre[clave]){ porNombre[clave] = { nombre: sec, id: slug(sec), productos: [], grupo: grupoDe(sec, v(cG)) }; secciones.push(porNombre[clave]); }
-    porNombre[clave].productos.push(p);
-  });
-  var total = 0, ind = "", cat = "";
-  secciones.forEach(function(s, i){
-    var n = (i + 1 < 10 ? "0" : "") + (i + 1);
-    total += s.productos.length;
-    cat += '<section class="seccion" id="' + s.id + '"><div class="cabecera"><h2 class="serif"><span class="n">' + n + '</span><span>' + esc(s.nombre) +
-      '</span></h2><a href="#inicio">Volver a secciones</a></div><div class="grilla">' + s.productos.map(tarjeta).join("") + '</div></section>';
-  });
-  // CAMBIO 22: índice agrupado (los conteos solo se ven en modo revisión)
-  ind = GRUPOS.map(function(g){
-    var secs = secciones.filter(function(s){ return s.grupo === g.id; });
-    if (!secs.length) return "";
-    var tot = secs.reduce(function(a, s){ return a + s.productos.length; }, 0);
-    return '<details class="grupo-s"><summary><span class="ico" aria-hidden="true">' + g.ico + '</span><span>' + esc(g.nombre) +
-      (REVISION ? ' <span class="c">(' + tot + ')</span>' : "") + '<span class="sub">' + esc(g.sub) + '</span></span><span class="fl" aria-hidden="true">▾</span></summary>' +
-      '<div class="chips-s">' + secs.map(function(s){
-        return '<a href="#' + s.id + '">' + esc(s.nombre) + (REVISION ? ' <span class="c">' + s.productos.length + '</span>' : "") + '</a>';
-      }).join("") + '</div></details>';
-  }).join("");
-  var indice = document.getElementById("indice"); indice.className = "grupos"; indice.innerHTML = ind;
-  document.getElementById("catalogo").innerHTML = cat + '<div class="aviso" id="sin-resultados" hidden>No encontramos productos con esa búsqueda. Escríbenos por WhatsApp y te ayudamos.</div>';
-  var conteo = document.getElementById("conteo");
-  if (REVISION) conteo.textContent = total + " productos"; else conteo.hidden = true;
-  // CAMBIO 5: la línea de origen de datos solo se muestra con ?diagnostico=1
-  if (/[?&]diagnostico=1/.test(location.search)) document.getElementById("fuente").textContent = "Datos: " + FUENTE;
-  if (window.PEDIDO) PEDIDO.pintar();
-  if (window.CHIPS) CHIPS.armar(secciones);
-  // CAMBIO 9: fila de recomendados
-  var reco = PRODUCTOS.filter(function(p){ return p.destacar; });
-  document.getElementById("reco-fila").innerHTML = reco.map(function(p){
-    return '<button class="reco" type="button" data-id="' + p.id + '">' + cinta(p) +
-      (p.foto ? '<div class="foto"><img src="' + esc(p.foto) + '" alt="" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')"></div>' : FOTO_VACIA) +
-      '<span class="nom">' + esc(p.nombre) + '</span></button>';
-  }).join("");
-  document.getElementById("recomendados").hidden = reco.length === 0;
-  if (window.FICHA) FICHA.desdeEnlace();
-  if (REVISION) { document.getElementById("filtro-fotos").hidden = false; filtrar(); if (window.NOTAS) { NOTAS.pintarRol(); NOTAS.cargar(); } }
-}
-
-// Buscador (+ CAMBIO 15: filtro «solo los que faltan foto» en modo revisión)
-var SOLO_SIN_FOTO = false, SOLO_NOTAS = false, VISTA = "todos";
-function filtrar(){
-  var valor = document.getElementById("buscar").value.trim();
-  var q = normal(valor), hay = false, faltan = 0, porMejorar = 0, conNota = 0, ocultos = 0;
-  var pals = q ? q.split(" ").filter(Boolean) : [];
-  document.querySelectorAll("section.seccion").forEach(function(s){
-    var visibles = 0;
-    s.querySelectorAll(".tarjeta").forEach(function(t){
-      var sinFoto = t.hasAttribute("data-sinfoto"), mejorar = t.hasAttribute("data-mejorar") && !sinFoto;
-      var nota = t.hasAttribute("data-nota");
-      if (sinFoto) faltan++; if (mejorar) porMejorar++; if (nota) conNota++;
-      var txt = t.getAttribute("data-buscar"), ps = null;
-      // Cada palabra escrita tiene que aparecer (o parecerse) en el producto
-      var ok = !q || pals.every(function(w){ return palabraCalza(w, txt, ps || (ps = txt.split(" "))); });
-      if ((SOLO_SIN_FOTO || SOLO_NOTAS) && !((SOLO_SIN_FOTO && (sinFoto || mejorar)) || (SOLO_NOTAS && nota))) ok = false;
-      var oc = t.hasAttribute("data-oculto"); if (oc) ocultos++;
-      if ((VISTA === "cliente" && oc) || (VISTA === "ocultos" && !oc)) ok = false;
-      t.hidden = !ok; if (ok) visibles++;
-    });
-    s.hidden = visibles === 0; if (visibles) hay = true;
-  });
-  var filtrando = !!q || SOLO_SIN_FOTO || SOLO_NOTAS || VISTA === "ocultos";
-  document.getElementById("nav").hidden = filtrando;
-  var rc = document.getElementById("recomendados"); if (rc.children[1].children.length) rc.hidden = filtrando;
-  var sr = document.getElementById("sin-resultados"); if (sr) sr.hidden = hay;
-  if (REVISION) document.getElementById("faltan-n").textContent = (faltan ? "Faltan " + faltan + " fotos" : "¡Todos tienen foto!") + (porMejorar ? " · " + porMejorar + " por mejorar" : "") + (conNota ? " · " + conNota + " con notas" : "") + (ocultos ? " · " + ocultos + " ocultos" : "");
-  return hay;
-}
-document.getElementById("buscar").addEventListener("input", function(){
-  var hay = filtrar();
-  if (window.STATS) STATS.busqueda(this.value.trim(), hay);
-});
-document.querySelector(".vista-rev").addEventListener("click", function(e){
-  var b = e.target.closest("button[data-vista]"); if (!b) return;
-  VISTA = b.getAttribute("data-vista");
-  this.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x === b); });
-  filtrar();
-});
-document.getElementById("solo-notas").addEventListener("click", function(){
-  var b = this;
-  function alternar(){
-    SOLO_NOTAS = !SOLO_NOTAS;
-    b.setAttribute("aria-pressed", SOLO_NOTAS);
-    b.textContent = SOLO_NOTAS ? "Ver todos los productos" : "Ver los que tienen notas";
-    filtrar();
-  }
-  // Si este celular todavía no tiene la clave, se pide y se cargan las notas
-  if (!SOLO_NOTAS && !claveGuardada()){
-    var c = (prompt("Escribe la clave para ver las notas:") || "").trim(); if (!c) return;
-    try { localStorage.setItem("alumol-clave", c); } catch (e) {}
-    NOTAS.cargar().then(alternar);
-    return;
-  }
-  alternar();
-});
-document.getElementById("solo-sin-foto").addEventListener("click", function(){
-  SOLO_SIN_FOTO = !SOLO_SIN_FOTO;
-  this.setAttribute("aria-pressed", SOLO_SIN_FOTO);
-  this.textContent = SOLO_SIN_FOTO ? "Ver todos los productos" : "Ver los que faltan o hay que mejorar";
-  filtrar();
-});
-
-// Carga: índice de fotos guardadas + hoja de Google (si falla, usa la copia de respaldo)
-function obtener(url){ return fetch(url, {cache: "no-store"}).then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); }); }
-Promise.all([
-  fetch("fotos/indice.json").then(function(r){ return r.json(); }).catch(function(){ return {}; }),
-  fetch("codigos.json").then(function(r){ return r.json(); }).catch(function(){ return {}; })
-]).then(function(res){
-  var ix = res[0]; CODIGOS = res[1] || {};
-  INDICE_FOTOS = ix;
-  if (/[?&]prueba=1/.test(location.search)) return obtener("productos-prueba-755.csv");
-  var principal = HOJA_CSV ? obtener(HOJA_CSV) : Promise.reject();
-  return principal.then(function(t){ FUENTE = "en vivo"; return t; }).catch(function(){ FUENTE = "respaldo"; return obtener("productos-respaldo.csv"); });
-}).then(mostrar).catch(function(){
-  document.getElementById("catalogo").innerHTML = '<div class="aviso">No se pudo cargar el catálogo. Escríbenos por WhatsApp al 0958918180.</div>';
-});
-
-/* CAMBIO 3 · Barra de secciones fija (resalta la sección que se está viendo) y botón para subir */
-var CHIPS = (function(){
-  var barra = document.getElementById("chips"), subir = document.getElementById("subir"), obs;
-  function armar(secciones){
-    barra.innerHTML = '<a class="ir-inicio" href="#inicio">↑ Inicio</a><div id="chips-lista">' + secciones.map(function(s){ return '<a href="#' + s.id + '">' + esc(s.nombre) + '</a>'; }).join("") + '</div>';
-    var lista = document.getElementById("chips-lista");
-    barra.hidden = secciones.length < 2;
-    if (!("IntersectionObserver" in window)) return;
-    if (obs) obs.disconnect();
-    obs = new IntersectionObserver(function(ents){
-      ents.forEach(function(en){
-        if (!en.isIntersecting) return;
-        barra.querySelectorAll("a").forEach(function(a){
-          var on = a.getAttribute("href") === "#" + en.target.id;
-          a.classList.toggle("activo", on);
-          if (on && a.parentNode === lista) lista.scrollTo({ left: Math.max(0, a.offsetLeft - lista.offsetLeft - 8), behavior: "smooth" });
-        });
-      });
-    }, { rootMargin: "-70px 0px -70% 0px" });
-    document.querySelectorAll("section.seccion").forEach(function(s){ obs.observe(s); });
-  }
-  window.addEventListener("scroll", function(){ subir.hidden = window.scrollY < 900; }, { passive: true });
-  subir.addEventListener("click", function(){ window.scrollTo(0, 0); });
-  document.getElementById("buscar").addEventListener("input", function(){ barra.style.display = this.value.trim() ? "none" : ""; });
-  return { armar: armar };
-})();
-
-/* CAMBIO 2 · Lista de pedido (se envía completa por WhatsApp) */
-var PEDIDO = (function(){
-  var lista = {};  // nombre -> cantidad
-  try { lista = JSON.parse(localStorage.getItem("alumol-pedido") || "{}") || {}; } catch (e) { lista = {}; }
-  var barra = document.getElementById("barra-pedido"), dlg = document.getElementById("pedido");
-  function guardar(){ try { localStorage.setItem("alumol-pedido", JSON.stringify(lista)); } catch (e) {} }
-  function total(){ var n = 0; for (var k in lista) n += lista[k]; return n; }
-  function pintar(){
-    var n = total();
-    barra.hidden = n === 0;
-    document.getElementById("pedido-n").textContent = n;
-    document.querySelectorAll(".tarjeta").forEach(function(t){
-      var p = PRODUCTOS[+t.getAttribute("data-id")], b = t.querySelector(".agregar");
-      if (p && b){ var en = enLista(p.nombre); b.classList.toggle("en-lista", en); b.textContent = en ? "✓" : "+"; }
-    });
-    var ul = document.getElementById("pedido-lista"), h = "", txt = "Hola Alumol, quiero cotizar estos productos:\n";
-    Object.keys(lista).forEach(function(k){
-      h += '<li data-k="' + esc(k) + '"><span class="nom">' + esc(k) + '</span><span class="cant"><button type="button" data-d="-1" aria-label="Menos">−</button><output>' + lista[k] + '</output><button type="button" data-d="1" aria-label="Más">+</button></span></li>';
-      txt += "• " + lista[k] + " x " + k + "\n";
-    });
-    ul.innerHTML = h || '<li>Tu lista está vacía.</li>';
-    document.getElementById("pedido-enviar").href = wa(txt);
-  }
-  function enLista(n){ for (var k in lista) if (k === n || k.indexOf(n + " · ") === 0) return true; return false; }
-  function agregar(nombre, cant){ lista[nombre] = (lista[nombre] || 0) + (cant || 1); guardar(); pintar(); }
-  document.getElementById("catalogo").addEventListener("click", function(e){
-    var b = e.target.closest(".agregar"); if (!b) return;
-    var p = PRODUCTOS[+b.closest(".tarjeta").getAttribute("data-id")];
-    // CAMBIO 10: si el producto tiene varias medidas o colores, se abre la ficha para elegir
-    if (p.medidas.length > 1 || p.colores.length > 1) { FICHA.abrir(p, true); return; }
-    if (lista[p.nombre]) { delete lista[p.nombre]; guardar(); pintar(); } else agregar(p.nombre);
-  });
-  document.getElementById("pedido-lista").addEventListener("click", function(e){
-    var b = e.target.closest("button[data-d]"); if (!b) return;
-    var k = b.closest("li").getAttribute("data-k");
-    lista[k] = (lista[k] || 0) + (+b.getAttribute("data-d"));
-    if (lista[k] <= 0) delete lista[k];
-    guardar(); pintar();
-  });
-  barra.addEventListener("click", function(){ if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); });
-  document.getElementById("pedido-cerrar").addEventListener("click", function(){ dlg.close(); });
-  dlg.addEventListener("click", function(e){ if (e.target === dlg) dlg.close(); });
-  document.getElementById("pedido-vaciar").addEventListener("click", function(){ lista = {}; guardar(); pintar(); });
-  document.getElementById("pedido-enviar").addEventListener("click", function(){ if (window.STATS) STATS.enviar("pedido enviado", total() + " unidades"); });
-  return { pintar: pintar, agregar: agregar };
-})();
-
-/* CAMBIO 1 · Ficha del producto al tocarlo
-   CAMBIO 10 · Elegir medida, color y cantidad   ·   CAMBIO 12 · Compartir el producto */
-var FICHA = (function(){
-  var ficha = document.getElementById("ficha"), actual = null, elegido = { m: "", c: "" };
-  function opciones(lista, g, conColor){
-    return lista.map(function(v){
-      return '<button type="button" class="opc" data-g="' + g + '" data-v="' + esc(v) + '" aria-pressed="false">' +
-        (conColor ? '<i style="background:' + (COLORES[v.toLowerCase()] || "#CCCCCC") + '"></i>' : "") + esc(v) + '</button>';
-    }).join("");
-  }
-  function codigoUnico(){ var l = codigosDe(actual, elegido.m, elegido.c); return l.length === 1 ? l[0] : ""; }
-  function clave(){
-    var partes = [];
-    if (elegido.m) partes.push(elegido.m);
-    if (elegido.c) partes.push(elegido.c);
-    var cod = codigoUnico(); if (cod) partes.push("Cód. " + cod);
-    return actual.nombre + (partes.length ? " · " + partes.join(" · ") : "");
-  }
-  // CAMBIO 20: muestra el código de lo que está elegido
-  function pintarCodigo(){
-    var el = document.getElementById("f-cod"); if (!el) return;
-    var p = actual, l = codigosDe(p, elegido.m, elegido.c);
-    var falta = [p.medidas.length > 1 && !elegido.m ? "la medida" : "", p.colores.length > 1 && !elegido.c ? "el color" : ""].filter(Boolean);
-    el.classList.remove("pendiente");
-    if (l.length === 1) el.textContent = "Código: " + l[0];
-    else if (falta.length && l.length > 1) { el.textContent = "Elige " + falta.join(" y ") + " para ver el código exacto."; el.classList.add("pendiente"); }
-    else if (l.length > 1) el.textContent = "Códigos: " + l.map(function(k){ return k + (CODIGOS[k] ? " (" + CODIGOS[k].d.toLowerCase() + ")" : ""); }).join(" · ");
-    else { el.textContent = "Esta combinación no tiene código registrado. Consúltanos por WhatsApp."; el.classList.add("pendiente"); }
-  }
-  function cantidad(){ var n = parseInt(document.getElementById("f-cant").value, 10); return n > 0 ? n : 1; }
-  function refrescar(){
-    pintarCodigo();
-    var txt = "Hola Alumol, quiero consultar por: " + clave() + (cantidad() > 1 ? " (" + cantidad() + " unidades)" : "");
-    document.getElementById("f-consultar").href = wa(txt);
-  }
-  function abrir(p, paraPedir){
-    actual = p; elegido = { m: p.medidas.length === 1 ? p.medidas[0] : "", c: p.colores.length === 1 ? p.colores[0] : "" };
-    var h = '<div class="ficha-foto">' + (p.fotoGrande ? '<img src="' + esc(p.fotoGrande) + '" alt="' + esc(p.nombre) + '">' : ICONO_CAMARA) + '</div>';
-    h += '<div class="ficha-cuerpo">' + cinta(p) + '<span class="ficha-sec">' + esc(p.seccion) + '</span><h3 class="serif" id="ficha-titulo">' + esc(p.nombre) + '</h3>';
-    if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
-    if (p.detalle) h += '<p>' + esc(p.detalle) + '</p>';
-    if (p.medidas.length > 1 || p.colores.length > 1) h += '<p class="elige">' + (paraPedir ? "Elige " : "Puedes elegir ") + [p.medidas.length > 1 ? "la medida" : "", p.colores.length > 1 ? "el color" : ""].filter(Boolean).join(" y ") + ' antes de agregarlo a tu pedido.</p>';
-    if (p.medidas.length) h += '<div class="grupo"><span class="etiqueta">' + esc(p.titulo || "Medidas") + '</span><div class="pastillas">' + opciones(p.medidas, "m") + '</div></div>';
-    if (p.colores.length) h += '<div class="grupo"><span class="etiqueta">Colores</span><div class="colores">' + opciones(p.colores, "c", true) + '</div></div>';
-    if (p.codigos.length){
-      h += '<p class="cod-elegido" id="f-cod"></p>';
-      if (p.codigos.length > 1){
-        var etq = {}; p.codigos.forEach(function(k){ var e = etiquetaCodigo(k); etq[e] = (etq[e] || 0) + 1; });
-        var orden = p.codigos.slice().sort(function(a, b){
-          var va = CODIGOS[a] || {}, vb = CODIGOS[b] || {};
-          return (p.medidas.indexOf(va.m) - p.medidas.indexOf(vb.m)) || (p.colores.indexOf(va.c) - p.colores.indexOf(vb.c)) || (a < b ? -1 : 1);
-        });
-        h += '<details class="todos-cod"><summary>Ver todos los códigos (' + p.codigos.length + ')</summary><ul>' + orden.map(function(k){
-          var e = etiquetaCodigo(k), v = CODIGOS[k];
-          var txt = e && etq[e] === 1 ? e : (e ? e + " — " : "") + (v ? v.d.toLowerCase() : "");
-          return '<li><b>' + esc(k) + '</b><span>' + esc(txt) + '</span></li>';
-        }).join("") + '</ul></details>';
-      }
-    }
-    h += '<div class="fila-cant"><span>Cantidad</span><div class="stepper"><button type="button" data-d="-1" aria-label="Menos">−</button>' +
-         '<input id="f-cant" type="number" inputmode="numeric" min="1" value="1" aria-label="Cantidad"><button type="button" data-d="1" aria-label="Más">+</button></div></div>';
-    if (REVISION){
-      h += '<div class="rev-acciones"><button type="button" class="btn-subir" id="f-subir-foto">' + (p.foto ? "Cambiar foto" : "Subir foto") + '</button>';
-      if (p.foto) h += '<button type="button" class="btn-subir naranja" id="f-mejorar">' + (p.mejorar ? "Quitar marca «mejorar»" : "Marcar para mejorar") + '</button>' +
-                       '<button type="button" class="btn-subir peligro" id="f-quitar-foto">Quitar foto</button>';
-      h += '<button type="button" class="btn-subir gris" id="f-ocultar">' + (p.oculto ? "Mostrar en el catálogo" : "Ocultar producto") + '</button>';
-      h += '</div>';
-      h += NOTAS.html(p);
-    }
-    h += '<button type="button" class="btn-agregar" id="f-agregar">Agregar a mi pedido</button>';
-    h += '<div class="fila-btns"><a class="consultar" id="f-consultar" href="#" target="_blank" rel="noopener">' + ICONO_WA + '<span>Consultar</span></a>' +
-         '<button type="button" class="compartir" id="f-compartir"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Compartir</button></div></div>';
-    document.getElementById("ficha-contenido").innerHTML = h;
-    ficha.querySelectorAll(".opc").forEach(function(b){
-      var on = elegido[b.getAttribute("data-g")] === b.getAttribute("data-v");
-      b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on);
-    });
-    refrescar();
-    if (!ficha.open) { if (ficha.showModal) ficha.showModal(); else ficha.setAttribute("open", ""); }
-    if (window.STATS) STATS.enviar("producto visto", p.nombre);
-  }
-  ficha.addEventListener("click", function(e){
-    if (e.target === ficha) { ficha.close(); return; }
-    var o = e.target.closest(".opc");
-    if (o){
-      var g = o.getAttribute("data-g"), v = o.getAttribute("data-v");
-      elegido[g] = elegido[g] === v ? "" : v;   // tocar otra vez la quita
-      ficha.querySelectorAll('.opc[data-g="' + g + '"]').forEach(function(b){
-        var on = b.getAttribute("data-v") === elegido[g]; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on);
-      });
-      refrescar(); return;
-    }
-    var st = e.target.closest(".stepper button");
-    if (st){ var inp = document.getElementById("f-cant"); inp.value = Math.max(1, cantidad() + (+st.getAttribute("data-d"))); refrescar(); return; }
-    if (e.target.closest("#f-agregar")){
-      PEDIDO.agregar(clave(), cantidad());
-      var b = document.getElementById("f-agregar"); b.textContent = "✓ Agregado a tu pedido"; b.classList.add("listo");
-      setTimeout(function(){ if (b.isConnected){ b.textContent = "Agregar otra"; b.classList.remove("listo"); } }, 1600);
-      return;
-    }
-    if (e.target.closest("#f-compartir")) compartir(actual);
-    if (e.target.closest("#f-subir-foto")) { ficha.close(); FOTOS.abrir(actual); return; }
-    var chip = e.target.closest(".chips-nota button");
-    if (chip){ var ta = document.getElementById("f-nota"); ta.value = (ta.value ? ta.value.replace(/\s*$/, ". ") : "") + chip.textContent; ta.focus(); return; }
-    if (e.target.closest("#f-guardar-nota")){
-      var texto = document.getElementById("f-nota").value.trim(); if (!texto) { document.getElementById("f-nota").focus(); return; }
-      var p2 = actual, bg = e.target.closest("#f-guardar-nota"); bg.disabled = true; bg.textContent = "Guardando…";
-      NOTAS.agregar(p2, texto).then(function(ok){ if (ok){ abrir(p2); aviso("Nota guardada."); } else { bg.disabled = false; bg.textContent = "Guardar nota"; } });
-      return;
-    }
-    var rs = e.target.closest(".resolver");
-    if (rs){ var p3 = actual; rs.disabled = true; NOTAS.resolver(p3, +rs.getAttribute("data-fila")).then(function(ok){ if (ok){ abrir(p3); aviso("Nota marcada como resuelta."); } else rs.disabled = false; }); return; }
-    if (e.target.closest("#f-quitar-foto")) {
-      if (!confirm("¿Seguro que quieres quitar la foto de " + (actual.numero ? "N° " + actual.numero + " · " : "") + actual.nombre + "?")) return;
-      var p0 = actual; FOTOS.accion(p0, "quitar").then(function(ok){ if (ok){ ficha.close(); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : "Foto quitada. El producto quedó sin foto."); } });
-      return;
-    }
-    if (e.target.closest("#f-ocultar")) {
-      var p4 = actual, mostrarlo = !!p4.oculto;
-      if (!mostrarlo && !confirm("¿Ocultar " + (p4.numero ? "N° " + p4.numero + " · " : "") + p4.nombre + " del catálogo? Los clientes ya no lo verán.")) return;
-      FOTOS.accion(p4, "mostrar", mostrarlo).then(function(ok){ if (ok){ abrir(p4); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : (mostrarlo ? "Ahora se muestra en el catálogo." : "Producto ocultado. Los clientes ya no lo ven.")); } });
-      return;
-    }
-    if (e.target.closest("#f-mejorar")) {
-      var p1 = actual, nuevo = !p1.mejorar;
-      FOTOS.accion(p1, "mejorar", nuevo).then(function(ok){ if (ok){ abrir(p1); aviso(nuevo ? "Marcada para mejorar." : "Marca quitada."); } });
-      return;
-    }
-    if (e.target.closest("#f-consultar") && window.STATS) STATS.enviar("consulta", clave());
-  });
-  ficha.addEventListener("input", function(e){ if (e.target.id === "f-cant") refrescar(); });
-  ficha.addEventListener("close", function(){
-    if (/^#p-/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
-  });
-  ficha.querySelector(".cerrar").addEventListener("click", function(){ ficha.close(); });
-
-  function aviso(t){
-    var d = document.createElement("div"); d.className = "aviso-flota"; d.setAttribute("role", "status"); d.textContent = t;
-    document.body.appendChild(d); setTimeout(function(){ d.remove(); }, 2200);
-  }
-  function compartir(p){
-    var url = location.origin + location.pathname + "#" + p.slug;
-    var texto = "Mira este producto en el catálogo de Alumol: " + p.nombre;
-    if (navigator.share) { navigator.share({ title: p.nombre + " · Alumol", text: texto, url: url }).catch(function(){}); }
-    else window.open("https://wa.me/?text=" + encodeURIComponent(texto + "\n" + url), "_blank", "noopener");
-    if (window.STATS) STATS.enviar("producto compartido", p.nombre);
-  }
-  function desdeEnlace(){
-    var m = location.hash.match(/^#(p-[a-z0-9-]+)$/); if (!m) return;
-    for (var i = 0; i < PRODUCTOS.length; i++) if (PRODUCTOS[i].slug === m[1]) { abrir(PRODUCTOS[i]); return; }
-  }
-  window.addEventListener("hashchange", desdeEnlace);
-
-  document.getElementById("catalogo").addEventListener("click", function(e){
-    if (e.target.closest("a, .agregar, .btn-subir")) return;
-    var t = e.target.closest(".foto, h3, .ver-mas, .mas"); if (!t) return;
-    var card = t.closest(".tarjeta"); if (!card) return;
-    abrir(PRODUCTOS[+card.getAttribute("data-id")]);
-  });
-  document.getElementById("reco-fila").addEventListener("click", function(e){
-    var b = e.target.closest(".reco"); if (b) abrir(PRODUCTOS[+b.getAttribute("data-id")]);
-  });
-  document.getElementById("catalogo").addEventListener("click", function(e){
-    var c = e.target.closest(".tarjeta .consultar"); if (c && window.STATS) STATS.enviar("consulta", PRODUCTOS[+c.closest(".tarjeta").getAttribute("data-id")].nombre);
-  });
-  return { abrir: abrir, desdeEnlace: desdeEnlace };
-})();
-
-/* CAMBIO 16 · Subir foto desde la app, quitando el fondo (solo modo revisión).
-   El fondo se quita en el mismo celular (carpeta quitar-fondo/); la foto se guarda en Drive y en la hoja
-   mediante la aplicación web de Apps Script (SUBIR_FOTOS). */
-var FOTOS = (function(){
-  var dlg = document.getElementById("subir-foto"), producto = null, versiones = {}, elegida = "limpia", herramienta = null;
-  var estado = document.getElementById("sf-estado"), barra = document.getElementById("sf-barra"),
-      opciones = document.getElementById("sf-opciones"), btnSubir = document.getElementById("sf-subir");
-  function decir(t, error){ estado.textContent = t; estado.classList.toggle("error", !!error); }
-  function abrir(p){
-    producto = p; versiones = {}; elegida = "limpia";
-    document.getElementById("sf-titulo").textContent = p.foto ? "Cambiar foto" : "Subir foto";
-    document.getElementById("sf-nombre").textContent = (p.numero ? "N° " + p.numero + " · " : "") + p.nombre;
-    document.getElementById("sf-paso1").hidden = false; document.getElementById("sf-paso2").hidden = true;
-    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
-  }
-  function cargarImagen(archivo){
-    return new Promise(function(ok, mal){
-      var img = new Image(); img.onload = function(){ ok(img); }; img.onerror = mal; img.src = URL.createObjectURL(archivo);
-    });
-  }
-  function lienzo(w, h){ var c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
-  // Pone la imagen centrada en un cuadrado blanco de 1000 px; si «recortar», se ajusta al contorno del producto
-  function cuadrado(img, recortar){
-    var w = img.naturalWidth || img.width, h = img.naturalHeight || img.height, x0 = 0, y0 = 0, x1 = w, y1 = h;
-    if (recortar){
-      var c = lienzo(w, h), cx = c.getContext("2d"); cx.drawImage(img, 0, 0);
-      var a = cx.getImageData(0, 0, w, h).data; x0 = w; y0 = h; x1 = 0; y1 = 0;
-      for (var y = 0; y < h; y += 2) for (var x = 0; x < w; x += 2)
-        if (a[(y * w + x) * 4 + 3] > 40){ if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-      if (x1 <= x0 || y1 <= y0){ x0 = 0; y0 = 0; x1 = w; y1 = h; }
-    }
-    var bw = x1 - x0, bh = y1 - y0, L = 1000, margen = recortar ? 0.84 : 1, k = Math.min(L * margen / bw, L * margen / bh);
-    var out = lienzo(L, L), o = out.getContext("2d"); o.fillStyle = "#fff"; o.fillRect(0, 0, L, L);
-    o.imageSmoothingQuality = "high";
-    o.drawImage(img, x0, y0, bw, bh, (L - bw * k) / 2, (L - bh * k) / 2, bw * k, bh * k);
-    return out.toDataURL("image/jpeg", 0.88);
-  }
-  function reducida(img, max){
-    var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, max / Math.max(w, h));
-    var c = lienzo(Math.round(w * k), Math.round(h * k)); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-    return new Promise(function(ok){ c.toBlob(ok, "image/jpeg", 0.92); });
-  }
-  function mostrarOpciones(){
-    opciones.querySelectorAll("button").forEach(function(b){
-      var o = b.getAttribute("data-o"); b.hidden = !versiones[o];
-      if (versiones[o]) b.querySelector("img").src = versiones[o];
-      b.setAttribute("aria-pressed", o === elegida);
-    });
-    opciones.hidden = false; btnSubir.disabled = false;
-  }
-  function procesar(archivo){
-    if (!archivo) return;
-    document.getElementById("sf-paso1").hidden = true; document.getElementById("sf-paso2").hidden = false;
-    opciones.hidden = true; btnSubir.disabled = true; btnSubir.textContent = "Usar esta foto"; versiones = {}; elegida = "limpia";
-    decir("Preparando la foto…");
-    cargarImagen(archivo).then(function(img){
-      versiones.original = cuadrado(img, false);
-      return reducida(img, 1280);
-    }).then(function(blob){
-      decir("Quitando el fondo… (la primera vez tarda un poco más)");
-      herramienta = herramienta || import("./quitar-fondo/quitar-fondo.js");
-      return herramienta.then(function(m){
-        barra.hidden = false; barra.firstChild.style.width = "0";
-        return m.removeBackground(blob, {
-          publicPath: new URL("quitar-fondo/", location.href).href, model: "small", output: { format: "image/png" },
-          progress: function(clave, actual, total){
-            if (/fetch/.test(clave) && total){ barra.firstChild.style.width = Math.round(actual / total * 100) + "%"; decir("Descargando la herramienta (solo la primera vez)…"); }
-            else decir("Quitando el fondo…");
-          }
-        });
-      });
-    }).then(function(png){ return cargarImagen(png); }).then(function(sin){
-      barra.hidden = true; versiones.limpia = cuadrado(sin, true);
-      decir("Elige cómo se ve mejor y toca «Usar esta foto».");
-      mostrarOpciones();
-    }).catch(function(){
-      barra.hidden = true;
-      if (versiones.original){ elegida = "original"; decir("No se pudo quitar el fondo en este celular. Puedes subir la foto original o tomar otra.", true); mostrarOpciones(); }
-      else decir("No se pudo abrir esa foto. Intenta con otra.", true);
-    });
-  }
-  opciones.addEventListener("click", function(e){
-    var b = e.target.closest("button[data-o]"); if (!b) return;
-    elegida = b.getAttribute("data-o"); mostrarOpciones();
-  });
-  btnSubir.addEventListener("click", function(){
-    if (!SUBIR_FOTOS){ decir("Falta conectar la subida de fotos con la hoja de Google (es una configuración de una sola vez).", true); return; }
-    var clave = ""; try { clave = localStorage.getItem("alumol-clave") || ""; } catch (e) {}
-    if (!clave){ clave = (prompt("Escribe la clave para subir fotos:") || "").trim(); if (!clave) return; }
-    var imagen = versiones[elegida];
-    btnSubir.disabled = true; decir("Subiendo la foto…");
-    fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: clave, autor: autorGuardado(), numero: producto.numero || "", producto: producto.nombre, imagen: imagen }) })
-      .then(function(r){ return r.json(); })
-      .then(function(r){
-        if (!r.ok){
-          if (/clave/i.test(r.error || "")) try { localStorage.removeItem("alumol-clave"); } catch (e) {}
-          throw new Error(r.error || "Error");
-        }
-        try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
-        if (r.rol) ROL = r.rol;
-        if (r.pendiente){
-          NOTAS.agregarPendiente(producto, { id: r.id, accion: "subir", nueva: imagen, anterior: "", autor: autorGuardado(), fecha: "ahora" });
-          decir("✓ Foto enviada. El cliente la verá cuando el administrador la apruebe.");
-          btnSubir.textContent = "Listo";
-          setTimeout(function(){ if (dlg.open) dlg.close(); }, 1800);
-          return;
-        }
-        // Se muestra al instante; la hoja publicada tarda unos minutos en reflejarlo
-        producto.foto = producto.fotoGrande = imagen;
-        producto.mejorar = false;
-        SUBIDAS[producto.numero || producto.nombre] = { url: urlFoto(r.url) || imagen, mejorar: false, t: Date.now() };
-        try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
-        var card = document.querySelector('.tarjeta[data-id="' + producto.id + '"]');
-        if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(producto); card.replaceWith(nueva.firstChild); }
-        if (window.PEDIDO) PEDIDO.pintar();
-        filtrar();
-        decir("✓ Foto guardada en la hoja y en el catálogo.");
-        btnSubir.textContent = "Listo";
-        setTimeout(function(){ if (dlg.open) dlg.close(); }, 1400);
-      })
-      .catch(function(err){ btnSubir.disabled = false; decir("No se pudo subir: " + (err.message || "revisa tu conexión") + ".", true); });
-  });
-  document.getElementById("sf-archivo").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
-  document.getElementById("sf-archivo2").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
-  document.getElementById("sf-galeria").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
-  dlg.querySelector(".cerrar").addEventListener("click", function(){ dlg.close(); });
-  document.getElementById("catalogo").addEventListener("click", function(e){
-    var b = e.target.closest(".btn-subir"); if (!b) return;
-    abrir(PRODUCTOS[+b.closest(".tarjeta").getAttribute("data-id")]);
-  });
-  // CAMBIO 17 · Quitar foto / marcar para mejorar
-  function accion(p, tipo, valor){
-    if (!SUBIR_FOTOS){ alert("Falta conectar la subida de fotos con la hoja de Google."); return Promise.resolve(false); }
-    var clave = ""; try { clave = localStorage.getItem("alumol-clave") || ""; } catch (e) {}
-    if (!clave){ clave = (prompt("Escribe la clave:") || "").trim(); if (!clave) return Promise.resolve(false); }
-    // Primero se confirma que el código de Apps Script ya tiene estas opciones (versión 2 o más)
-    return fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){
-      if (!info || !(info.version >= (tipo === "mostrar" ? 4 : 2))) throw new Error("ACTUALIZAR");
-      return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: clave, autor: autorGuardado(), accion: tipo, valor: valor, numero: p.numero || "", producto: p.nombre }) });
-    })
-      .then(function(r){ return r.json(); })
-      .then(function(r){
-        if (!r.ok){
-          if (/clave/i.test(r.error || "")) try { localStorage.removeItem("alumol-clave"); } catch (e) {}
-          throw new Error(r.error || "Error");
-        }
-        try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
-        if (r.rol) ROL = r.rol;
-        if (r.pendiente){
-          NOTAS.agregarPendiente(p, { id: r.id, accion: tipo, valor: tipo === "mostrar" ? (valor ? "SÍ" : "NO") : "", nueva: "", anterior: p.foto || "", autor: autorGuardado(), fecha: "ahora" });
-          return "pendiente";
-        }
-        // Se guarda junto con los cambios recientes de este producto (si los hay)
-        var previo = SUBIDAS[p.numero || p.nombre], cambio = {};
-        if (previo && previo.t && Date.now() - previo.t < 15 * 60 * 1000) for (var k in previo) cambio[k] = previo[k];
-        cambio.t = Date.now();
-        if (tipo === "quitar"){ p.foto = p.fotoGrande = null; p.mejorar = false; cambio.url = ""; cambio.mejorar = false; }
-        if (tipo === "mejorar"){ p.mejorar = !!valor; cambio.mejorar = !!valor; }
-        if (tipo === "mostrar"){ p.oculto = !valor; cambio.oculto = !valor; }
-        SUBIDAS[p.numero || p.nombre] = cambio;
-        try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
-        var card = document.querySelector('.tarjeta[data-id="' + p.id + '"]');
-        if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(p); card.replaceWith(nueva.firstChild); }
-        if (window.PEDIDO) PEDIDO.pintar();
-        filtrar();
-        return true;
-      })
-      .catch(function(err){
-        if (err.message === "ACTUALIZAR") alert("Para usar esta opción hay que pegar la versión nueva del código en Apps Script (ver instrucciones).");
-        else alert("No se pudo: " + (err.message || "revisa tu conexión"));
-        return false;
-      });
-  }
-  return { abrir: abrir, accion: accion };
-})();
-
-/* CAMBIO 18 · Notas de revisión: el trabajador deja dudas por producto («repetido», «no lo tenemos»…)
-   Se guardan en la pestaña «Notas de revisión» de la hoja (no se publica) mediante Apps Script versión 3. */
-var NOTAS = (function(){
-  var porProducto = {}, cargadas = false;
-  var RAPIDAS = ["Está repetido", "No lo tenemos", "Nombre incorrecto", "Faltan medidas", "Faltan colores", "No lo encuentro"];
-  function clave(p){ return String(p.numero || p.nombre); }
-  function todas(p){ return porProducto[clave(p)] || []; }
-  function pendientes(p){ return todas(p).filter(function(n){ return n.estado !== "Resuelta"; }); }
-  function repintar(){
-    PRODUCTOS.forEach(function(p){
-      var n = pendientes(p).length, pe = pendientesDe(p).length;
-      if (n === (p.notas || 0) && pe === (p.pend || 0)) return;
-      p.notas = n; p.pend = pe;
-      var card = document.querySelector('.tarjeta[data-id="' + p.id + '"]');
-      if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(p); card.replaceWith(nueva.firstChild); }
-    });
-    if (window.PEDIDO) PEDIDO.pintar();
-    filtrar();
-    pintarRol();
-  }
-  function cargar(){
-    var c = claveGuardada();
-    if (!REVISION || !SUBIR_FOTOS || !c) return Promise.resolve();
-    return fetch(SUBIR_FOTOS + "?accion=notas&clave=" + encodeURIComponent(c)).then(function(r){ return r.json(); }).then(function(r){
-      if (!r || !r.ok || !r.notas) { if (r && /clave/i.test(r.error || "")) { ROL = ""; pintarRol(); } return; }
-      ROL = r.rol || "trabajador";
-      PEND = {};
-      (r.pendientes || []).forEach(function(x){ var k = x.numero || x.producto; (PEND[k] = PEND[k] || []).push(x); });
-      porProducto = {};
-      r.notas.forEach(function(n){ var k = n.numero || n.producto; (porProducto[k] = porProducto[k] || []).push(n); });
-      cargadas = true; repintar();
-    }).catch(function(){});
-  }
-  function enviar(datos){
-    var c = claveGuardada();
-    if (!SUBIR_FOTOS){ alert("Falta conectar la app con la hoja de Google."); return Promise.resolve(null); }
-    if (!c){ c = (prompt("Escribe la clave:") || "").trim(); if (!c) return Promise.resolve(null); }
-    datos.clave = c; datos.autor = autorGuardado();
-    return fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){
-      if (!info || !(info.version >= 3)) throw new Error("ACTUALIZAR");
-      return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify(datos) });
-    }).then(function(r){ return r.json(); }).then(function(r){
-      if (!r.ok){ if (/clave/i.test(r.error || "")) try { localStorage.removeItem("alumol-clave"); } catch (e) {} throw new Error(r.error || "Error"); }
-      try { localStorage.setItem("alumol-clave", c); } catch (e) {}
-      if (!cargadas) cargar();
-      return r;
-    }).catch(function(err){
-      if (err.message === "ACTUALIZAR") alert("Para usar las notas hay que pegar la versión nueva del código en Apps Script (ver instrucciones).");
-      else alert("No se pudo: " + (err.message || "revisa tu conexión"));
-      return null;
-    });
-  }
-  function agregar(p, texto){
-    return enviar({ accion: "nota", nota: texto, numero: p.numero || "", producto: p.nombre }).then(function(r){
-      if (!r) return false;
-      var ahora = new Date(), f = ("0" + ahora.getDate()).slice(-2) + "/" + ("0" + (ahora.getMonth() + 1)).slice(-2) + " " + ("0" + ahora.getHours()).slice(-2) + ":" + ("0" + ahora.getMinutes()).slice(-2);
-      (porProducto[clave(p)] = porProducto[clave(p)] || []).push({ fila: r.fila, fecha: f, autor: autorGuardado(), nota: texto, estado: "Pendiente", numero: p.numero, producto: p.nombre });
-      repintar(); return true;
-    });
-  }
-  function resolver(p, fila){
-    return enviar({ accion: "resolver", fila: fila, numero: p.numero || "", producto: p.nombre }).then(function(r){
-      if (!r) return false;
-      todas(p).forEach(function(n){ if (n.fila === fila) n.estado = "Resuelta"; });
-      repintar(); return true;
-    });
-  }
-  function html(p){
-    var pend = pendientes(p), res = todas(p).length - pend.length;
-    var h = '<div class="notas-rev"><span class="etiqueta">Notas para revisar</span>';
-    pend.forEach(function(n){
-      h += '<div class="nota-item"><p>' + esc(n.nota) + '</p><small>' + esc((n.autor ? n.autor + " · " : "") + n.fecha) + '</small>' +
-           '<button type="button" class="resolver" data-fila="' + n.fila + '">Marcar como resuelta ✓</button></div>';
-    });
-    if (res) h += '<span class="resueltas">' + res + (res === 1 ? " nota resuelta" : " notas resueltas") + ' (se ven en la hoja, pestaña «Notas de revisión»)</span>';
-    h += '<div class="chips-nota">' + RAPIDAS.map(function(t){ return '<button type="button">' + t + '</button>'; }).join("") + '</div>' +
-         '<textarea id="f-nota" placeholder="Escribe una nota o duda sobre este producto…"></textarea>' +
-         '<button type="button" id="f-guardar-nota">Guardar nota</button></div>';
-    return h;
-  }
-  function agregarPendiente(p, x){
-    x.numero = p.numero; x.producto = p.nombre;
-    var k = String(p.numero || p.nombre); (PEND[k] = PEND[k] || []).push(x);
-    repintar();
-  }
-  // Nombre del rol y botón «Por aprobar»
-  function pintarRol(){
-    var el = document.getElementById("rol-rev"), b = document.getElementById("ver-aprobar"); if (!el) return;
-    var total = 0; for (var k in PEND) total += PEND[k].length;
-    var txt = !claveGuardada() ? "Sin clave en este celular." :
-      ROL === "admin" ? "Conectado como <b>administrador</b>: tus cambios pasan directo." :
-      ROL === "trabajador" ? "Conectado como <b>trabajador</b>: fotos, quitar y ocultar quedan por aprobar." : "";
-    el.innerHTML = '<span>' + txt + '</span><button type="button" id="cambiar-clave">' + (claveGuardada() ? "Cambiar clave" : "Poner clave") + '</button>';
-    b.hidden = ROL !== "admin";
-    b.textContent = "Por aprobar (" + total + ")";
-    if (window.APROBAR) APROBAR.pintar();
-  }
-  return { cargar: cargar, pendientes: pendientes, agregar: agregar, resolver: resolver, html: html, agregarPendiente: agregarPendiente, repintar: repintar, pintarRol: pintarRol };
-})();
-
-/* CAMBIO 21 · Aprobar o rechazar los cambios del trabajador (solo con la clave de administrador) */
-var APROBAR = (function(){
-  var dlg = document.getElementById("aprobar"), lista = document.getElementById("ap-lista");
-  function producto(x){
-    for (var i = 0; i < PRODUCTOS.length; i++) if (String(PRODUCTOS[i].numero || PRODUCTOS[i].nombre) === String(x.numero || x.producto)) return PRODUCTOS[i];
-    return null;
-  }
-  function todos(){ var l = []; for (var k in PEND) l = l.concat(PEND[k]); return l; }
-  function img(u, pie){
-    var src = u && u.indexOf("data:") === 0 ? u : urlFoto(u);
-    return '<figure>' + (src ? '<img src="' + esc(src) + '" alt="">' : '<div class="sin">Sin foto</div>') + '<figcaption>' + pie + '</figcaption></figure>';
-  }
-  function pintar(){
-    if (!dlg.open) return;
-    var l = todos();
-    document.getElementById("ap-todo").hidden = l.length < 2;
-    if (!l.length){ lista.innerHTML = '<p class="vacio">No hay cambios por aprobar. 👍</p>'; return; }
-    lista.innerHTML = l.map(function(x){
-      var p = producto(x), nombre = (x.numero ? "N° " + x.numero + " · " : "") + (p ? p.nombre : x.producto);
-      var que = x.accion === "subir" ? "Foto nueva" : x.accion === "quitar" ? "Quitar la foto" : (x.valor === "SÍ" ? "Mostrar en el catálogo" : "Ocultar del catálogo");
-      var h = '<div class="ap-item"><h4>' + esc(nombre) + '</h4><span class="ap-que">' + que + '</span><small>' + esc((x.autor || "") + " · " + (x.fecha || "")) + '</small>';
-      if (x.accion === "subir") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Ahora") + img(x.nueva, "Nueva") + '</div>';
-      if (x.accion === "quitar") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Foto que se quitaría") + '</div>';
-      h += '<div class="ap-btns"><button type="button" class="si" data-id="' + esc(x.id) + '">Aprobar</button><button type="button" class="no" data-id="' + esc(x.id) + '">Rechazar</button></div></div>';
-      return h;
-    }).join("");
-  }
-  function enviar(tipo, ids){
-    var c = claveGuardada();
-    lista.querySelectorAll("button").forEach(function(b){ b.disabled = true; });
-    return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: c, autor: autorGuardado(), accion: tipo, ids: ids }) })
-      .then(function(r){ return r.json(); }).then(function(r){
-        if (!r.ok) throw new Error(r.error || "Error");
-        (r.hechos || []).forEach(function(h){
-          if (!h.ok) return;
-          for (var k in PEND){
-            PEND[k] = PEND[k].filter(function(x){
-              if (x.id !== h.id) return true;
-              var p = producto(x);
-              if (tipo === "aprobar" && p){
-                var cambio = { t: Date.now() };
-                if (x.accion === "subir"){ p.foto = urlFoto(h.url) || p.foto; p.fotoGrande = p.foto && p.foto.replace("=w400", "=w1000"); p.mejorar = false; cambio.url = p.foto; cambio.mejorar = false; }
-                if (x.accion === "quitar"){ p.foto = p.fotoGrande = null; cambio.url = ""; }
-                if (x.accion === "mostrar"){ p.oculto = x.valor !== "SÍ"; cambio.oculto = p.oculto; }
-                SUBIDAS[p.numero || p.nombre] = cambio;
-                try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
-                p.pend = -1;   // obliga a volver a pintar la tarjeta
-              }
-              return false;
-            });
-            if (!PEND[k].length) delete PEND[k];
-          }
-        });
-        var fallos = (r.hechos || []).filter(function(h){ return !h.ok; });
-        if (fallos.length) alert("Algunos no se pudieron aplicar: " + fallos.map(function(f){ return f.error; }).join(", "));
-        NOTAS.repintar();
-      }).catch(function(err){ alert("No se pudo: " + (err.message || "revisa tu conexión")); pintar(); });
-  }
-  lista.addEventListener("click", function(e){
-    var b = e.target.closest("button[data-id]"); if (!b) return;
-    var tipo = b.classList.contains("si") ? "aprobar" : "rechazar";
-    if (tipo === "rechazar" && !confirm("¿Rechazar este cambio? No se publicará.")) return;
-    enviar(tipo, [b.getAttribute("data-id")]);
-  });
-  document.getElementById("ap-todo").addEventListener("click", function(){
-    var ids = todos().map(function(x){ return x.id; });
-    if (ids.length && confirm("¿Aprobar los " + ids.length + " cambios? Se publican en el catálogo.")) enviar("aprobar", ids);
-  });
-  document.getElementById("ver-aprobar").addEventListener("click", function(){
-    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
-    pintar();
-    NOTAS.cargar();   // trae lo último que haya mandado el trabajador
-  });
-  document.getElementById("ap-cerrar").addEventListener("click", function(){ dlg.close(); });
-  document.getElementById("rol-rev").addEventListener("click", function(e){
-    if (!e.target.closest("#cambiar-clave")) return;
-    var c = (prompt("Escribe la clave (la de administrador o la de trabajador):") || "").trim(); if (!c) return;
-    try { localStorage.setItem("alumol-clave", c); } catch (e2) {}
-    ROL = ""; NOTAS.cargar();
-  });
-  return { pintar: pintar };
-})();
-
-/* CAMBIO 13 · Instalar como app (y abrir aunque haya poca señal) */
-(function(){
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function(){});
-  var btn = document.getElementById("instalar"), ios = document.getElementById("instalar-ios"), evento = null;
-  var instalada = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-  if (instalada) return;
-  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); evento = e; btn.hidden = false; });
-  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) btn.hidden = false;
-  btn.addEventListener("click", function(){
-    if (evento) { evento.prompt(); evento.userChoice.then(function(){ evento = null; btn.hidden = true; }); }
-    else ios.hidden = !ios.hidden;
-  });
-  window.addEventListener("appinstalled", function(){ btn.hidden = true; if (window.STATS) STATS.enviar("app instalada", ""); });
-})();
-
-/* CAMBIO 14 · Estadísticas anónimas en un formulario de Google (solo si FORMULARIO está lleno) */
-var STATS = (function(){
-  var activo = !!(FORMULARIO && CAMPO_TIPO && CAMPO_VALOR) && !REVISION, espera = null, ultima = "";
-  function enviar(tipo, valor){
-    if (!activo) return;
-    var datos = new URLSearchParams(); datos.append(CAMPO_TIPO, tipo); datos.append(CAMPO_VALOR, String(valor).slice(0, 200));
-    fetch(FORMULARIO, { method: "POST", mode: "no-cors", body: datos }).catch(function(){});
-  }
-  function busqueda(q, hay){
-    clearTimeout(espera);
-    if (q.length < 3) return;
-    espera = setTimeout(function(){   // se registra cuando la persona deja de escribir
-      if (q === ultima) return; ultima = q;
-      enviar(hay ? "búsqueda" : "búsqueda sin resultados", q);
-    }, 1800);
-  }
-  try { if (activo && !sessionStorage.getItem("alumol-visita")) { sessionStorage.setItem("alumol-visita", "1"); enviar("visita", document.referrer ? "enlace" : "directo o QR"); } } catch (e) {}
-  return { enviar: enviar, busqueda: busqueda };
-})();
-</script>
 </body>
 </html>
