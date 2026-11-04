@@ -8,11 +8,11 @@
 if (location.search || /^#p-/.test(location.hash)) location.replace("catalogo/" + location.search + location.hash);
 </script>
 <title>Alumol S.A. · Aluminio y vidrio en Guayaquil</title>
-<meta name="description" content="Aluminio, vidrio y accesorios en Guayaquil. Cortamos a tu medida y vendemos desde una pieza hasta el material de una obra completa. Lizardo García y Portete.">
+<meta name="description" content="Distribuidora de aluminio, vidrio, accesorios, herramientas y material eléctrico en Guayaquil desde 1982. Al por mayor y menor. Lizardo García y Portete.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Alumol S.A.">
 <meta property="og:title" content="Alumol S.A. · Aluminio y vidrio en Guayaquil">
-<meta property="og:description" content="Aluminio, vidrio y accesorios. Cortamos a tu medida. Lizardo García y Portete, Guayaquil.">
+<meta property="og:description" content="Distribuidora de aluminio, vidrio y accesorios en Guayaquil desde 1982. Al por mayor y menor.">
 <meta property="og:url" content="https://alumolsa.com.ec/">
 <meta property="og:image" content="https://alumolsa.com.ec/catalogo/vista-previa.jpg">
 <link rel="icon" href="catalogo/icono.png">
@@ -66,7 +66,7 @@ header .btn{min-height:42px;padding:0 16px;font-size:15px}
   background-image:linear-gradient(rgba(86,197,208,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(86,197,208,.09) 1px,transparent 1px);
   background-size:28px 28px}
 .portada .ancho{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding-top:72px;padding-bottom:80px}
-.portada h1{font-size:clamp(36px,5.4vw,60px);max-width:15ch}
+.portada h1{font-size:clamp(34px,5vw,56px);max-width:17ch}
 .portada p{font-size:19px;color:#CFE9EC;max-width:34ch;margin:20px 0 32px}
 .acciones{display:flex;flex-wrap:wrap;gap:12px}
 .plano{width:100%;max-width:500px;justify-self:center}
@@ -116,6 +116,15 @@ section{padding:76px 0}
 .catalogo ul{padding:0;margin:0 0 30px;list-style:none;columns:2;column-gap:24px;color:var(--suave);font-size:15px}
 .catalogo li{padding:3px 0;break-inside:avoid}
 @media (max-width:820px){.catalogo .ancho{grid-template-columns:1fr;gap:32px}.muestras{order:-1}}
+
+/* Por qué Alumol */
+.porque{padding-top:0}
+.ventajas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.ventajas li{border-top:3px solid var(--acento);padding-top:14px}
+.ventajas b{display:block;font-family:"Bree Serif",Georgia,serif;font-weight:400;font-size:22px;color:var(--profundo);margin-bottom:4px}
+.ventajas span{color:var(--suave);font-size:15px}
+@media (max-width:820px){.ventajas{grid-template-columns:1fr 1fr}}
+@media (max-width:440px){.ventajas{grid-template-columns:1fr}}
 
 /* Para quién */
 .clientes{display:grid;grid-template-columns:1fr 1fr;gap:24px}
@@ -198,8 +207,8 @@ footer .der{margin-left:auto}
 <div class="portada">
   <div class="ancho">
     <div>
-      <h1>Aluminio y vidrio en Guayaquil, cortados a tu medida.</h1>
-      <p>Perfiles, vidrio, accesorios y herramientas para quien arma puertas, ventanas y mamparas. Desde una pieza hasta el material de una obra completa.</p>
+      <h1>Distribuidora de aluminio, vidrio y accesorios en Guayaquil.</h1>
+      <p>Desde 1982 distribuimos al por mayor y menor materia prima, accesorios, herramientas y material eléctrico, con los mejores precios del mercado.</p>
       <div class="acciones">
         <a class="btn btn-cat" href="catalogo/">Ver catálogo de accesorios</a>
         <a class="btn btn-borde" href="https://wa.me/593958918180?text=Hola%20Alumol%2C%20quisiera%20cotizar%20material" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
@@ -207,14 +216,14 @@ footer .der{margin-left:auto}
     </div>
 
     <!-- Corte de un perfil de aluminio con su vidrio, dibujado como plano -->
-    <svg class="plano" viewBox="50 10 330 335" role="img" aria-label="Dibujo técnico del corte de un perfil de aluminio con vidrio y su medida">
+    <svg class="plano" viewBox="50 10 330 335" role="img" aria-label="Dibujo técnico del corte de un perfil de aluminio con vidrio, con la cota «desde 1982»">
       <rect class="vidrio" x="187" y="20" width="16" height="150"/>
       <path class="perfil" d="M110 150 H175 V60 H183 V160 H207 V60 H215 V150 H280 V250 H262 V168 H232 V250 H158 V168 H128 V250 H110 Z M168 196 H222 V232 H168 Z"/>
       <line class="corte" x1="60" y1="290" x2="330" y2="290"/>
       <g class="aparece">
         <path class="cota" d="M110 270 V310 M280 270 V310 M110 300 H280"/>
         <path class="cota" d="M110 300 l10 -5 v10 z M280 300 l-10 -5 v10 z" fill="#fff"/>
-        <text x="195" y="330" text-anchor="middle">a tu medida</text>
+        <text x="195" y="330" text-anchor="middle">desde 1982</text>
         <path class="cota" d="M300 150 H330 M300 250 H330 M320 150 V250"/>
         <text class="nota" x="214" y="44">vidrio</text>
         <text class="nota" x="372" y="138" text-anchor="end">perfil de aluminio</text>
@@ -226,8 +235,8 @@ footer .der{margin-left:auto}
 <!-- QUÉ VENDEMOS -->
 <section id="productos">
   <div class="ancho">
-    <h2 class="titulo">Materia prima para quien construye</h2>
-    <p class="intro">Compramos al por mayor y te vendemos lo que necesitas, en barra completa, en plancha o cortado a medida. No vendemos productos armados: te damos el material para que tú o tu maestro lo armen.</p>
+    <h2 class="titulo">Todo lo que necesitas para trabajar con aluminio y vidrio</h2>
+    <p class="intro">Distribuimos al por mayor y menor materia prima, accesorios, herramientas y material eléctrico, para tus trabajos y proyectos.</p>
 
     <div class="lineas">
       <div class="linea">
@@ -239,7 +248,7 @@ footer .der{margin-left:auto}
       <div class="linea">
         <svg viewBox="0 0 64 64" fill="none" stroke="#0E5F67" stroke-width="3" aria-hidden="true"><rect x="12" y="8" width="40" height="48"/><path d="M22 20l-4 4M34 18L20 32M44 24L26 42" stroke-width="2"/></svg>
         <h3>Vidrio</h3>
-        <p>Vidrio y espejo, cortados según las medidas de tu trabajo.</p>
+        <p>Vidrio y espejo para puertas, ventanas, mamparas y divisiones.</p>
         <span class="pronto">Catálogo de vidrios próximamente</span>
       </div>
       <div class="linea">
@@ -249,6 +258,19 @@ footer .der{margin-left:auto}
         <a class="enlace" href="catalogo/">Ver catálogo de accesorios</a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- POR QUÉ ALUMOL -->
+<section class="porque" aria-labelledby="porque-t">
+  <div class="ancho">
+    <h2 class="titulo" id="porque-t">Por qué comprar en Alumol</h2>
+    <ul class="ventajas">
+      <li><b>Desde 1982</b><span>Más de 40 años de experiencia en el mercado.</span></li>
+      <li><b>Mejores precios</b><span>Los mejores precios del mercado, al por mayor y menor.</span></li>
+      <li><b>Asesoría y cotizaciones</b><span>Te ayudamos a elegir el material y te enviamos tu cotización.</span></li>
+      <li><b>Entrega en la ciudad</b><span>Sin costo dentro del perímetro urbano de Guayaquil, en pedidos de mayor volumen.</span></li>
+    </ul>
   </div>
 </section>
 
@@ -287,17 +309,17 @@ footer .der{margin-left:auto}
 <section>
   <div class="ancho">
     <h2 class="titulo">Atendemos el pedido chico y el pedido grande</h2>
-    <p class="intro">Aquí compra el vecino que va a cambiar la puerta del baño y también el maestro o el negocio que necesita material para un proyecto grande.</p>
+    <p class="intro">Atendemos a todos: desde quien necesita una sola pieza para su casa hasta la constructora que necesita material e insumos para una obra.</p>
     <div class="clientes">
       <div class="cliente">
-        <div class="escala">1 pieza</div>
+        <div class="escala">Al por menor</div>
         <h3>Para tu casa o tu taller</h3>
         <p>Trae la lista que te dio tu maestro o la medida que necesitas, y te ayudamos a completarla.</p>
       </div>
       <div class="cliente">
-        <div class="escala">Por volumen</div>
+        <div class="escala">Al por mayor</div>
         <h3>Para obras y proyectos</h3>
-        <p>Maestros, talleres y negocios que necesitan material en cantidad, con bodega propia para tenerlo disponible.</p>
+        <p>Maestros, talleres, negocios y constructoras que necesitan material en cantidad, con bodega propia para tenerlo disponible.</p>
       </div>
     </div>
   </div>
@@ -310,8 +332,8 @@ footer .der{margin-left:auto}
     <p class="intro">Tres pasos, sin complicaciones.</p>
     <ol class="pasos">
       <li><h3>Cuéntanos qué necesitas</h3><p>Por WhatsApp, por teléfono o en el local. Si tienes la lista o las medidas, mejor.</p></li>
-      <li><h3>Lo preparamos</h3><p>Separamos el material y cortamos el aluminio y el vidrio a la medida que pediste.</p></li>
-      <li><h3>Retiras o te lo llevamos</h3><p>Puedes llevarlo en tu propio vehículo o lo enviamos en nuestro camión dentro de la zona.</p></li>
+      <li><h3>Te asesoramos y cotizamos</h3><p>Te ayudamos a elegir el material y te enviamos la cotización con precios.</p></li>
+      <li><h3>Retiras o te lo llevamos</h3><p>Retíralo en el local o, en pedidos de mayor volumen, te lo llevamos sin costo dentro del perímetro urbano de Guayaquil, según disponibilidad.</p></li>
     </ol>
   </div>
 </section>
@@ -320,12 +342,12 @@ footer .der{margin-left:auto}
 <section id="nosotros" class="nosotros">
   <div class="ancho">
     <div>
-      <h2 class="titulo">Una empresa de Guayaquil</h2>
-      <p class="intro">Desde Lizardo García y Portete vendemos aluminio, vidrio y accesorios, con bodega propia cruzando la calle para tener el material disponible cuando lo necesitas.</p>
+      <h2 class="titulo">Más de 40 años en Guayaquil</h2>
+      <p class="intro">Desde septiembre de 1982 distribuimos aluminio, vidrio y accesorios desde Lizardo García y Portete, con bodega propia cruzando la calle para tener el material disponible cuando lo necesitas.</p>
       <p class="lema">Perseverancia, experiencia… nuestro éxito.</p>
       <div class="marcas">
-        <p>Trabajamos de la mano con</p>
-        <ul><li>FISA</li><li>FEMEC</li><li>ALUNECSA</li></ul>
+        <p>Trabajamos con marcas como</p>
+        <ul><li>FISA</li><li>FEMEC</li><li>Alumina</li><li>Sika</li><li>Abro</li><li>Evergood</li><li>Cesar</li><li>Inox</li><li>King</li><li>Riway</li><li>Ingco</li><li>Total</li><li>Mavijú</li></ul>
       </div>
     </div>
     <div class="logo-nos"><img src="catalogo/logo.png" alt="Logo de Alumol S.A."></div>
@@ -336,14 +358,16 @@ footer .der{margin-left:auto}
 <section id="visitanos">
   <div class="ancho">
     <h2 class="titulo">Visítanos</h2>
-    <p class="intro">Ven al local, trae tus medidas y te ayudamos a completar tu lista.</p>
+    <p class="intro">Ven al local, trae tu lista o tus medidas y te asesoramos.</p>
     <div class="visita">
       <div class="datos">
         <dl>
           <dt>Dirección</dt>
           <dd>Lizardo García y Portete, Guayaquil<br><a href="https://www.google.com/maps/search/?api=1&query=Lizardo%20Garc%C3%ADa%20y%20Portete%2C%20Guayaquil" target="_blank" rel="noopener">Cómo llegar</a></dd>
           <dt>Horario</dt>
-          <dd>Lunes a viernes, de 8:00 a 17:00<br>Sábado: horario reducido</dd>
+          <dd>Lunes a viernes: 8:00 a 17:00<br>Sábados y feriados: 8:00 a 14:00</dd>
+          <dt>Entregas</dt>
+          <dd>Sin costo dentro del perímetro urbano de Guayaquil, en pedidos de mayor volumen y según disponibilidad del camión. No hacemos envíos a otras provincias.</dd>
           <dt>WhatsApp y teléfono</dt>
           <dd><a href="https://wa.me/593958918180" target="_blank" rel="noopener">0958918180</a></dd>
           <dt>Redes</dt>
