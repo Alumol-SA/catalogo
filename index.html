@@ -154,8 +154,9 @@ section{padding:76px 0}
 .foto-pend{aspect-ratio:4/3;border:2px dashed rgba(255,255,255,.45);border-radius:14px;display:grid;place-items:center;text-align:center;color:#D5ECEE;padding:20px;font-size:15px}
 .marcas{margin-top:36px;padding-top:24px;border-top:1px solid rgba(255,255,255,.25)}
 .marcas p{margin:0 0 10px;color:#D5ECEE;font-size:15px}
-.marcas ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px}
-.marcas li{border:1.5px solid rgba(255,255,255,.6);border-radius:8px;padding:6px 14px;font-weight:700;letter-spacing:.04em}
+.marcas ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.marcas li{background:#fff;border-radius:10px;height:76px;padding:10px 12px;display:flex;align-items:center;justify-content:center;color:var(--tinta);font-weight:700;letter-spacing:.04em;font-size:15px;text-align:center}
+.marcas li img{max-width:100%;max-height:56px;min-width:0;width:auto;height:auto;object-fit:contain;border-radius:4px}
 @media (max-width:820px){.nosotros .ancho{grid-template-columns:1fr;gap:32px}}
 
 /* Visítanos */
@@ -347,7 +348,7 @@ footer .der{margin-left:auto}
       <p class="lema">Perseverancia, experiencia… nuestro éxito.</p>
       <div class="marcas">
         <p>Trabajamos con marcas como</p>
-        <ul><li>FISA</li><li>FEMEC</li><li>Alumina</li><li>Sika</li><li>Abro</li><li>Evergood</li><li>Cesar</li><li>Inox</li><li>King</li><li>Riway</li><li>Ingco</li><li>Total</li><li>Mavijú</li></ul>
+        <ul><li><img src="marcas/fisa.png" alt="FISA" loading="lazy"></li><li><img src="marcas/femec.png" alt="FEMEC" loading="lazy"></li><li><img src="marcas/alumina.png" alt="Alumina" loading="lazy"></li><li><img src="marcas/sika.png" alt="Sika" loading="lazy"></li><li><img src="marcas/abro.png" alt="Abro" loading="lazy"></li><li><img src="marcas/evergood.png" alt="Evergood" loading="lazy"></li><li><img src="marcas/ingco.png" alt="Ingco" loading="lazy"></li><li><img src="marcas/maviju.png" alt="Mavijú" loading="lazy"></li><li>Cesar</li><li>Inox</li><li>King</li><li>Riway</li><li>Total</li></ul>
       </div>
     </div>
     <div class="logo-nos"><img src="catalogo/logo.png" alt="Logo de Alumol S.A."></div>
