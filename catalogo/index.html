@@ -733,6 +733,11 @@ function mostrar(texto){
   }).join("");
   document.getElementById("recomendados").hidden = reco.length === 0;
   if (window.FICHA) FICHA.desdeEnlace();
+  // Enlaces a una sección (ej. #ruedas-y-carritos desde las guías de la web): bajar a esa sección ya pintada
+  if (/^#[a-z0-9-]+$/.test(location.hash) && !/^#p-/.test(location.hash)){
+    var destino = document.getElementById(location.hash.slice(1));
+    if (destino && !mostrar.yaBajo){ mostrar.yaBajo = true; setTimeout(function(){ destino.scrollIntoView(); }, 50); }
+  }
   if (REVISION) { document.getElementById("filtro-fotos").hidden = false; filtrar(); if (window.NOTAS) { NOTAS.pintarRol(); NOTAS.cargar(); } }
 }
 

@@ -16,6 +16,52 @@ if (location.search || /^#p-/.test(location.hash)) location.replace("catalogo/" 
 <meta property="og:url" content="https://alumolsa.com.ec/">
 <meta property="og:image" content="https://alumolsa.com.ec/catalogo/vista-previa.jpg">
 <link rel="icon" href="catalogo/icono.png">
+<link rel="canonical" href="https://alumolsa.com.ec/">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "HardwareStore",
+ "name": "Alumol S.A.",
+ "description": "Distribuidora de aluminio, vidrio, accesorios, herramientas y material eléctrico en Guayaquil desde 1982. Al por mayor y menor.",
+ "url": "https://alumolsa.com.ec/",
+ "logo": "https://alumolsa.com.ec/catalogo/logo.png",
+ "image": "https://alumolsa.com.ec/catalogo/vista-previa.jpg",
+ "telephone": "+593958918180",
+ "foundingDate": "1982-09",
+ "address": {
+  "@type": "PostalAddress",
+  "streetAddress": "Lizardo García y Portete",
+  "addressLocality": "Guayaquil",
+  "addressRegion": "Guayas",
+  "addressCountry": "EC"
+ },
+ "openingHoursSpecification": [
+  {
+   "@type": "OpeningHoursSpecification",
+   "dayOfWeek": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday"
+   ],
+   "opens": "08:00",
+   "closes": "17:00"
+  },
+  {
+   "@type": "OpeningHoursSpecification",
+   "dayOfWeek": "Saturday",
+   "opens": "08:00",
+   "closes": "14:00"
+  }
+ ],
+ "areaServed": "Guayaquil",
+ "sameAs": [
+  "https://www.instagram.com/alumolsa",
+  "https://www.tiktok.com/@alumol.s.a"
+ ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
@@ -190,6 +236,48 @@ section{padding:76px 0}
 .mapa iframe{width:100%;height:100%;min-height:380px;border:0;display:block}
 @media (max-width:820px){.visita{grid-template-columns:1fr}}
 
+/* Cotización por WhatsApp */
+.cotizar{background:#fff;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.cotizar .ancho{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:start}
+.cotizar .nota{color:var(--suave);font-size:15px;margin-top:18px}
+.form-cot{background:var(--aluminio);border:1px solid var(--linea);border-radius:14px;padding:28px;display:grid;gap:16px}
+.form-cot label,.form-cot legend{font-weight:700;font-size:15px;display:block;margin-bottom:6px}
+.form-cot input[type=text],.form-cot select,.form-cot textarea{width:100%;font:inherit;font-size:16px;color:var(--tinta);background:#fff;border:1px solid #B9CDD0;border-radius:10px;padding:12px 14px}
+.form-cot textarea{min-height:120px;resize:vertical}
+.form-cot input:focus,.form-cot select:focus,.form-cot textarea:focus{outline:2px solid var(--acento);outline-offset:1px;border-color:var(--acento)}
+.form-cot fieldset{border:0;padding:0;margin:0}
+.form-cot .opciones{display:flex;flex-wrap:wrap;gap:10px}
+.form-cot .opciones label{font-weight:600;margin:0;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #B9CDD0;border-radius:10px;padding:10px 14px;cursor:pointer}
+.form-cot .opciones input{accent-color:var(--profundo);width:18px;height:18px}
+.form-cot .btn{justify-self:start}
+.form-cot .error{color:var(--rojo);font-size:14px;font-weight:600;margin:0}
+@media (max-width:820px){.cotizar .ancho{grid-template-columns:1fr;gap:28px}}
+
+/* Guías */
+.guias{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.guia{display:flex;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--linea);border-radius:14px;padding:24px;text-decoration:none;color:var(--tinta);transition:transform .2s ease,box-shadow .2s ease}
+.guia:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(10,63,69,.10)}
+.guia svg{flex:none;width:48px;height:48px;fill:none;stroke:var(--profundo);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.guia h3{font-size:22px;margin-bottom:6px}.guia p{margin:0 0 10px;color:var(--suave)}.guia span{font-weight:700;color:var(--profundo)}
+@media (max-width:760px){.guias{grid-template-columns:1fr}}
+
+/* Preguntas frecuentes */
+.faq{max-width:820px;display:grid;gap:10px}
+.faq details{background:#fff;border:1px solid var(--linea);border-radius:12px}
+.faq summary{list-style:none;cursor:pointer;padding:18px 52px 18px 22px;font-weight:700;font-size:17px;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:24px;font-weight:400;color:var(--profundo)}
+.faq details[open] summary::after{content:"–"}
+.faq details p{margin:0;padding:0 22px 20px;color:var(--suave)}
+.faq a{color:var(--profundo);font-weight:600}
+
+/* Abierto ahora */
+.estado{display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:4px 12px;border-radius:999px;font-size:14px;font-weight:700;background:#E6F4EA;color:#14703C}
+.estado::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.estado.pronto{background:#FFF3D6;color:#8A5A00}
+.estado.cerrado{background:#FBE7E7;color:#B42318}
+.estado[hidden]{display:none}
+
 /* Marcador de dato por confirmar (solo borrador) */
 .falta{background:#FFF3B0;color:#5a4a00;border-radius:4px;padding:0 4px}
 
@@ -210,7 +298,9 @@ footer .der{margin-left:auto}
     <nav aria-label="Secciones">
       <a href="#productos">Productos</a>
       <a href="#como-comprar">Cómo comprar</a>
+      <a href="#cotizar">Cotizar</a>
       <a href="#nosotros">Nosotros</a>
+      <a href="#preguntas">Preguntas</a>
       <a href="#visitanos">Visítanos</a>
     </nav>
     <a class="btn btn-wa" href="https://wa.me/593958918180" target="_blank" rel="noopener">
@@ -358,6 +448,30 @@ footer .der{margin-left:auto}
   </div>
 </section>
 
+<!-- COTIZAR -->
+<section id="cotizar" class="cotizar">
+  <div class="ancho">
+    <div>
+      <h2 class="titulo">Pide tu cotización</h2>
+      <p class="intro" style="margin-bottom:0">Llena estos datos y se abre WhatsApp con tu pedido ya escrito. Solo tienes que tocar enviar.</p>
+      <p class="nota">Si tienes la lista en foto o en PDF, adjúntala en el mismo chat después de enviar el mensaje.</p>
+    </div>
+    <form class="form-cot" id="form-cot" novalidate>
+      <div><label for="c-nombre">Tu nombre</label><input type="text" id="c-nombre" autocomplete="name" required></div>
+      <div><label for="c-tipo">Compras para</label>
+        <select id="c-tipo"><option>Mi casa</option><option>Mi taller (soy maestro)</option><option>Mi negocio</option><option>Una obra o constructora</option></select></div>
+      <div><label for="c-pedido">¿Qué necesitas?</label>
+        <textarea id="c-pedido" required placeholder="Ej.: 10 ruedas dobles, 4 cerraduras para vidrio, 2 pistolas para silicón…"></textarea></div>
+      <fieldset><legend>¿Cómo lo recibes?</legend>
+        <div class="opciones"><label><input type="radio" name="c-entrega" value="Retiro en el local" checked> Lo retiro en el local</label>
+        <label><input type="radio" name="c-entrega" value="Entrega en Guayaquil"> Entrega en Guayaquil</label></div></fieldset>
+      <div id="c-sector-box" hidden><label for="c-sector">Sector o dirección de entrega</label><input type="text" id="c-sector" placeholder="Ej.: Urdesa, calle…"></div>
+      <p class="error" id="c-error" hidden>Escribe tu nombre y lo que necesitas.</p>
+      <button class="btn btn-wa" type="submit"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.2Z"/></svg>Enviar por WhatsApp</button>
+    </form>
+  </div>
+</section>
+
 <!-- NOSOTROS -->
 <section id="nosotros" class="nosotros">
   <div class="ancho">
@@ -376,6 +490,39 @@ footer .der{margin-left:auto}
   </div>
 </section>
 
+<!-- GUÍAS -->
+<section id="guias">
+  <div class="ancho">
+    <h2 class="titulo">Guías rápidas</h2>
+    <p class="intro">Consejos para pedir el material correcto a la primera.</p>
+    <div class="guias">
+      <a class="guia" href="guias/medir-ventana/">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="8" width="32" height="32" rx="1"/><path d="M24 8v32M4 8v32M2 8h4M2 40h4M8 44h32M8 42v4M40 42v4"/></svg>
+        <div><h3>Cómo tomar medidas de una ventana o puerta corrediza</h3><p>Qué medir y qué datos mandarnos para cotizar.</p><span>Leer guía →</span></div></a>
+      <a class="guia" href="guias/elegir-rueda/">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="14" width="32" height="18" rx="2"/><circle cx="17" cy="32" r="6"/><circle cx="31" cy="32" r="6"/><circle cx="17" cy="32" r="1.5"/><circle cx="31" cy="32" r="1.5"/></svg>
+        <div><h3>Cómo saber qué rueda necesitas</h3><p>Cómo reconocer tu rueda para cambiarla sin equivocarte.</p><span>Leer guía →</span></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- PREGUNTAS FRECUENTES -->
+<section id="preguntas" style="padding-top:0">
+  <div class="ancho">
+    <h2 class="titulo">Preguntas frecuentes</h2>
+    <div class="faq">
+      <details><summary>¿Venden por unidad o solo al por mayor?</summary><p>Las dos cosas. Atendemos desde quien necesita una sola pieza para su casa hasta maestros, negocios y constructoras que compran en cantidad.</p></details>
+      <details><summary>¿Por qué no aparecen los precios en la página?</summary><p>Los precios te los damos en la cotización, según lo que necesitas y la cantidad. Escríbenos por <a href="https://wa.me/593958918180" target="_blank" rel="noopener">WhatsApp</a> o usa el <a href="#cotizar">formulario de cotización</a>.</p></details>
+      <details><summary>¿Hacen entregas?</summary><p>Sí. La entrega es sin costo dentro del perímetro urbano de Guayaquil, en pedidos de mayor volumen y según disponibilidad del camión. También puedes retirar en el local.</p></details>
+      <details><summary>¿Envían a otras provincias?</summary><p>No, por ahora solo entregamos dentro de Guayaquil.</p></details>
+      <details><summary>¿Atienden a constructoras?</summary><p>Sí. Atendemos pedidos de material e insumos para obras. Mándanos tu lista y te cotizamos.</p></details>
+      <details><summary>¿Me ayudan a elegir el material?</summary><p>Sí. Si no sabes exactamente qué pieza necesitas, cuéntanos para qué es o manda una foto o la medida, y te asesoramos.</p></details>
+      <details><summary>¿Cuál es el horario?</summary><p>Lunes a viernes de 8:00 a 17:00. Sábados y feriados de 8:00 a 14:00.</p></details>
+      <details><summary>¿Tienen catálogo en línea?</summary><p>Sí, el <a href="catalogo/">catálogo de accesorios</a> ya está disponible. Los catálogos de perfiles de aluminio y de vidrio estarán próximamente.</p></details>
+    </div>
+  </div>
+</section>
+
 <!-- VISÍTANOS -->
 <section id="visitanos">
   <div class="ancho">
@@ -387,7 +534,7 @@ footer .der{margin-left:auto}
           <dt>Dirección</dt>
           <dd>Lizardo García y Portete, Guayaquil<br><a href="https://www.google.com/maps/search/?api=1&query=Lizardo%20Garc%C3%ADa%20y%20Portete%2C%20Guayaquil" target="_blank" rel="noopener">Cómo llegar</a></dd>
           <dt>Horario</dt>
-          <dd>Lunes a viernes: 8:00 a 17:00<br>Sábados y feriados: 8:00 a 14:00</dd>
+          <dd>Lunes a viernes: 8:00 a 17:00<br>Sábados y feriados: 8:00 a 14:00<br><span class="estado" id="estado" hidden></span></dd>
           <dt>Entregas</dt>
           <dd>Sin costo dentro del perímetro urbano de Guayaquil, en pedidos de mayor volumen y según disponibilidad del camión. No hacemos envíos a otras provincias.</dd>
           <dt>WhatsApp y teléfono</dt>
@@ -419,6 +566,55 @@ footer .der{margin-left:auto}
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.2Z"/></svg>
 </a>
 <script>
+// Pide tu cotización: arma el mensaje y abre WhatsApp
+(function(){
+  var f = document.getElementById("form-cot"); if (!f) return;
+  var caja = document.getElementById("c-sector-box");
+  f.addEventListener("change", function(){ caja.hidden = f.querySelector("input[name=c-entrega]:checked").value !== "Entrega en Guayaquil"; });
+  f.addEventListener("submit", function(e){
+    e.preventDefault();
+    var nombre = document.getElementById("c-nombre").value.trim(), pedido = document.getElementById("c-pedido").value.trim();
+    var err = document.getElementById("c-error");
+    if (!nombre || !pedido){ err.hidden = false; (nombre ? document.getElementById("c-pedido") : document.getElementById("c-nombre")).focus(); return; }
+    err.hidden = true;
+    var entrega = f.querySelector("input[name=c-entrega]:checked").value, sector = document.getElementById("c-sector").value.trim();
+    var msg = "Hola Alumol, quisiera una cotización.\n\n" +
+      "*Nombre:* " + nombre + "\n" +
+      "*Compro para:* " + document.getElementById("c-tipo").value + "\n" +
+      "*Entrega:* " + entrega + (entrega === "Entrega en Guayaquil" && sector ? " (" + sector + ")" : "") + "\n\n" +
+      "*Necesito:*\n" + pedido;
+    window.open("https://wa.me/593958918180?text=" + encodeURIComponent(msg), "_blank", "noopener");
+  });
+})();
+
+// Abierto ahora / Cerrado (hora de Guayaquil)
+(function(){
+  var el = document.getElementById("estado"); if (!el || !window.Intl) return;
+  var H = { 1:[8,17], 2:[8,17], 3:[8,17], 4:[8,17], 5:[8,17], 6:[8,14] }; // 0 = domingo, cerrado
+  var DIAS = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+  function pintar(){
+    var partes = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/Guayaquil", weekday: "short", hour: "numeric", minute: "numeric", hour12: false })
+      .formatToParts(new Date()).forEach(function(p){ partes[p.type] = p.value; });
+    var dia = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(partes.weekday);
+    var min = (parseInt(partes.hour, 10) % 24) * 60 + parseInt(partes.minute, 10);
+    var h = H[dia];
+    el.hidden = false; el.className = "estado";
+    if (h && min >= h[0] * 60 && min < h[1] * 60){
+      var falta = h[1] * 60 - min;
+      if (falta <= 60){ el.classList.add("pronto"); el.textContent = "Abierto · cierra pronto (" + h[1] + ":00)"; }
+      else el.textContent = "Abierto ahora · hasta las " + h[1] + ":00";
+    } else {
+      el.classList.add("cerrado");
+      var d = dia, txt;
+      if (h && min < h[0] * 60) txt = "hoy a las " + h[0] + ":00";
+      else { do { d = (d + 1) % 7; } while (!H[d]); txt = (d === (dia + 1) % 7 ? "mañana" : "el " + DIAS[d]) + " a las " + H[d][0] + ":00"; }
+      el.textContent = "Cerrado ahora · abre " + txt;
+    }
+  }
+  pintar(); setInterval(pintar, 60000);
+})();
+
 // Retoque: las secciones aparecen suavemente al bajar
 (function(){
   if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;

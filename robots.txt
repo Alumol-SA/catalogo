@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://alumolsa.com.ec/sitemap.xml
