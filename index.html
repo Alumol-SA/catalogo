@@ -87,9 +87,27 @@ header .btn{min-height:42px;padding:0 16px;font-size:15px}
   .plano{max-width:380px}
 }
 
+/* ---------- Retoques sutiles ---------- */
+.sello{display:inline-block;margin-bottom:18px;padding:6px 14px;border:1px solid rgba(86,197,208,.55);border-radius:999px;color:var(--acento);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.btn{transition:transform .15s ease,background-color .15s ease,box-shadow .15s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(10,63,69,.18)}
+.ventajas svg{width:36px;height:36px;fill:none;stroke:var(--profundo);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px;display:block}
+.cliente{border-top:4px solid var(--acento) !important;transition:transform .2s ease,box-shadow .2s ease}
+.cliente:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(10,63,69,.10)}
+.muestras img{transition:transform .25s ease}
+.muestras img:hover{transform:scale(1.04)}
+.nosotros .ancho.ancho-marcas{display:block}
+.nosotros .ancho-marcas .marcas{margin-top:44px}
+.nosotros .ancho-marcas ul{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.marcas li{transition:transform .2s ease}.marcas li:hover{transform:translateY(-2px)}
+.nosotros .logo-nos{max-width:300px}
+.js .aparece-sec{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.js .aparece-sec.visto{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js .aparece-sec{opacity:1;transform:none;transition:none}.btn:hover,.cliente:hover,.muestras img:hover{transform:none}}
+
 /* ---------- Secciones ---------- */
 section{padding:76px 0}
-.titulo{font-size:clamp(28px,3.6vw,40px);margin-bottom:14px;max-width:22ch}
+.titulo{font-size:clamp(28px,3.6vw,40px);margin-bottom:14px;max-width:30ch}
 .intro{color:var(--suave);max-width:58ch;margin:0 0 40px}
 
 /* Qué vendemos */
@@ -208,6 +226,7 @@ footer .der{margin-left:auto}
 <div class="portada">
   <div class="ancho">
     <div>
+      <span class="sello">Desde 1982 · Guayaquil</span>
       <h1>Distribuidora de aluminio, vidrio y accesorios en Guayaquil.</h1>
       <p>Desde 1982 distribuimos al por mayor y menor materia prima, accesorios, herramientas y material eléctrico, con los mejores precios del mercado.</p>
       <div class="acciones">
@@ -267,10 +286,10 @@ footer .der{margin-left:auto}
   <div class="ancho">
     <h2 class="titulo" id="porque-t">Por qué comprar en Alumol</h2>
     <ul class="ventajas">
-      <li><b>Desde 1982</b><span>Más de 40 años de experiencia en el mercado.</span></li>
-      <li><b>Mejores precios</b><span>Los mejores precios del mercado, al por mayor y menor.</span></li>
-      <li><b>Asesoría y cotizaciones</b><span>Te ayudamos a elegir el material y te enviamos tu cotización.</span></li>
-      <li><b>Entrega en la ciudad</b><span>Sin costo dentro del perímetro urbano de Guayaquil, en pedidos de mayor volumen.</span></li>
+      <li><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M6 30V10l12-6 12 6v20"/><path d="M13 30v-9h10v9"/><path d="M4 30h28"/></svg><b>Desde 1982</b><span>Más de 40 años de experiencia en el mercado.</span></li>
+      <li><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M18 4H8a2 2 0 0 0-2 2v10l14 14 12-12z"/><circle cx="12" cy="11" r="2"/></svg><b>Mejores precios</b><span>Los mejores precios del mercado, al por mayor y menor.</span></li>
+      <li><svg viewBox="0 0 36 36" aria-hidden="true"><rect x="7" y="4" width="22" height="28" rx="2"/><path d="M12 12h12M12 18h12M12 24h7"/></svg><b>Asesoría y cotizaciones</b><span>Te ayudamos a elegir el material y te enviamos tu cotización.</span></li>
+      <li><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M3 9h18v15H3zM21 14h6l5 5v5h-11"/><circle cx="9" cy="26" r="3"/><circle cx="26" cy="26" r="3"/></svg><b>Entrega en la ciudad</b><span>Sin costo dentro del perímetro urbano de Guayaquil, en pedidos de mayor volumen.</span></li>
     </ul>
   </div>
 </section>
@@ -301,7 +320,7 @@ footer .der{margin-left:auto}
       <img src="catalogo/fotos/bisagra-piso-induma.jpg" alt="Bisagra de piso" loading="lazy">
       <img src="catalogo/fotos/felpa-v-c.jpg" alt="Felpa" loading="lazy">
       <img src="catalogo/fotos/pistola-para-silicon.jpg" alt="Pistola para silicón" loading="lazy">
-      <img src="catalogo/fotos/brocas-de-alta-velocidad.jpg" alt="Brocas" loading="lazy">
+      <img src="catalogo/fotos/candado.jpg" alt="Candado" loading="lazy">
     </div>
   </div>
 </section>
@@ -346,12 +365,14 @@ footer .der{margin-left:auto}
       <h2 class="titulo">Más de 40 años en Guayaquil</h2>
       <p class="intro">Desde septiembre de 1982 distribuimos aluminio, vidrio y accesorios desde Lizardo García y Portete, con bodega propia cruzando la calle para tener el material disponible cuando lo necesitas.</p>
       <p class="lema">Perseverancia, experiencia… nuestro éxito.</p>
-      <div class="marcas">
+    </div>
+    <div class="logo-nos"><img src="catalogo/logo.png" alt="Logo de Alumol S.A."></div>
+  </div>
+  <div class="ancho ancho-marcas">
+    <div class="marcas">
         <p>Trabajamos con marcas como</p>
         <ul><li><img src="marcas/fisa.png" alt="FISA" loading="lazy"></li><li><img src="marcas/femec.png" alt="FEMEC" loading="lazy"></li><li><img src="marcas/alumina.png" alt="Alumina" loading="lazy"></li><li><img src="marcas/sika.png" alt="Sika" loading="lazy"></li><li><img src="marcas/abro.png" alt="Abro" loading="lazy"></li><li><img src="marcas/evergood.png" alt="Evergood" loading="lazy"></li><li><img src="marcas/ingco.png" alt="Ingco" loading="lazy"></li><li><img src="marcas/maviju.png" alt="Mavijú" loading="lazy"></li><li>Cesar</li><li>Inox</li><li>King</li><li>Riway</li><li>Total</li></ul>
       </div>
-    </div>
-    <div class="logo-nos"><img src="catalogo/logo.png" alt="Logo de Alumol S.A."></div>
   </div>
 </section>
 
@@ -397,5 +418,14 @@ footer .der{margin-left:auto}
 <a class="wa-flotante" href="https://wa.me/593958918180" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.2Z"/></svg>
 </a>
+<script>
+// Retoque: las secciones aparecen suavemente al bajar
+(function(){
+  if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  document.documentElement.classList.add("js");
+  var obs = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add("visto"); obs.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll("main section > .ancho").forEach(function(el){ el.classList.add("aparece-sec"); obs.observe(el); });
+})();
+</script>
 </body>
 </html>
