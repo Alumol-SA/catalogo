@@ -1,6 +1,4 @@
 {
   "_ayuda": "Avisos que salen arriba en la página y en el catálogo. 'hasta' = último día que se muestra (AAAA-MM-DD). Para no mostrar nada, dejar la lista vacía: []",
-  "avisos": [
-    { "texto": "🧪 Aviso de prueba: aquí saldrán anuncios como feriados, horarios especiales o mercadería nueva.", "hasta": "2026-11-15", "enlace": "" }
-  ]
+  "avisos": []
 }
