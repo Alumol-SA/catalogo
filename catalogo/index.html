@@ -733,6 +733,15 @@ function mostrar(texto){
   }).join("");
   document.getElementById("recomendados").hidden = reco.length === 0;
   if (window.FICHA) FICHA.desdeEnlace();
+  // Búsqueda que llega desde la página web (?buscar=bisagra)
+  var qWeb = new URLSearchParams(location.search).get("buscar");
+  if (qWeb && !mostrar.yaBusco){
+    mostrar.yaBusco = true;
+    var caja = document.getElementById("buscar");
+    caja.value = qWeb.slice(0, 60);
+    caja.dispatchEvent(new Event("input", { bubbles: true }));
+    setTimeout(function(){ caja.scrollIntoView({ block: "start" }); }, 50);
+  }
   // Enlaces a una sección (ej. #ruedas-y-carritos desde las guías de la web): bajar a esa sección ya pintada
   if (/^#[a-z0-9-]+$/.test(location.hash) && !/^#p-/.test(location.hash)){
     var destino = document.getElementById(location.hash.slice(1));
