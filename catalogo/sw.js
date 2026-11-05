@@ -25,6 +25,8 @@ self.addEventListener("fetch", function(e){
   var esFoto = (url.origin === location.origin && /\/fotos\/.+\.(jpe?g|png|webp)$/i.test(url.pathname)) ||
                (url.origin === location.origin && /\/quitar-fondo\//.test(url.pathname)) ||
                url.hostname === "lh3.googleusercontent.com" || url.hostname === "fonts.gstatic.com";
+  // Fotos pedidas para armar un PDF (modo cors): directo a internet, sin la copia guardada
+  if (esFoto && req.mode === "cors" && url.origin !== location.origin) return;
   if (esFoto) {
     e.respondWith(caches.match(req).then(function(r){ return r || fetch(req).then(function(res){ return guardar(req, res); }); }));
     return;

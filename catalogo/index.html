@@ -106,6 +106,13 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .cabecera h2{margin:0;font-size:26px;line-height:1.15;display:flex;gap:10px;align-items:baseline}
 .cabecera h2 .n{color:var(--rojo)}
 .cabecera a{font-size:14px;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
+/* CAMBIO 23 · Descargar PDF de una sección y de Mi pedido */
+.cabecera .acc{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn-pdf{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--linea);background:#fff;color:var(--profundo);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.btn-pdf:hover{border-color:var(--profundo)}
+.btn-pdf svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-pdf[disabled]{opacity:.7;cursor:progress}
+#pedido .ped-pie .btn-pdf{justify-content:center;min-height:48px;border-radius:12px;border-color:var(--profundo)}
 .grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:12px}
 
 .tarjeta{background:#fff;border:1px solid var(--linea);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
@@ -436,6 +443,7 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
   <ul id="pedido-lista"></ul>
   <div class="ped-pie">
     <a class="consultar" id="pedido-enviar" href="#" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>
+    <button type="button" class="btn-pdf" id="pedido-pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Descargar mi lista en PDF</button>
     <button class="vaciar" type="button" id="pedido-vaciar">Vaciar lista</button>
   </div>
 </dialog>
@@ -703,8 +711,9 @@ function mostrar(texto){
     var n = (i + 1 < 10 ? "0" : "") + (i + 1);
     total += s.productos.length;
     cat += '<section class="seccion" id="' + s.id + '"><div class="cabecera"><h2 class="serif"><span class="n">' + n + '</span><span>' + esc(s.nombre) +
-      '</span></h2><a href="#inicio">Volver a secciones</a></div><div class="grilla">' + s.productos.map(tarjeta).join("") + '</div></section>';
+      '</span></h2><div class="acc"><button type="button" class="btn-pdf" data-sec="' + i + '" aria-label="Descargar PDF de ' + esc(s.nombre) + '">' + ICONO_PDF + 'Descargar PDF</button><a href="#inicio">Volver a secciones</a></div></div><div class="grilla">' + s.productos.map(tarjeta).join("") + '</div></section>';
   });
+  SECCIONES_PDF = secciones;
   // CAMBIO 22: índice agrupado (los conteos solo se ven en modo revisión)
   ind = GRUPOS.map(function(g){
     var secs = secciones.filter(function(s){ return s.grupo === g.id; });
@@ -899,7 +908,7 @@ var PEDIDO = (function(){
   dlg.addEventListener("click", function(e){ if (e.target === dlg) dlg.close(); });
   document.getElementById("pedido-vaciar").addEventListener("click", function(){ lista = {}; guardar(); pintar(); });
   document.getElementById("pedido-enviar").addEventListener("click", function(){ if (window.STATS) STATS.enviar("pedido enviado", total() + " unidades"); });
-  return { pintar: pintar, agregar: agregar };
+  return { pintar: pintar, agregar: agregar, items: function(){ return lista; } };
 })();
 
 /* CAMBIO 1 · Ficha del producto al tocarlo
@@ -1445,6 +1454,153 @@ var APROBAR = (function(){
 })();
 
 /* CAMBIO 14 · Estadísticas anónimas en un formulario de Google (solo si FORMULARIO está lleno) */
+/* CAMBIO 23 · PDF de una sección o de Mi pedido, armado en el momento con los datos actuales */
+var ICONO_PDF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>';
+var SECCIONES_PDF = [];
+var PDF = (function(){
+  var lib = null;
+  function cargar(){
+    if (window.jspdf) return Promise.resolve(window.jspdf);
+    if (lib) return lib;
+    lib = new Promise(function(ok, mal){
+      var sc = document.createElement("script"); sc.src = "pdf/jspdf.umd.min.js";
+      sc.onload = function(){ ok(window.jspdf); }; sc.onerror = function(){ lib = null; mal(new Error("No se pudo cargar")); };
+      document.head.appendChild(sc);
+    });
+    return lib;
+  }
+  // Baja la foto y la deja como JPEG liviano con fondo blanco (si falla, va sin foto)
+  function imagen(url, max){
+    if (!url) return Promise.resolve(null);
+    return new Promise(function(ok){
+      var listo = false, t = setTimeout(function(){ if (!listo){ listo = true; ok(null); } }, 9000);
+      fetch(url, { mode: "cors" }).then(function(r){ if (!r.ok) throw 0; return r.blob(); }).then(function(b){
+        var u = URL.createObjectURL(b), im = new Image();
+        im.onload = function(){
+          var k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+          var c = document.createElement("canvas"); c.width = Math.max(1, Math.round(im.naturalWidth * k)); c.height = Math.max(1, Math.round(im.naturalHeight * k));
+          var x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+          URL.revokeObjectURL(u);
+          if (!listo){ listo = true; clearTimeout(t); ok({ data: c.toDataURL("image/jpeg", 0.82), w: c.width, h: c.height }); }
+        };
+        im.onerror = function(){ URL.revokeObjectURL(u); if (!listo){ listo = true; clearTimeout(t); ok(null); } };
+        im.src = u;
+      }).catch(function(){ if (!listo){ listo = true; clearTimeout(t); ok(null); } });
+    });
+  }
+  function todas(urls, max){ // de 6 en 6 para no saturar el celular
+    var res = new Array(urls.length), i = 0;
+    function sig(){ if (i >= urls.length) return Promise.resolve(); var j = i++; return imagen(urls[j], max).then(function(r){ res[j] = r; return sig(); }); }
+    var hilos = []; for (var n = 0; n < 6; n++) hilos.push(sig());
+    return Promise.all(hilos).then(function(){ return res; });
+  }
+  function lineasDe(p){
+    var l = [];
+    if (p.medidas.length) l.push((p.titulo || "Medidas") + ": " + p.medidas.join(" · "));
+    if (p.colores.length) l.push("Colores: " + p.colores.join(", "));
+    if (p.codigos.length === 1) l.push("Cód. " + p.codigos[0]);
+    else if (p.codigos.length > 1) l.push(p.codigos.length + " códigos según medida y color");
+    return l;
+  }
+  var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  // items: [{ p, nombre, lineas:[], cant }]
+  function generar(titulo, subtitulo, items, archivo){
+    return Promise.all([cargar(), imagen("logo.png", 300), todas(items.map(function(it){ return it.p ? (it.p.fotoGrande || it.p.foto) : null; }), 520)]).then(function(r){
+      var doc = new r[0].jsPDF({ unit: "mm", format: "a4" }), logo = r[1], fotos = r[2];
+      var W = 210, H = 297, M = 12, NOCHE = [10, 63, 69], CELESTE = [86, 197, 208], PROFUNDO = [14, 95, 103], TINTA = [18, 40, 43], SUAVE = [74, 94, 97], LINEA = [207, 223, 225], ROJO = [198, 40, 40];
+      var hoy = new Date(), fecha = hoy.getDate() + " de " + MESES[hoy.getMonth()] + " de " + hoy.getFullYear();
+      // Cabecera de la primera página
+      doc.setFillColor.apply(doc, NOCHE); doc.rect(0, 0, W, 46, "F");
+      doc.setDrawColor(30, 90, 96); doc.setLineWidth(0.15);
+      for (var gx = 0; gx <= W; gx += 7) doc.line(gx, 0, gx, 46);
+      for (var gy = 0; gy <= 46; gy += 7) doc.line(0, gy, W, gy);
+      doc.setFillColor(255, 255, 255); doc.roundedRect(M, 9, 26, 26, 3, 3, "F");
+      if (logo){ var lk = Math.min(21 / logo.w, 21 / logo.h); doc.addImage(logo.data, "JPEG", M + 13 - logo.w * lk / 2, 22 - logo.h * lk / 2, logo.w * lk, logo.h * lk); }
+      doc.setTextColor.apply(doc, CELESTE); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.text("ALUMOL S.A. · DESDE 1982 · GUAYAQUIL", M + 33, 14);
+      doc.setTextColor(255, 255, 255); doc.setFont("times", "normal"); doc.setFontSize(22); doc.text(doc.splitTextToSize(titulo, W - M - 45 - M)[0], M + 33, 24);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(207, 233, 236);
+      doc.text(subtitulo, M + 33, 31);
+      doc.text("WhatsApp 0958918180 · Lizardo García y Portete · alumolsa.com.ec", M + 33, 37);
+      doc.setFillColor.apply(doc, ROJO); for (var rx = 0; rx < W; rx += 9) doc.rect(rx, 45, 6, 1, "F");
+      // Tarjetas: 3 columnas
+      var cols = 3, gap = 5, cw = (W - 2 * M - gap * (cols - 1)) / cols, ch = 60, fh = 34;
+      var y = 54, col = 0;
+      function nuevaPagina(){ doc.addPage(); y = M + 2; col = 0; }
+      items.forEach(function(it, k){
+        if (col === 0 && y + ch > H - 16) nuevaPagina();
+        var x = M + col * (cw + gap);
+        doc.setDrawColor.apply(doc, LINEA); doc.setLineWidth(0.3); doc.setFillColor(255, 255, 255); doc.roundedRect(x, y, cw, ch, 2.5, 2.5, "FD");
+        var f = fotos[k];
+        if (f){ var s = Math.min((cw - 8) / f.w, (fh - 4) / f.h); doc.addImage(f.data, "JPEG", x + cw / 2 - f.w * s / 2, y + 3 + (fh - 4) / 2 - f.h * s / 2, f.w * s, f.h * s); }
+        else { doc.setFillColor(238, 243, 243); doc.roundedRect(x + 4, y + 3, cw - 8, fh - 4, 2, 2, "F"); doc.setTextColor.apply(doc, SUAVE); doc.setFontSize(8); doc.text(it.p && it.p.foto ? "Foto en el catálogo en línea" : "Foto próximamente", x + cw / 2, y + 3 + (fh - 4) / 2 + 1, { align: "center" }); }
+        var ty = y + fh + 4;
+        doc.setTextColor.apply(doc, TINTA); doc.setFont("helvetica", "bold"); doc.setFontSize(9.5);
+        var nom = doc.splitTextToSize(it.nombre, cw - 7).slice(0, 2); doc.text(nom, x + 3.5, ty); ty += nom.length * 4 + 0.6;
+        doc.setFont("helvetica", "normal"); doc.setFontSize(7.6); doc.setTextColor.apply(doc, SUAVE);
+        var resto = 3;
+        it.lineas.forEach(function(l){
+          if (resto <= 0) return;
+          var ls = doc.splitTextToSize(l, cw - 7).slice(0, resto);
+          if (/^C(ó|o)d\.|códigos/.test(l)) { doc.setTextColor.apply(doc, PROFUNDO); doc.setFont("helvetica", "bold"); }
+          doc.text(ls, x + 3.5, ty); ty += ls.length * 3.3; resto -= ls.length;
+          doc.setTextColor.apply(doc, SUAVE); doc.setFont("helvetica", "normal");
+        });
+        if (it.cant){ doc.setFillColor.apply(doc, PROFUNDO); doc.roundedRect(x + 3.5, y + ch - 8.5, 26, 5.5, 1.5, 1.5, "F"); doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("Cantidad: " + it.cant, x + 5, y + ch - 4.7); }
+        col++; if (col === cols){ col = 0; y += ch + gap; }
+      });
+      if (col) y += ch + gap;
+      // Cierre con contacto
+      if (y + 30 > H - 16) nuevaPagina();
+      doc.setFillColor(227, 244, 246); doc.roundedRect(M, y, W - 2 * M, 26, 3, 3, "F");
+      doc.setTextColor.apply(doc, TINTA); doc.setFont("times", "normal"); doc.setFontSize(15);
+      doc.text(items.length && items[0].cant ? "¿Listo para cotizar?" : "¿Te interesa algún producto?", M + 6, y + 9);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor.apply(doc, SUAVE);
+      doc.text("Escríbenos por WhatsApp al 0958918180 con el nombre o el código y te enviamos la cotización.", M + 6, y + 15.5);
+      doc.text("Fotos referenciales. Disponibilidad sujeta a stock. Generado el " + fecha + ".", M + 6, y + 21);
+      doc.link(M, y, W - 2 * M, 26, { url: "https://wa.me/593958918180" });
+      // Pie de página
+      var n = doc.getNumberOfPages();
+      for (var pg = 1; pg <= n; pg++){
+        doc.setPage(pg); doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor.apply(doc, SUAVE);
+        doc.text("Alumol S.A. · alumolsa.com.ec · WhatsApp 0958918180", M, H - 8);
+        doc.text("Página " + pg + " de " + n, W - M, H - 8, { align: "right" });
+      }
+      doc.save(archivo);
+    });
+  }
+  function ocupado(b, si){ if (!b) return; if (si){ b.dataset.txt = b.innerHTML; b.disabled = true; b.textContent = "Preparando PDF…"; } else { b.disabled = false; if (b.dataset.txt) b.innerHTML = b.dataset.txt; } }
+  function seccion(i, boton){
+    var s = SECCIONES_PDF[i]; if (!s) return;
+    var prods = s.productos.filter(function(p){ return !p.oculto; });
+    ocupado(boton, true);
+    generar(s.nombre, "Catálogo de accesorios · " + prods.length + (prods.length === 1 ? " producto" : " productos"),
+      prods.map(function(p){ return { p: p, nombre: p.nombre, lineas: lineasDe(p) }; }), "Alumol - " + s.nombre + ".pdf")
+      .then(function(){ if (window.STATS) STATS.enviar("pdf sección", s.nombre); })
+      .catch(function(){ alert("No se pudo preparar el PDF. Revisa tu conexión e inténtalo de nuevo."); })
+      .then(function(){ ocupado(boton, false); });
+  }
+  function lista(boton){
+    var l = PEDIDO.items(), claves = Object.keys(l);
+    if (!claves.length){ alert("Tu lista está vacía. Agrega productos con el botón +."); return; }
+    var items = claves.map(function(k){
+      var partes = k.split(" · "), nombre = partes[0], p = null;
+      for (var j = 0; j < PRODUCTOS.length; j++) if (PRODUCTOS[j].nombre === nombre){ p = PRODUCTOS[j]; break; }
+      return { p: p, nombre: nombre, lineas: partes.length > 1 ? [partes.slice(1).join(" · ")] : (p && p.codigos.length === 1 ? ["Cód. " + p.codigos[0]] : []), cant: l[k] };
+    });
+    var unid = claves.reduce(function(a, k){ return a + l[k]; }, 0);
+    ocupado(boton, true);
+    generar("Mi lista de productos", items.length + (items.length === 1 ? " producto" : " productos") + " · " + unid + (unid === 1 ? " unidad" : " unidades") + " para cotizar", items, "Alumol - Mi lista.pdf")
+      .then(function(){ if (window.STATS) STATS.enviar("pdf lista", unid + " unidades"); })
+      .catch(function(){ alert("No se pudo preparar el PDF. Revisa tu conexión e inténtalo de nuevo."); })
+      .then(function(){ ocupado(boton, false); });
+  }
+  document.getElementById("catalogo").addEventListener("click", function(e){
+    var b = e.target.closest(".btn-pdf[data-sec]"); if (b) seccion(+b.getAttribute("data-sec"), b);
+  });
+  document.getElementById("pedido-pdf").addEventListener("click", function(){ lista(this); });
+  return { seccion: seccion, lista: lista };
+})();
+
 var STATS = (function(){
   var activo = !!(FORMULARIO && CAMPO_TIPO && CAMPO_VALOR) && !REVISION, espera = null, ultima = "";
   function enviar(tipo, valor){
