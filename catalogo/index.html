@@ -112,24 +112,6 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 .btn-pdf:hover{border-color:var(--profundo)}
 .btn-pdf svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .btn-pdf[disabled]{opacity:.7;cursor:progress}
-/* CAMBIO 24 · Arma tu PDF */
-.arma-pdf{margin-top:12px;width:100%;justify-content:center;min-height:48px;border-radius:14px;border-style:dashed;border-color:var(--profundo)}
-dialog#armapdf{border:0;border-radius:18px;padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--tinta)}
-dialog#armapdf::backdrop{background:rgba(18,40,43,.55)}
-#armapdf .ap-c{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--linea);position:sticky;top:0;background:#fff;z-index:1}
-#armapdf .ap-c h3{margin:0;font-size:22px}
-#armapdf .ap-c button{width:40px;height:40px;border-radius:8px;border:1px solid var(--linea);background:#fff;font-size:20px;cursor:pointer}
-#armapdf .ayuda{margin:12px 18px 0;color:var(--suave);font-size:14px}
-#armapdf fieldset{border:0;margin:0;padding:10px 18px}
-#armapdf legend{display:flex;align-items:center;gap:10px;width:100%;font-weight:700;font-size:16px;padding:6px 0}
-#armapdf legend .todo{margin-left:auto;font:inherit;font-size:13px;font-weight:700;color:var(--profundo);background:none;border:0;text-decoration:underline;cursor:pointer;min-height:36px}
-#armapdf .op{display:flex;flex-wrap:wrap;gap:8px}
-#armapdf .op label{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--linea);background:var(--fondo);font-size:14px;font-weight:600;cursor:pointer}
-#armapdf .op input{accent-color:var(--profundo);width:18px;height:18px;margin:0}
-#armapdf .op label:has(input:checked){border-color:var(--profundo);background:var(--pastilla)}
-#armapdf .ap-p{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--linea);padding:12px 18px 16px;display:flex;flex-direction:column;gap:6px}
-#armapdf .ap-p .btn-pdf{justify-content:center;min-height:48px;border-radius:12px;background:var(--profundo);border-color:var(--profundo);color:#fff}
-#armapdf .ap-p small{color:var(--suave);text-align:center;font-size:13px}
 #pedido .ped-pie .btn-pdf{justify-content:center;min-height:48px;border-radius:12px;border-color:var(--profundo)}
 .grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:12px}
 
@@ -421,7 +403,6 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
   <nav aria-label="Secciones" id="nav">
     <h2 class="serif">Secciones</h2>
     <div class="indice" id="indice"></div>
-    <button type="button" class="btn-pdf arma-pdf" id="arma-pdf" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Arma tu PDF con las secciones que quieras</button>
   </nav>
   <div id="chips" aria-label="Ir a sección" hidden></div>
   <main id="catalogo"><div class="esq-grilla" aria-label="Cargando catálogo"><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div><div class="esqueleto"></div></div></main>
@@ -457,13 +438,6 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
 
 <!-- CAMBIO 2 · Lista de pedido -->
 <button id="barra-pedido" type="button" hidden>Mi pedido <b id="pedido-n">0</b></button>
-<dialog id="armapdf" aria-labelledby="armapdf-t">
-  <div class="ap-c"><h3 class="serif" id="armapdf-t">Arma tu PDF</h3><button type="button" id="armapdf-cerrar" aria-label="Cerrar">×</button></div>
-  <p class="ayuda">Marca las secciones que quieres y descarga un PDF solo con eso.</p>
-  <div id="armapdf-grupos"></div>
-  <div class="ap-p"><button type="button" class="btn-pdf" id="armapdf-ir" disabled>Descargar PDF</button><small id="armapdf-nota">Elige al menos una sección.</small></div>
-</dialog>
-
 <dialog id="pedido" aria-labelledby="pedido-titulo">
   <div class="ped-cab"><h3 class="serif" id="pedido-titulo">Mi pedido</h3><button class="quitar" type="button" id="pedido-cerrar" aria-label="Cerrar">×</button></div>
   <ul id="pedido-lista"></ul>
@@ -740,7 +714,6 @@ function mostrar(texto){
       '</span></h2><div class="acc"><button type="button" class="btn-pdf" data-sec="' + i + '" aria-label="Descargar PDF de ' + esc(s.nombre) + '">' + ICONO_PDF + 'Descargar PDF</button><a href="#inicio">Volver a secciones</a></div></div><div class="grilla">' + s.productos.map(tarjeta).join("") + '</div></section>';
   });
   SECCIONES_PDF = secciones;
-  document.getElementById("arma-pdf").hidden = !secciones.length;
   // CAMBIO 22: índice agrupado (los conteos solo se ven en modo revisión)
   ind = GRUPOS.map(function(g){
     var secs = secciones.filter(function(s){ return s.grupo === g.id; });
@@ -1532,7 +1505,7 @@ var PDF = (function(){
   var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
   // items: [{ p, nombre, lineas:[], cant }]
   function generar(titulo, subtitulo, items, archivo){
-    return Promise.all([cargar(), imagen("logo.png", 300), todas(items.map(function(it){ return it.p ? (it.p.fotoGrande || it.p.foto) : null; }), items.length > 90 ? 380 : 520)]).then(function(r){
+    return Promise.all([cargar(), imagen("logo.png", 300), todas(items.map(function(it){ return it.p ? (it.p.fotoGrande || it.p.foto) : null; }), 520)]).then(function(r){
       var doc = new r[0].jsPDF({ unit: "mm", format: "a4" }), logo = r[1], fotos = r[2];
       var W = 210, H = 297, M = 12, NOCHE = [10, 63, 69], CELESTE = [86, 197, 208], PROFUNDO = [14, 95, 103], TINTA = [18, 40, 43], SUAVE = [74, 94, 97], LINEA = [207, 223, 225], ROJO = [198, 40, 40];
       var hoy = new Date(), fecha = hoy.getDate() + " de " + MESES[hoy.getMonth()] + " de " + hoy.getFullYear();
@@ -1554,14 +1527,6 @@ var PDF = (function(){
       var y = 54, col = 0;
       function nuevaPagina(){ doc.addPage(); y = M + 2; col = 0; }
       items.forEach(function(it, k){
-        if (it.titulo){ // CAMBIO 24: título de sección dentro del PDF
-          if (col){ col = 0; y += ch + gap; }
-          if (y + 12 + ch > H - 16) nuevaPagina();
-          doc.setFont("times", "normal"); doc.setFontSize(16); doc.setTextColor.apply(doc, ROJO); doc.text(it.num, M, y + 7);
-          doc.setTextColor.apply(doc, TINTA); doc.text(it.titulo, M + doc.getTextWidth(it.num) + 3, y + 7);
-          doc.setDrawColor.apply(doc, CELESTE); doc.setLineWidth(0.8); doc.line(M, y + 10, W - M, y + 10);
-          y += 15; return;
-        }
         if (col === 0 && y + ch > H - 16) nuevaPagina();
         var x = M + col * (cw + gap);
         doc.setDrawColor.apply(doc, LINEA); doc.setLineWidth(0.3); doc.setFillColor(255, 255, 255); doc.roundedRect(x, y, cw, ch, 2.5, 2.5, "FD");
@@ -1588,7 +1553,7 @@ var PDF = (function(){
       if (y + 30 > H - 16) nuevaPagina();
       doc.setFillColor(227, 244, 246); doc.roundedRect(M, y, W - 2 * M, 26, 3, 3, "F");
       doc.setTextColor.apply(doc, TINTA); doc.setFont("times", "normal"); doc.setFontSize(15);
-      doc.text(items.some(function(it){ return it.cant; }) ? "¿Listo para cotizar?" : "¿Te interesa algún producto?", M + 6, y + 9);
+      doc.text(items.length && items[0].cant ? "¿Listo para cotizar?" : "¿Te interesa algún producto?", M + 6, y + 9);
       doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor.apply(doc, SUAVE);
       doc.text("Escríbenos por WhatsApp al 0958918180 con el nombre o el código y te enviamos la cotización.", M + 6, y + 15.5);
       doc.text("Fotos referenciales. Disponibilidad sujeta a stock. Generado el " + fecha + ".", M + 6, y + 21);
@@ -1633,56 +1598,6 @@ var PDF = (function(){
     var b = e.target.closest(".btn-pdf[data-sec]"); if (b) seccion(+b.getAttribute("data-sec"), b);
   });
   document.getElementById("pedido-pdf").addEventListener("click", function(){ var d = document.getElementById("pedido"); if (d.open) d.close(); lista(document.getElementById("barra-pedido")); });
-
-  // CAMBIO 24 · Arma tu PDF: el cliente marca las secciones
-  var dlg = document.getElementById("armapdf"), cajaG = document.getElementById("armapdf-grupos"), ir = document.getElementById("armapdf-ir"), nota = document.getElementById("armapdf-nota");
-  function pintarDialogo(){
-    cajaG.innerHTML = GRUPOS.map(function(g){
-      var idx = []; SECCIONES_PDF.forEach(function(s, i){ if (s.grupo === g.id && s.productos.some(function(p){ return !p.oculto; })) idx.push(i); });
-      if (!idx.length) return "";
-      return '<fieldset><legend><span aria-hidden="true">' + g.ico + '</span>' + esc(g.nombre) + '<button type="button" class="todo" data-g="' + g.id + '">Marcar todo</button></legend><div class="op">' +
-        idx.map(function(i){ return '<label><input type="checkbox" value="' + i + '" data-g="' + g.id + '">' + esc(SECCIONES_PDF[i].nombre) + '</label>'; }).join("") + '</div></fieldset>';
-    }).join("");
-    revisar();
-  }
-  function marcadas(){ return Array.prototype.map.call(cajaG.querySelectorAll("input:checked"), function(c){ return +c.value; }); }
-  function revisar(){
-    var m = marcadas();
-    ir.disabled = !m.length;
-    nota.textContent = !m.length ? "Elige al menos una sección." : (m.length === 1 ? "1 sección elegida." : m.length + " secciones elegidas.") + (m.length > 8 ? " Puede tardar un poco." : "");
-    cajaG.querySelectorAll(".todo").forEach(function(b){
-      var cs = cajaG.querySelectorAll('input[data-g="' + b.getAttribute("data-g") + '"]'), todas = Array.prototype.every.call(cs, function(c){ return c.checked; });
-      b.textContent = todas ? "Quitar todo" : "Marcar todo";
-    });
-  }
-  cajaG.addEventListener("change", revisar);
-  cajaG.addEventListener("click", function(e){
-    var b = e.target.closest(".todo"); if (!b) return;
-    var cs = cajaG.querySelectorAll('input[data-g="' + b.getAttribute("data-g") + '"]'), todas = Array.prototype.every.call(cs, function(c){ return c.checked; });
-    cs.forEach(function(c){ c.checked = !todas; }); revisar();
-  });
-  document.getElementById("arma-pdf").addEventListener("click", function(){ pintarDialogo(); if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); });
-  document.getElementById("armapdf-cerrar").addEventListener("click", function(){ dlg.close(); });
-  dlg.addEventListener("click", function(e){ if (e.target === dlg) dlg.close(); });
-  ir.addEventListener("click", function(){
-    var m = marcadas(); if (!m.length) return;
-    var items = [], nombres = [];
-    m.forEach(function(i){
-      var s = SECCIONES_PDF[i], prods = s.productos.filter(function(p){ return !p.oculto; });
-      nombres.push(s.nombre);
-      items.push({ titulo: s.nombre, num: (i + 1 < 10 ? "0" : "") + (i + 1) });
-      prods.forEach(function(p){ items.push({ p: p, nombre: p.nombre, lineas: lineasDe(p) }); });
-    });
-    var sub = nombres.length === 1 ? nombres[0] : nombres.length === 2 ? nombres.join(" y ") : nombres.slice(0, 2).join(", ") + " y " + (nombres.length - 2) + (nombres.length === 3 ? " sección más" : " secciones más");
-    var boton = document.getElementById("arma-pdf");
-    dlg.close(); // la descarga no funciona bien con la ventana abierta encima
-    ocupado(boton, true);
-    generar(nombres.length === 1 ? nombres[0] : "Catálogo de accesorios", nombres.length === 1 ? "Catálogo de accesorios" : sub, items,
-      nombres.length === 1 ? "Alumol - " + nombres[0] + ".pdf" : "Alumol - Catálogo (" + nombres.length + " secciones).pdf")
-      .then(function(){ if (window.STATS) STATS.enviar("pdf armado", nombres.join(", ").slice(0, 190)); })
-      .catch(function(){ alert("No se pudo preparar el PDF. Revisa tu conexión e inténtalo de nuevo."); })
-      .then(function(){ ocupado(boton, false); });
-  });
   return { seccion: seccion, lista: lista };
 })();
 
