@@ -156,12 +156,13 @@ header .btn{min-height:42px;padding:0 16px;font-size:15px}
 
 /* Buscador en la portada */
 .oculto{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.portada .ancho > div{min-width:0}
+.portada .ancho > div,.catalogo .ancho > div{min-width:0}
 .buscar-web{width:100%;display:flex;align-items:center;max-width:520px;margin:0 0 22px;background:#fff;border-radius:12px;padding:6px 6px 6px 14px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
 .buscar-web svg{flex:none;width:20px;height:20px;fill:none;stroke:var(--suave);stroke-width:2;stroke-linecap:round}
 .buscar-web input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:16px;color:var(--tinta);padding:10px 10px;background:transparent}
 .buscar-web button{flex:none;border:0;border-radius:9px;background:var(--profundo);color:#fff;font:inherit;font-weight:700;font-size:15px;padding:0 18px;min-height:42px;cursor:pointer}
 .buscar-web button:hover{background:#0b4c52}
+.buscar-web.en-catalogo{box-shadow:none;border:1px solid #B9CDD0;margin:-16px 0 26px}
 .buscar-web:focus-within{outline:3px solid var(--acento);outline-offset:2px}
 .btn-llamar{border-color:var(--profundo);color:var(--profundo);background:#fff}
 .btn-llamar:hover{background:var(--aluminio)}
@@ -334,12 +335,6 @@ footer .der{margin-left:auto}
     <div>
       <h1>Distribuidora de aluminio, vidrio y accesorios en Guayaquil.</h1>
       <p>Desde 1982 distribuimos al por mayor y menor materia prima, accesorios, herramientas y material eléctrico, con los mejores precios del mercado.</p>
-      <form class="buscar-web" action="catalogo/" method="get" role="search">
-        <label for="buscar-web" class="oculto">Buscar en el catálogo</label>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="buscar-web" name="buscar" type="search" placeholder="Busca: rueda, bisagra, cerradura…" autocomplete="off" required>
-        <button type="submit">Buscar</button>
-      </form>
       <div class="acciones">
         <a class="btn btn-cat" href="catalogo/">Ver catálogo de accesorios</a>
         <a class="btn btn-borde" href="https://wa.me/593958918180?text=Hola%20Alumol%2C%20quisiera%20cotizar%20material" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
@@ -411,6 +406,12 @@ footer .der{margin-left:auto}
     <div>
       <h2 class="titulo">Todo el catálogo de accesorios en tu celular</h2>
       <p class="intro">Busca por nombre, revisa medidas y colores, y arma tu lista para mandarla por WhatsApp.</p>
+      <form class="buscar-web en-catalogo" action="catalogo/" method="get" role="search">
+        <label for="buscar-web" class="oculto">Buscar en el catálogo</label>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="buscar-web" name="buscar" type="search" placeholder="Ej.: rueda, bisagra…" autocomplete="off" required>
+        <button type="submit">Buscar</button>
+      </form>
       <ul>
         <li>Ruedas y carritos</li>
         <li>Seguros y picaportes</li>
