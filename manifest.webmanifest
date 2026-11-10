@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "Alumol S.A.",
+  "short_name": "Alumol",
+  "description": "Aluminio, vidrio, accesorios, herramientas y material eléctrico en Guayaquil desde 1982.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0A3F45",
+  "icons": [
+    { "src": "/app-icono-any-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/app-icono-any-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/app-icono-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/app-icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
