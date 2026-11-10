@@ -1622,5 +1622,12 @@ var STATS = (function(){
   return { enviar: enviar, busqueda: busqueda };
 })();
 </script>
+<script>
+// Contador de visitas (Cloudflare Web Analytics) — no cuenta el modo revisión
+if (!/revision=1/.test(location.search) && !(window.REVISION)) {
+  var cf = document.createElement("script"); cf.type = "module"; cf.src = "https://static.cloudflareinsights.com/beacon.min.js";
+  cf.setAttribute("data-cf-beacon", '{"token": "2e8149496311406bac168cc553674cb3"}'); document.body.appendChild(cf);
+}
+</script>
 </body>
 </html>
