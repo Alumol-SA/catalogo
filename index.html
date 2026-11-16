@@ -210,6 +210,12 @@ section{padding:76px 0}
 
 /* Por qué Alumol */
 .porque{padding-top:0}
+.nosotros .ancho.ancho-mv{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px;align-items:stretch}
+.mv{background:#fff;border:1px solid var(--linea);border-top:4px solid var(--acento);border-radius:12px;padding:22px 24px;color:var(--tinta)}
+.mv svg{width:36px;height:36px;fill:none;stroke:var(--profundo);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block;margin-bottom:8px}
+.mv h3{font-family:"Bree Serif",Georgia,serif;font-weight:400;font-size:24px;color:var(--profundo);margin:0 0 8px}
+.mv p{margin:0;color:var(--suave);line-height:1.6}
+@media (max-width:760px){.nosotros .ancho.ancho-mv{grid-template-columns:1fr}}
 .ventajas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .ventajas li{border-top:3px solid var(--acento);padding-top:14px}
 .ventajas b{display:block;font-family:"Bree Serif",Georgia,serif;font-weight:400;font-size:22px;color:var(--profundo);margin-bottom:4px}
@@ -521,6 +527,18 @@ footer .der{margin-left:auto}
       <p class="lema">Perseverancia, experiencia… nuestro éxito.</p>
     </div>
     <div class="logo-nos"><img src="catalogo/logo.png" alt="Logo de Alumol S.A."></div>
+  </div>
+  <div class="ancho ancho-mv">
+    <div class="mv">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="13"/><circle cx="18" cy="18" r="7.5"/><circle cx="18" cy="18" r="2"/><path d="M18 18 30 6M26 6h4v4"/></svg>
+      <h3>Misión</h3>
+      <p>Ofrecer a nuestros clientes la mejor experiencia en la distribución de aluminio, vidrio y accesorios, garantizando productos de alta calidad, entregas confiables y un servicio que impulse el crecimiento de talleres y negocios en todo el país. Trabajamos con las marcas más reconocidas para asegurar soluciones eficientes, duraderas y competitivas.</p>
+    </div>
+    <div class="mv">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><path d="M2 18s6-10 16-10 16 10 16 10-6 10-16 10S2 18 2 18z"/><circle cx="18" cy="18" r="5"/></svg>
+      <h3>Visión</h3>
+      <p>Ser la primera elección a nivel nacional en la distribución de aluminio, vidrio y accesorios, destacándonos por nuestra innovación, variedad de productos y un servicio que supera expectativas. Aspiramos a expandir nuestra presencia, fortalecer alianzas y generar nuevas oportunidades de negocio para nuestros clientes y colaboradores.</p>
+    </div>
   </div>
   <div class="ancho ancho-marcas">
     <div class="marcas">
