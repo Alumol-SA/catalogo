@@ -175,7 +175,9 @@ dialog#aprobar::backdrop{background:rgba(18,40,43,.55)}
 #aprobar .vacio{color:var(--suave);text-align:center;padding:20px 0}
 /* CAMBIO 20 · Código del producto */
 .tarjeta .cod{margin:-2px 0 0;font-size:12px;color:var(--suave);font-variant-numeric:tabular-nums}
-#ficha .cod-elegido{margin:0;padding:8px 12px;border-radius:10px;background:var(--pastilla);color:var(--profundo);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+#ficha .cod-elegido{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0;padding:8px 8px 8px 12px;border-radius:10px;background:var(--pastilla);color:var(--profundo);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+#ficha .copiar-cod{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--profundo);background:#fff;color:var(--profundo);font:inherit;font-size:13px;font-weight:700;cursor:pointer;flex:none}
+#ficha .copiar-cod.ok{background:var(--profundo);color:#fff}
 #ficha .cod-elegido.pendiente{background:#F3F5F5;color:var(--suave);font-weight:600}
 #ficha details.todos-cod summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--profundo);min-height:32px;display:flex;align-items:center}
 #ficha details.todos-cod ul{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
@@ -987,6 +989,7 @@ var PEDIDO = (function(){
 /* CAMBIO 1 · Ficha del producto al tocarlo
    CAMBIO 10 · Elegir medida, color y cantidad   ·   CAMBIO 12 · Compartir el producto */
 /* CAMBIO 25 · También te puede servir: primero los de la columna «Relacionados» de la hoja; luego otros de la misma sección */
+function copiarViejo(t){ var a = document.createElement("textarea"); a.value = t; a.setAttribute("readonly", ""); a.style.position = "fixed"; a.style.opacity = "0"; document.body.appendChild(a); a.select(); try { document.execCommand("copy"); } catch (e) {} a.remove(); }
 function visibleCliente(q){ return q && (!q.oculto || REVISION); }
 function buscarPorNombre(n){
   var nn = normal(n);
@@ -1132,7 +1135,7 @@ var FICHA = (function(){
     var p = actual, l = codigosDe(p, elegido.m, elegido.c);
     var falta = [p.medidas.length > 1 && !elegido.m ? "la medida" : "", p.colores.length > 1 && !elegido.c ? "el color" : ""].filter(Boolean);
     el.classList.remove("pendiente");
-    if (l.length === 1) el.textContent = "Código: " + l[0];
+    if (l.length === 1) el.innerHTML = '<span>Código: ' + esc(l[0]) + '</span><button type="button" class="copiar-cod" data-cod="' + esc(l[0]) + '" aria-label="Copiar código ' + esc(l[0]) + '"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar</button>';
     else if (falta.length && l.length > 1) { el.textContent = "Elige " + falta.join(" y ") + " para ver el código exacto."; el.classList.add("pendiente"); }
     else if (l.length > 1) el.textContent = "Códigos: " + l.map(function(k){ return k + (CODIGOS[k] ? " (" + CODIGOS[k].d.toLowerCase() + ")" : ""); }).join(" · ");
     else { el.textContent = "Esta combinación no tiene código registrado. Consúltanos por WhatsApp."; el.classList.add("pendiente"); }
@@ -1212,6 +1215,14 @@ var FICHA = (function(){
       return;
     }
     if (e.target.closest("#f-compartir")) compartir(actual);
+    var cc = e.target.closest(".copiar-cod");
+    if (cc){
+      var cod = cc.getAttribute("data-cod");
+      var listo = function(){ cc.classList.add("ok"); cc.lastChild.textContent = "Copiado"; setTimeout(function(){ if (cc.isConnected){ cc.classList.remove("ok"); cc.lastChild.textContent = "Copiar"; } }, 1600); };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(cod).then(listo, function(){ copiarViejo(cod); listo(); });
+      else { copiarViejo(cod); listo(); }
+      return;
+    }
     var rb = e.target.closest("[data-rel]"); if (rb){ abrir(PRODUCTOS[+rb.getAttribute("data-rel")]); return; }
     var cb = e.target.closest("#f-comparar");
     if (cb){ var on = COMPARAR.alternar(actual); cb.setAttribute("aria-pressed", on); cb.textContent = on ? "✓ Comparando" : "Comparar con otros productos"; if (on === null) aviso("Puedes comparar hasta 3 productos."); return; }
