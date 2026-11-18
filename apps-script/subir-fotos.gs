@@ -1,5 +1,5 @@
 /**
- * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 7
+ * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 8
  * Dónde va: en la hoja «Catálogo Alumol – Productos» › Extensiones › Apps Script.
  *
  * DOS CLAVES:
@@ -19,6 +19,7 @@
  *  - Varias fotos (v7): la celda Foto puede tener varias fotos separadas con «;». Cada una puede llevar
  *    el color delante, por ejemplo «Rojo teja: enlace; Naranja: enlace». La primera es la principal.
  *    «Agregar otra foto» la suma al final; cambiar o quitar afecta solo a la foto elegida.
+ *  - Color nuevo (v8): si la foto es de un color que todavía no está en la columna Colores, se agrega solo.
  *  - Registro: todo queda en la pestaña «Registro de fotos».
  *  - Menú «Catálogo › Reordenar números».
  */
@@ -34,7 +35,7 @@ var HOJA_NOTAS = "Notas de revisión";
 var HOJA_REGISTRO = "Registro de fotos";
 var HOJA_APROBAR = "Por aprobar";
 var CAB_APROBAR = ["ID", "Fecha", "Quién", "N°", "Producto", "Acción", "Valor", "Foto nueva", "Foto anterior", "Estado", "Revisado"];
-var VERSION = 7;
+var VERSION = 8;
 
 function rolDe(clave) {
   clave = String(clave || "").trim();
@@ -217,7 +218,7 @@ function aplicarFoto(d, url, autor, op) {
   if (!x) return { ok: false, error: "No encuentro ese producto en la hoja." };
   var m = String(url).match(/\/d\/([A-Za-z0-9_-]{20,})/);
   if (m) { try { var f = DriveApp.getFileById(m[1]); f.moveTo(carpeta(CARPETA)); f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {} }
-  var fotos = partesFoto(x.foto), color = String(op.color || "").replace(/[:;]/g, " ").trim().slice(0, 40), vieja = "", texto;
+  var fotos = partesFoto(x.foto), color = String(op.color || "").replace(/[:;,\/]/g, " ").replace(/\s+/g, " ").trim().slice(0, 40), vieja = "", texto;
   if (op.modo === "agregar" && fotos.length) {
     fotos.push((color ? color + ": " : "") + url); texto = "Foto agregada (" + fotos.length + " fotos)";
   } else {
@@ -232,8 +233,23 @@ function aplicarFoto(d, url, autor, op) {
   var celda = fotos.join("; ");
   x.hoja.getRange(x.fila, x.cF + 1).setValue(celda);
   if (vieja && urlDe(vieja) !== url) mandarAPapelera(urlDe(vieja), CARPETA);
-  registrar(autor, d, texto + (color ? " · color " + color : ""));
-  return { ok: true, url: url, foto: celda };
+  var colores = agregarColor(x, color);
+  registrar(autor, d, texto + (color ? " · color " + color : "") + (colores.nuevo ? " (color nuevo agregado)" : ""));
+  return { ok: true, url: url, foto: celda, colores: colores.celda };
+}
+
+// Agrega el color a la columna Colores si todavía no está (no cambia los que ya hay)
+function agregarColor(x, color) {
+  var cC = columna(x.cab, "colores");
+  if (cC < 0) return { celda: undefined, nuevo: false };
+  var celda = String(x.hoja.getRange(x.fila, cC + 1).getValue() || "");
+  if (!color) return { celda: celda, nuevo: false };
+  var lista = celda.split(",").map(function (c) { return c.trim(); }).filter(String);
+  if (lista.some(function (c) { return normal(c) === normal(color); })) return { celda: celda, nuevo: false };
+  lista.push(color);
+  celda = lista.join(", ");
+  x.hoja.getRange(x.fila, cC + 1).setValue(celda);
+  return { celda: celda, nuevo: true };
 }
 
 // ---------- Varias fotos en una celda ----------

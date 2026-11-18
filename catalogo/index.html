@@ -342,7 +342,8 @@ dialog#ficha::backdrop{background:rgba(18,40,43,.55)}
 #ficha .gal-color{position:absolute;left:10px;top:10px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 0 0 1px var(--linea);font-size:13px;font-weight:700}
 #ficha .gal-color:empty{display:none}
 @media (hover:none){#ficha .gal-flecha{display:none}}
-#subir-foto .sf-color{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700}
+#subir-foto .sf-color{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700;margin-top:4px}
+#subir-foto .sf-color input{min-height:44px;border-radius:10px;border:1.5px solid var(--linea);padding:0 12px;font:inherit;font-weight:600;color:var(--tinta)}
 #subir-foto .sf-color select{min-height:44px;border-radius:10px;border:1.5px solid var(--linea);padding:0 10px;font:inherit;font-weight:600;background:#fff;color:var(--tinta)}
 #ficha .ficha-cuerpo{padding:16px 18px 20px;display:flex;flex-direction:column;gap:12px}
 #ficha .ficha-sec{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rojo)}
@@ -545,7 +546,8 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
         <button type="button" data-o="limpia" aria-pressed="true"><img alt="Foto con fondo blanco"><span>Fondo blanco</span></button>
         <button type="button" data-o="original" aria-pressed="false"><img alt="Foto original"><span>Original</span></button>
       </div>
-      <label class="sf-color" id="sf-color-caja" hidden>¿De qué color es el producto en esta foto?<select id="sf-color"></select></label>
+      <label class="sf-color" id="sf-color-caja" hidden><span id="sf-color-tit">¿De qué color es el producto en esta foto?</span><select id="sf-color"></select></label>
+      <label class="sf-color" id="sf-color-nuevo-caja" hidden>Nombre del color nuevo<input type="text" id="sf-color-nuevo" maxlength="40" placeholder="Ej.: Terracota" autocomplete="off"></label>
       <div class="sf-btns">
         <button type="button" class="principal" id="sf-subir" disabled>Usar esta foto</button>
         <label class="secundario">Tomar otra<input type="file" accept="image/*" capture="environment" id="sf-archivo2" hidden></label>
@@ -597,7 +599,7 @@ var SUBIR_FOTOS = "https://script.google.com/macros/s/AKfycbwc2no-xJ2C4chAEw9HIo
 
 var COLORES = {"blanco":"#FFFFFF","natural":"#C9CED3","madera":"#B9844F","negro":"#1B1B1B","bronce":"#6A4A2C","gris":"#8E9399",
   "transparente":"#F2F6F7","silver":"#C9CED3","plateado":"#C9CED3","platino":"#D9DCDF","rojo":"#D62E2E","azul":"#1F5FBF",
-  "dorado":"#C9A13B","verde":"#2E8B57","amarillo":"#F2C230","cafe":"#6B4A2C","café":"#6B4A2C","cromado":"#D0D4D8","gris oscuro":"#555B61","marfil":"#F1E9D2","naranja":"#E8772E","opal":"#EDEFF0","gris ratón":"#6E7378","gris raton":"#6E7378","negro-rojo":"#7A1E1E"};
+  "dorado":"#C9A13B","verde":"#2E8B57","amarillo":"#F2C230","cafe":"#6B4A2C","café":"#6B4A2C","cromado":"#D0D4D8","gris oscuro":"#555B61","marfil":"#F1E9D2","naranja":"#E8772E","opal":"#EDEFF0","gris ratón":"#6E7378","gris raton":"#6E7378","negro-rojo":"#7A1E1E","terracota":"#C0582F","rojo teja":"#A8432E","azul oscuro":"#1F2E5A","naranja fuerte":"#D9561E"};
 var ICONO_WA = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.4z"/><path d="M9.2 8.6c.2 2.9 2.6 5.5 5.9 6.2l1-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>';
 var ICONO_CAMARA = '<svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6F8689" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 
@@ -810,6 +812,7 @@ function mostrar(texto){
       if ("celda" in sub) ponerFotos(p, sub.celda);
       else if ("url" in sub) ponerFotos(p, sub.url || "");
       if ("mejorar" in sub) p.mejorar = sub.mejorar;
+      if ("colores" in sub) p.colores = String(sub.colores).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean);
       if ("oculto" in sub) p.oculto = sub.oculto;
     }
     p.id = PRODUCTOS.push(p) - 1;
@@ -1394,8 +1397,13 @@ var FOTOS = (function(){
     // CAMBIO 28: si el producto tiene colores, se pregunta de qué color es la foto
     var caja = document.getElementById("sf-color-caja"), sel = document.getElementById("sf-color");
     var actualColor = op && op.modo === "cambiar" && p.fotos[op.indice] ? p.fotos[op.indice].color : "";
-    caja.hidden = !(p.colores.length > 1);
-    sel.innerHTML = '<option value="">No es de un color en especial</option>' + p.colores.map(function(c){ return '<option' + (sinTildes(c) === sinTildes(actualColor) ? " selected" : "") + '>' + esc(c) + '</option>'; }).join("");
+    // CAMBIO 29: «Otro color…» para un color que todavía no está en la hoja (se agrega solo a la columna Colores)
+    caja.hidden = false;
+    document.getElementById("sf-color-tit").textContent = p.colores.length ? "¿De qué color es el producto en esta foto?" : "¿Esta foto es de un color en especial?";
+    sel.innerHTML = '<option value="">' + (p.colores.length ? "No es de un color en especial" : "No, es una foto normal") + '</option>' +
+      p.colores.map(function(c){ return '<option' + (sinTildes(c) === sinTildes(actualColor) ? " selected" : "") + '>' + esc(c) + '</option>'; }).join("") +
+      '<option value="__otro__">Otro color…</option>';
+    document.getElementById("sf-color-nuevo").value = ""; document.getElementById("sf-color-nuevo-caja").hidden = true;
     document.getElementById("sf-nombre").textContent = (p.numero ? "N° " + p.numero + " · " : "") + p.nombre;
     document.getElementById("sf-paso1").hidden = false; document.getElementById("sf-paso2").hidden = true;
     if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
@@ -1475,10 +1483,16 @@ var FOTOS = (function(){
     var clave = ""; try { clave = localStorage.getItem("alumol-clave") || ""; } catch (e) {}
     if (!clave){ clave = (prompt("Escribe la clave para subir fotos:") || "").trim(); if (!clave) return; }
     var imagen = versiones[elegida], color = document.getElementById("sf-color-caja").hidden ? "" : document.getElementById("sf-color").value;
+    if (color === "__otro__"){
+      color = document.getElementById("sf-color-nuevo").value.replace(/[:;,\/]/g, " ").replace(/\s+/g, " ").trim();
+      if (!color){ decir("Escribe el nombre del color nuevo.", true); document.getElementById("sf-color-nuevo").focus(); return; }
+      color = color.charAt(0).toUpperCase() + color.slice(1);
+    }
+    var colorNuevo = color && !producto.colores.some(function(c){ return sinTildes(c) === sinTildes(color); });
     var extra = op || color ? { modo: (op && op.modo) || "cambiar", indice: op && op.indice !== undefined ? op.indice : "", color: color } : null;
     btnSubir.disabled = true; decir("Subiendo la foto…");
     // Con varias fotos o color hace falta la versión 7 del código de Apps Script
-    (extra ? fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){ if (!info || !(info.version >= 7)) throw new Error("Hay que pegar la versión nueva del código en Apps Script"); }) : Promise.resolve())
+    (extra ? fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){ if (!info || !(info.version >= (colorNuevo ? 8 : 7))) throw new Error("Hay que pegar la versión nueva del código en Apps Script"); }) : Promise.resolve())
       .then(function(){
         var cuerpo = { clave: clave, autor: autorGuardado(), numero: producto.numero || "", producto: producto.nombre, imagen: imagen };
         if (extra){ cuerpo.modo = extra.modo; cuerpo.indice = extra.indice; cuerpo.color = extra.color; }
@@ -1501,10 +1515,15 @@ var FOTOS = (function(){
         }
         // Se muestra al instante; la hoja publicada tarda unos minutos en reflejarlo
         var pos = 0;
+        if (typeof r.colores === "string"){
+          producto.colores = r.colores.split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean);
+          producto.buscar += " " + color;
+        }
         if (typeof r.foto === "string"){
           ponerFotos(producto, r.foto);
           pos = extra && extra.modo === "agregar" ? producto.fotos.length - 1 : (parseInt(extra && extra.indice, 10) || 0);
           SUBIDAS[producto.numero || producto.nombre] = { celda: r.foto, mejorar: pos ? producto.mejorar : false, t: Date.now() };
+          if (typeof r.colores === "string") SUBIDAS[producto.numero || producto.nombre].colores = r.colores;
         } else {
           ponerFotos(producto, r.url || "");
           SUBIDAS[producto.numero || producto.nombre] = { url: urlFoto(r.url) || "", mejorar: false, t: Date.now() };
@@ -1523,6 +1542,10 @@ var FOTOS = (function(){
         setTimeout(function(){ if (dlg.open) dlg.close(); }, 1400);
       })
       .catch(function(err){ btnSubir.disabled = false; decir("No se pudo subir: " + (err.message || "revisa tu conexión") + ".", true); });
+  });
+  document.getElementById("sf-color").addEventListener("change", function(){
+    var otro = this.value === "__otro__", c = document.getElementById("sf-color-nuevo-caja");
+    c.hidden = !otro; if (otro) document.getElementById("sf-color-nuevo").focus();
   });
   document.getElementById("sf-archivo").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
   document.getElementById("sf-archivo2").addEventListener("change", function(){ procesar(this.files[0]); this.value = ""; });
