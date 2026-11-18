@@ -325,6 +325,25 @@ dialog#ficha{border:0;border-radius:18px;padding:0;width:min(560px,calc(100% - 2
 dialog#ficha::backdrop{background:rgba(18,40,43,.55)}
 #ficha .ficha-foto{background:#fff;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--linea)}
 #ficha .ficha-foto img{width:100%;height:100%;object-fit:contain;padding:12px}
+/* CAMBIO 28 · Varias fotos: galería en la ficha y contador en la tarjeta */
+.foto{position:relative}
+.n-fotos{position:absolute;right:8px;bottom:8px;display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 0 0 1px var(--linea);font-size:12px;font-weight:700;color:var(--tinta);pointer-events:none}
+#ficha .galeria{position:relative;display:block}
+#ficha .gal-pista{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
+#ficha .gal-pista::-webkit-scrollbar{display:none}
+#ficha .gal-pista img{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always}
+#ficha .gal-flecha{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.94);box-shadow:0 1px 4px rgba(0,0,0,.22);font-size:22px;line-height:1;color:var(--tinta);cursor:pointer;display:grid;place-items:center}
+#ficha .gal-flecha:disabled{opacity:0;pointer-events:none}
+#ficha .gal-ant{left:8px} #ficha .gal-sig{right:8px}
+#ficha .gal-puntos{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:2px}
+#ficha .gal-puntos button{width:24px;height:24px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:center}
+#ficha .gal-puntos button::before{content:"";width:8px;height:8px;border-radius:50%;background:#C5D3D5;transition:background .2s,transform .2s}
+#ficha .gal-puntos button[aria-current="true"]::before{background:var(--profundo);transform:scale(1.25)}
+#ficha .gal-color{position:absolute;left:10px;top:10px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 0 0 1px var(--linea);font-size:13px;font-weight:700}
+#ficha .gal-color:empty{display:none}
+@media (hover:none){#ficha .gal-flecha{display:none}}
+#subir-foto .sf-color{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700}
+#subir-foto .sf-color select{min-height:44px;border-radius:10px;border:1.5px solid var(--linea);padding:0 10px;font:inherit;font-weight:600;background:#fff;color:var(--tinta)}
 #ficha .ficha-cuerpo{padding:16px 18px 20px;display:flex;flex-direction:column;gap:12px}
 #ficha .ficha-sec{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rojo)}
 #ficha h3{margin:0;font-size:24px;line-height:1.2}
@@ -526,6 +545,7 @@ if (WEB_LANZADA || /[?&]web=1/.test(location.search)) {
         <button type="button" data-o="limpia" aria-pressed="true"><img alt="Foto con fondo blanco"><span>Fondo blanco</span></button>
         <button type="button" data-o="original" aria-pressed="false"><img alt="Foto original"><span>Original</span></button>
       </div>
+      <label class="sf-color" id="sf-color-caja" hidden>¿De qué color es el producto en esta foto?<select id="sf-color"></select></label>
       <div class="sf-btns">
         <button type="button" class="principal" id="sf-subir" disabled>Usar esta foto</button>
         <label class="secundario">Tomar otra<input type="file" accept="image/*" capture="environment" id="sf-archivo2" hidden></label>
@@ -707,9 +727,28 @@ function urlFoto(valor){
   return INDICE_FOTOS[valor.toLowerCase()] || null;
 }
 
+// CAMBIO 28 · Varias fotos por producto. En la columna Foto van separadas con «;» y cada una puede llevar
+// el color delante: «Rojo teja: foto1.jpg; Naranja: foto2.jpg». La primera es la que sale en la tarjeta.
+function partesFoto(celda){ return String(celda || "").split(/\s*[;\n]\s*/).filter(function(x){ return x.trim() !== ""; }); }
+function leerFotos(celda){
+  return partesFoto(celda).map(function(parte){
+    var m = parte.match(/^([^:\/]{1,40}):\s*(\S.*)$/), color = "";
+    if (m && !/^(https?|data)$/i.test(m[1].trim())){ color = m[1].trim(); parte = m[2]; }
+    var url = /^data:/.test(parte) ? parte : urlFoto(parte);
+    return url ? { url: url, grande: url.replace("=w400", "=w1000"), color: color } : null;
+  }).filter(Boolean);
+}
+function ponerFotos(p, celda){
+  p.fotos = leerFotos(celda);
+  p.foto = p.fotos.length ? p.fotos[0].url : null;
+  p.fotoGrande = p.fotos.length ? p.fotos[0].grande : null;
+}
+var ICONO_FOTOS = '<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg>';
+
 function tarjeta(p){
   var h = '<article class="tarjeta" data-id="' + p.id + '" data-buscar="' + esc(normal(p.buscar)) + '"' + (p.foto ? "" : ' data-sinfoto="1"') + (p.mejorar ? ' data-mejorar="1"' : "") + (p.notas ? ' data-nota="1"' : "") + (REVISION && p.oculto ? ' data-oculto="1"' : "") + (p.pend ? ' data-pend="1"' : "") + '>' + cinta(p);
-  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA"></div>';
+  if (p.foto) h += '<div class="foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async" onload="this.classList.add(\'cargada\');this.parentNode.classList.add(\'lista\')" onerror="this.parentNode.outerHTML=FOTO_VACIA">' +
+    (p.fotos && p.fotos.length > 1 ? '<span class="n-fotos" aria-label="' + p.fotos.length + ' fotos">' + ICONO_FOTOS + p.fotos.length + '</span>' : "") + '</div>';
   else h += REVISION ? FOTO_VACIA.replace("</div>", BTN_SUBIR + "</div>") : FOTO_VACIA;
   h += '<div class="cuerpo"><h3 class="serif">' + esc(p.nombre) + '</h3>';
   if (p.codigos.length === 1) h += '<p class="cod">Cód. ' + esc(p.codigos[0]) + '</p>';
@@ -761,17 +800,18 @@ function mostrar(texto){
     var p = { nombre: nombre, desc: v(cD), titulo: v(cT),
       medidas: v(cM).split(";").map(function(x){ return x.trim(); }).filter(Boolean),
       colores: v(cC).split(",").map(function(x){ x = x.trim(); return x.charAt(0).toUpperCase() + x.slice(1); }).filter(Boolean),
-      foto: urlFoto(v(cF)), fotoGrande: urlFoto(v(cF)), detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto, mejorar: /^s/.test(sinTildes(v(cMj))),
+      detalle: v(cX), seccion: sec, etiqueta: v(cE), destacar: /^s/.test(sinTildes(v(cR))), numero: v(cN), oculto: oculto, mejorar: /^s/.test(sinTildes(v(cMj))),
       codigos: v(cK).split(/[\s,;]+/).filter(function(x){ return /^\d{6,}$/.test(x); }),
       relacionados: v(cRel).split(/[;\n]+/).map(function(x){ return x.trim(); }).filter(Boolean) };
+    ponerFotos(p, v(cF));
     // Cambios hechos desde este celular: se respetan 15 minutos mientras la hoja publicada se actualiza
     var sub = REVISION && SUBIDAS[p.numero || p.nombre];
     if (sub && sub.t && Date.now() - sub.t < 15 * 60 * 1000){
-      if ("url" in sub) p.foto = p.fotoGrande = sub.url || null;
+      if ("celda" in sub) ponerFotos(p, sub.celda);
+      else if ("url" in sub) ponerFotos(p, sub.url || "");
       if ("mejorar" in sub) p.mejorar = sub.mejorar;
       if ("oculto" in sub) p.oculto = sub.oculto;
     }
-    if (p.foto && p.foto.indexOf("=w400") > -1) p.fotoGrande = p.foto.replace("=w400", "=w1000");
     p.id = PRODUCTOS.push(p) - 1;
     p.notas = REVISION && window.NOTAS ? NOTAS.pendientes(p).length : 0;
     p.buscar = [nombre, p.desc, sec, p.medidas.join(" "), p.colores.join(" "), p.etiqueta, v(cO), p.codigos.join(" "), REVISION && p.numero ? "#" + p.numero + " n" + p.numero : ""].join(" ");
@@ -1114,7 +1154,35 @@ var PEGAR = (function(){
 })();
 
 var FICHA = (function(){
-  var ficha = document.getElementById("ficha"), actual = null, elegido = { m: "", c: "" };
+  var ficha = document.getElementById("ficha"), actual = null, elegido = { m: "", c: "" }, fotoI = 0;
+  // CAMBIO 28 · Galería de fotos de la ficha
+  function galeriaHTML(p){
+    var f = p.fotos || [];
+    if (f.length < 2) return '<div class="ficha-foto">' + (p.fotoGrande ? '<img src="' + esc(p.fotoGrande) + '" alt="' + esc(p.nombre) + '">' : ICONO_CAMARA) + '</div>';
+    return '<div class="ficha-foto galeria" aria-roledescription="galería" aria-label="Fotos de ' + esc(p.nombre) + '">' +
+      '<div class="gal-pista" id="gal-pista">' + f.map(function(x, i){
+        return '<img src="' + esc(x.grande) + '" alt="' + esc(p.nombre + (x.color ? " · " + x.color : " · foto " + (i + 1))) + '"' + (i ? ' loading="lazy"' : "") + ' draggable="false">';
+      }).join("") + '</div>' +
+      '<span class="gal-color" id="gal-color"></span>' +
+      '<button type="button" class="gal-flecha gal-ant" aria-label="Foto anterior">‹</button><button type="button" class="gal-flecha gal-sig" aria-label="Foto siguiente">›</button>' +
+      '<div class="gal-puntos">' + f.map(function(x, i){ return '<button type="button" data-foto="' + i + '" aria-label="Ver foto ' + (i + 1) + (x.color ? " (" + esc(x.color) + ")" : "") + '"></button>'; }).join("") + '</div></div>';
+  }
+  function irAFoto(i, suave){
+    var pista = document.getElementById("gal-pista"); if (!pista) return;
+    i = Math.max(0, Math.min(i, pista.children.length - 1));
+    pista.scrollTo({ left: i * pista.clientWidth, behavior: suave === false ? "auto" : "smooth" });
+    marcarFoto(i);
+  }
+  function marcarFoto(i){
+    fotoI = i;
+    var f = (actual && actual.fotos) || [], c = document.getElementById("gal-color");
+    if (c) c.textContent = f[i] ? f[i].color : "";
+    ficha.querySelectorAll(".gal-puntos button").forEach(function(b, k){ b.setAttribute("aria-current", k === i ? "true" : "false"); });
+    var a = ficha.querySelector(".gal-ant"), s = ficha.querySelector(".gal-sig");
+    if (a) a.disabled = i <= 0; if (s) s.disabled = i >= f.length - 1;
+    var cf = document.getElementById("f-subir-foto"); if (cf && f.length > 1) cf.textContent = "Cambiar esta foto (" + (i + 1) + " de " + f.length + ")";
+    var qf = document.getElementById("f-quitar-foto"); if (qf && f.length > 1) qf.textContent = "Quitar esta foto (" + (i + 1) + " de " + f.length + ")";
+  }
   function opciones(lista, g, conColor){
     return lista.map(function(v){
       return '<button type="button" class="opc" data-g="' + g + '" data-v="' + esc(v) + '" aria-pressed="false">' +
@@ -1148,7 +1216,8 @@ var FICHA = (function(){
   }
   function abrir(p, paraPedir){
     actual = p; elegido = { m: p.medidas.length === 1 ? p.medidas[0] : "", c: p.colores.length === 1 ? p.colores[0] : "" };
-    var h = '<div class="ficha-foto">' + (p.fotoGrande ? '<img src="' + esc(p.fotoGrande) + '" alt="' + esc(p.nombre) + '">' : ICONO_CAMARA) + '</div>';
+    fotoI = 0;
+    var h = galeriaHTML(p);
     h += '<div class="ficha-cuerpo">' + cinta(p) + '<span class="ficha-sec">' + esc(p.seccion) + '</span><h3 class="serif" id="ficha-titulo">' + esc(p.nombre) + '</h3>';
     if (p.desc) h += '<p>' + esc(p.desc) + '</p>';
     if (p.detalle) h += '<p>' + esc(p.detalle) + '</p>';
@@ -1174,6 +1243,7 @@ var FICHA = (function(){
          '<input id="f-cant" type="number" inputmode="numeric" min="1" value="1" aria-label="Cantidad"><button type="button" data-d="1" aria-label="Más">+</button></div></div>';
     if (REVISION){
       h += '<div class="rev-acciones"><button type="button" class="btn-subir" id="f-subir-foto">' + (p.foto ? "Cambiar foto" : "Subir foto") + '</button>';
+      if (p.foto) h += '<button type="button" class="btn-subir" id="f-otra-foto">Agregar otra foto' + (p.colores.length > 1 ? " (otro color o ángulo)" : " (otro ángulo)") + '</button>';
       if (p.foto) h += '<button type="button" class="btn-subir naranja" id="f-mejorar">' + (p.mejorar ? "Quitar marca «mejorar»" : "Marcar para mejorar") + '</button>' +
                        '<button type="button" class="btn-subir peligro" id="f-quitar-foto">Quitar foto</button>';
       h += '<button type="button" class="btn-subir gris" id="f-ocultar">' + (p.oculto ? "Mostrar en el catálogo" : "Ocultar producto") + '</button>';
@@ -1187,6 +1257,13 @@ var FICHA = (function(){
     var rel = relacionadosHTML(p); if (rel) h += '<div class="rel-caja">' + rel + '</div>';
     document.getElementById("ficha-contenido").innerHTML = h;
     ficha.scrollTop = 0;
+    var pista = document.getElementById("gal-pista");
+    if (pista){
+      marcarFoto(0);
+      var t = null;
+      pista.addEventListener("scroll", function(){ clearTimeout(t); t = setTimeout(function(){ var i = Math.round(pista.scrollLeft / (pista.clientWidth || 1)); if (i !== fotoI) marcarFoto(i); }, 60); }, { passive: true });
+      pista.addEventListener("keydown", function(e){ if (e.key === "ArrowRight") irAFoto(fotoI + 1); if (e.key === "ArrowLeft") irAFoto(fotoI - 1); });
+    }
     ficha.querySelectorAll(".opc").forEach(function(b){
       var on = elegido[b.getAttribute("data-g")] === b.getAttribute("data-v");
       b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on);
@@ -1201,11 +1278,18 @@ var FICHA = (function(){
     if (o){
       var g = o.getAttribute("data-g"), v = o.getAttribute("data-v");
       elegido[g] = elegido[g] === v ? "" : v;   // tocar otra vez la quita
+      // CAMBIO 28: si hay una foto de ese color, se muestra
+      if (g === "c" && elegido.c && actual.fotos){
+        for (var fi = 0; fi < actual.fotos.length; fi++) if (actual.fotos[fi].color && sinTildes(actual.fotos[fi].color) === sinTildes(elegido.c)) { irAFoto(fi); break; }
+      }
       ficha.querySelectorAll('.opc[data-g="' + g + '"]').forEach(function(b){
         var on = b.getAttribute("data-v") === elegido[g]; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on);
       });
       refrescar(); return;
     }
+    if (e.target.closest(".gal-ant")) { irAFoto(fotoI - 1); return; }
+    if (e.target.closest(".gal-sig")) { irAFoto(fotoI + 1); return; }
+    var pt = e.target.closest("[data-foto]"); if (pt) { irAFoto(+pt.getAttribute("data-foto")); return; }
     var st = e.target.closest(".stepper button");
     if (st){ var inp = document.getElementById("f-cant"); inp.value = Math.max(1, cantidad() + (+st.getAttribute("data-d"))); refrescar(); return; }
     if (e.target.closest("#f-agregar")){
@@ -1226,7 +1310,8 @@ var FICHA = (function(){
     var rb = e.target.closest("[data-rel]"); if (rb){ abrir(PRODUCTOS[+rb.getAttribute("data-rel")]); return; }
     var cb = e.target.closest("#f-comparar");
     if (cb){ var on = COMPARAR.alternar(actual); cb.setAttribute("aria-pressed", on); cb.textContent = on ? "✓ Comparando" : "Comparar con otros productos"; if (on === null) aviso("Puedes comparar hasta 3 productos."); return; }
-    if (e.target.closest("#f-subir-foto")) { ficha.close(); FOTOS.abrir(actual); return; }
+    if (e.target.closest("#f-subir-foto")) { ficha.close(); FOTOS.abrir(actual, (actual.fotos || []).length > 1 ? { modo: "cambiar", indice: fotoI } : null); return; }
+    if (e.target.closest("#f-otra-foto")) { ficha.close(); FOTOS.abrir(actual, { modo: "agregar" }); return; }
     var chip = e.target.closest(".chips-nota button");
     if (chip){ var ta = document.getElementById("f-nota"); ta.value = (ta.value ? ta.value.replace(/\s*$/, ". ") : "") + chip.textContent; ta.focus(); return; }
     if (e.target.closest("#f-guardar-nota")){
@@ -1238,8 +1323,9 @@ var FICHA = (function(){
     var rs = e.target.closest(".resolver");
     if (rs){ var p3 = actual; rs.disabled = true; NOTAS.resolver(p3, +rs.getAttribute("data-fila")).then(function(ok){ if (ok){ abrir(p3); aviso("Nota marcada como resuelta."); } else rs.disabled = false; }); return; }
     if (e.target.closest("#f-quitar-foto")) {
-      if (!confirm("¿Seguro que quieres quitar la foto de " + (actual.numero ? "N° " + actual.numero + " · " : "") + actual.nombre + "?")) return;
-      var p0 = actual; FOTOS.accion(p0, "quitar").then(function(ok){ if (ok){ ficha.close(); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : "Foto quitada. El producto quedó sin foto."); } });
+      var varias = (actual.fotos || []).length > 1;
+      if (!confirm(varias ? "¿Quitar la foto " + (fotoI + 1) + " de " + actual.fotos.length + (actual.fotos[fotoI].color ? " (" + actual.fotos[fotoI].color + ")" : "") + "? Las demás se quedan." : "¿Seguro que quieres quitar la foto de " + (actual.numero ? "N° " + actual.numero + " · " : "") + actual.nombre + "?")) return;
+      var p0 = actual; FOTOS.accion(p0, "quitar", varias ? { indice: fotoI } : undefined).then(function(ok){ if (ok){ if (varias && ok !== "pendiente") abrir(p0); else ficha.close(); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : (varias ? "Foto quitada. Las demás se quedan." : "Foto quitada. El producto quedó sin foto.")); } });
       return;
     }
     if (e.target.closest("#f-ocultar")) {
@@ -1297,13 +1383,19 @@ var FICHA = (function(){
    El fondo se quita en el mismo celular (carpeta quitar-fondo/); la foto se guarda en Drive y en la hoja
    mediante la aplicación web de Apps Script (SUBIR_FOTOS). */
 var FOTOS = (function(){
-  var dlg = document.getElementById("subir-foto"), producto = null, versiones = {}, elegida = "limpia", herramienta = null;
+  var dlg = document.getElementById("subir-foto"), producto = null, versiones = {}, elegida = "limpia", herramienta = null, op = null;
   var estado = document.getElementById("sf-estado"), barra = document.getElementById("sf-barra"),
       opciones = document.getElementById("sf-opciones"), btnSubir = document.getElementById("sf-subir");
   function decir(t, error){ estado.textContent = t; estado.classList.toggle("error", !!error); }
-  function abrir(p){
-    producto = p; versiones = {}; elegida = "limpia";
-    document.getElementById("sf-titulo").textContent = p.foto ? "Cambiar foto" : "Subir foto";
+  function abrir(p, opciones){
+    producto = p; versiones = {}; elegida = "limpia"; op = opciones || null;
+    var n = (p.fotos || []).length;
+    document.getElementById("sf-titulo").textContent = op && op.modo === "agregar" ? "Agregar otra foto" : (p.foto ? (n > 1 ? "Cambiar la foto " + (op.indice + 1) + " de " + n : "Cambiar foto") : "Subir foto");
+    // CAMBIO 28: si el producto tiene colores, se pregunta de qué color es la foto
+    var caja = document.getElementById("sf-color-caja"), sel = document.getElementById("sf-color");
+    var actualColor = op && op.modo === "cambiar" && p.fotos[op.indice] ? p.fotos[op.indice].color : "";
+    caja.hidden = !(p.colores.length > 1);
+    sel.innerHTML = '<option value="">No es de un color en especial</option>' + p.colores.map(function(c){ return '<option' + (sinTildes(c) === sinTildes(actualColor) ? " selected" : "") + '>' + esc(c) + '</option>'; }).join("");
     document.getElementById("sf-nombre").textContent = (p.numero ? "N° " + p.numero + " · " : "") + p.nombre;
     document.getElementById("sf-paso1").hidden = false; document.getElementById("sf-paso2").hidden = true;
     if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
@@ -1382,9 +1474,16 @@ var FOTOS = (function(){
     if (!SUBIR_FOTOS){ decir("Falta conectar la subida de fotos con la hoja de Google (es una configuración de una sola vez).", true); return; }
     var clave = ""; try { clave = localStorage.getItem("alumol-clave") || ""; } catch (e) {}
     if (!clave){ clave = (prompt("Escribe la clave para subir fotos:") || "").trim(); if (!clave) return; }
-    var imagen = versiones[elegida];
+    var imagen = versiones[elegida], color = document.getElementById("sf-color-caja").hidden ? "" : document.getElementById("sf-color").value;
+    var extra = op || color ? { modo: (op && op.modo) || "cambiar", indice: op && op.indice !== undefined ? op.indice : "", color: color } : null;
     btnSubir.disabled = true; decir("Subiendo la foto…");
-    fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: clave, autor: autorGuardado(), numero: producto.numero || "", producto: producto.nombre, imagen: imagen }) })
+    // Con varias fotos o color hace falta la versión 7 del código de Apps Script
+    (extra ? fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){ if (!info || !(info.version >= 7)) throw new Error("Hay que pegar la versión nueva del código en Apps Script"); }) : Promise.resolve())
+      .then(function(){
+        var cuerpo = { clave: clave, autor: autorGuardado(), numero: producto.numero || "", producto: producto.nombre, imagen: imagen };
+        if (extra){ cuerpo.modo = extra.modo; cuerpo.indice = extra.indice; cuerpo.color = extra.color; }
+        return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify(cuerpo) });
+      })
       .then(function(r){ return r.json(); })
       .then(function(r){
         if (!r.ok){
@@ -1394,22 +1493,32 @@ var FOTOS = (function(){
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
         if (r.rol) ROL = r.rol;
         if (r.pendiente){
-          NOTAS.agregarPendiente(producto, { id: r.id, accion: "subir", nueva: imagen, anterior: "", autor: autorGuardado(), fecha: "ahora" });
+          NOTAS.agregarPendiente(producto, { id: r.id, accion: "subir", valor: extra ? JSON.stringify(extra) : "", nueva: imagen, anterior: "", autor: autorGuardado(), fecha: "ahora" });
           decir("✓ Foto enviada. El cliente la verá cuando el administrador la apruebe.");
           btnSubir.textContent = "Listo";
           setTimeout(function(){ if (dlg.open) dlg.close(); }, 1800);
           return;
         }
         // Se muestra al instante; la hoja publicada tarda unos minutos en reflejarlo
-        producto.foto = producto.fotoGrande = imagen;
-        producto.mejorar = false;
-        SUBIDAS[producto.numero || producto.nombre] = { url: urlFoto(r.url) || imagen, mejorar: false, t: Date.now() };
+        var pos = 0;
+        if (typeof r.foto === "string"){
+          ponerFotos(producto, r.foto);
+          pos = extra && extra.modo === "agregar" ? producto.fotos.length - 1 : (parseInt(extra && extra.indice, 10) || 0);
+          SUBIDAS[producto.numero || producto.nombre] = { celda: r.foto, mejorar: pos ? producto.mejorar : false, t: Date.now() };
+        } else {
+          ponerFotos(producto, r.url || "");
+          SUBIDAS[producto.numero || producto.nombre] = { url: urlFoto(r.url) || "", mejorar: false, t: Date.now() };
+        }
+        // Mientras Drive prepara la foto, se muestra la que se acaba de tomar
+        if (producto.fotos[pos]) producto.fotos[pos].url = producto.fotos[pos].grande = imagen; else producto.fotos = [{ url: imagen, grande: imagen, color: color }];
+        producto.foto = producto.fotos[0].url; producto.fotoGrande = producto.fotos[0].grande;
+        if (!pos) producto.mejorar = false;
         try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
         var card = document.querySelector('.tarjeta[data-id="' + producto.id + '"]');
         if (card){ var nueva = document.createElement("div"); nueva.innerHTML = tarjeta(producto); card.replaceWith(nueva.firstChild); }
         if (window.PEDIDO) PEDIDO.pintar();
         filtrar();
-        decir("✓ Foto guardada en la hoja y en el catálogo.");
+        decir(extra && extra.modo === "agregar" ? "✓ Foto agregada. Ahora tiene " + producto.fotos.length + " fotos." : "✓ Foto guardada en la hoja y en el catálogo.");
         btnSubir.textContent = "Listo";
         setTimeout(function(){ if (dlg.open) dlg.close(); }, 1400);
       })
@@ -1428,10 +1537,13 @@ var FOTOS = (function(){
     if (!SUBIR_FOTOS){ alert("Falta conectar la subida de fotos con la hoja de Google."); return Promise.resolve(false); }
     var clave = ""; try { clave = localStorage.getItem("alumol-clave") || ""; } catch (e) {}
     if (!clave){ clave = (prompt("Escribe la clave:") || "").trim(); if (!clave) return Promise.resolve(false); }
+    var conIndice = tipo === "quitar" && !!valor && typeof valor === "object" && valor.indice !== undefined;
     // Primero se confirma que el código de Apps Script ya tiene estas opciones (versión 2 o más)
     return fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){
-      if (!info || !(info.version >= (tipo === "mostrar" ? 4 : 2))) throw new Error("ACTUALIZAR");
-      return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify({ clave: clave, autor: autorGuardado(), accion: tipo, valor: valor, numero: p.numero || "", producto: p.nombre }) });
+      if (!info || !(info.version >= (conIndice ? 7 : tipo === "mostrar" ? 4 : 2))) throw new Error("ACTUALIZAR");
+      var cuerpo = { clave: clave, autor: autorGuardado(), accion: tipo, valor: conIndice ? "" : valor, numero: p.numero || "", producto: p.nombre };
+      if (conIndice) cuerpo.indice = valor.indice;
+      return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify(cuerpo) });
     })
       .then(function(r){ return r.json(); })
       .then(function(r){
@@ -1442,14 +1554,17 @@ var FOTOS = (function(){
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
         if (r.rol) ROL = r.rol;
         if (r.pendiente){
-          NOTAS.agregarPendiente(p, { id: r.id, accion: tipo, valor: tipo === "mostrar" ? (valor ? "SÍ" : "NO") : "", nueva: "", anterior: p.foto || "", autor: autorGuardado(), fecha: "ahora" });
+          NOTAS.agregarPendiente(p, { id: r.id, accion: tipo, valor: tipo === "mostrar" ? (valor ? "SÍ" : "NO") : (conIndice ? JSON.stringify({ indice: valor.indice }) : ""), nueva: "", anterior: conIndice && p.fotos[valor.indice] ? p.fotos[valor.indice].url : (p.foto || ""), autor: autorGuardado(), fecha: "ahora" });
           return "pendiente";
         }
         // Se guarda junto con los cambios recientes de este producto (si los hay)
         var previo = SUBIDAS[p.numero || p.nombre], cambio = {};
         if (previo && previo.t && Date.now() - previo.t < 15 * 60 * 1000) for (var k in previo) cambio[k] = previo[k];
         cambio.t = Date.now();
-        if (tipo === "quitar"){ p.foto = p.fotoGrande = null; p.mejorar = false; cambio.url = ""; cambio.mejorar = false; }
+        if (tipo === "quitar"){
+          if (typeof r.foto === "string" && r.foto){ ponerFotos(p, r.foto); delete cambio.url; cambio.celda = r.foto; }
+          else { ponerFotos(p, ""); p.mejorar = false; delete cambio.celda; cambio.url = ""; cambio.mejorar = false; }
+        }
         if (tipo === "mejorar"){ p.mejorar = !!valor; cambio.mejorar = !!valor; }
         if (tipo === "mostrar"){ p.oculto = !valor; cambio.oculto = !valor; }
         SUBIDAS[p.numero || p.nombre] = cambio;
@@ -1577,8 +1692,8 @@ var APROBAR = (function(){
     return null;
   }
   function todos(){ var l = []; for (var k in PEND) l = l.concat(PEND[k]); return l; }
-  function img(u, pie){
-    var src = u && u.indexOf("data:") === 0 ? u : urlFoto(u);
+  function img(u, pie, i){
+    var l = u && u.indexOf("data:") === 0 ? [{ url: u }] : leerFotos(u), src = l.length ? (l[i || 0] || l[0]).url : null;
     return '<figure>' + (src ? '<img src="' + esc(src) + '" alt="">' : '<div class="sin">Sin foto</div>') + '<figcaption>' + pie + '</figcaption></figure>';
   }
   function pintar(){
@@ -1588,10 +1703,11 @@ var APROBAR = (function(){
     if (!l.length){ lista.innerHTML = '<p class="vacio">No hay cambios por aprobar. 👍</p>'; return; }
     lista.innerHTML = l.map(function(x){
       var p = producto(x), nombre = (x.numero ? "N° " + x.numero + " · " : "") + (p ? p.nombre : x.producto);
-      var que = x.accion === "subir" ? "Foto nueva" : x.accion === "quitar" ? "Quitar la foto" : (x.valor === "SÍ" ? "Mostrar en el catálogo" : "Ocultar del catálogo");
+      var o = {}; try { o = JSON.parse(x.valor || "{}") || {}; } catch (e) {}
+      var que = x.accion === "subir" ? (o.modo === "agregar" ? "Otra foto" : "Foto nueva") + (o.color ? " · color " + o.color : "") : x.accion === "quitar" ? (o.indice !== undefined ? "Quitar la foto " + (+o.indice + 1) : "Quitar la foto") : (x.valor === "SÍ" ? "Mostrar en el catálogo" : "Ocultar del catálogo");
       var h = '<div class="ap-item"><h4>' + esc(nombre) + '</h4><span class="ap-que">' + que + '</span><small>' + esc((x.autor || "") + " · " + (x.fecha || "")) + '</small>';
-      if (x.accion === "subir") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Ahora") + img(x.nueva, "Nueva") + '</div>';
-      if (x.accion === "quitar") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Foto que se quitaría") + '</div>';
+      if (x.accion === "subir") h += '<div class="ap-fotos">' + img(o.modo === "agregar" ? ((p && p.foto) || "") : (x.anterior || (p && p.foto) || ""), o.modo === "agregar" ? "Foto principal" : "Ahora", +o.indice || 0) + img(x.nueva, "Nueva") + '</div>';
+      if (x.accion === "quitar") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Foto que se quitaría", +o.indice || 0) + '</div>';
       h += '<div class="ap-btns"><button type="button" class="si" data-id="' + esc(x.id) + '">Aprobar</button><button type="button" class="no" data-id="' + esc(x.id) + '">Rechazar</button></div></div>';
       return h;
     }).join("");
@@ -1610,8 +1726,9 @@ var APROBAR = (function(){
               var p = producto(x);
               if (tipo === "aprobar" && p){
                 var cambio = { t: Date.now() };
-                if (x.accion === "subir"){ p.foto = urlFoto(h.url) || p.foto; p.fotoGrande = p.foto && p.foto.replace("=w400", "=w1000"); p.mejorar = false; cambio.url = p.foto; cambio.mejorar = false; }
-                if (x.accion === "quitar"){ p.foto = p.fotoGrande = null; cambio.url = ""; }
+                if ((x.accion === "subir" || x.accion === "quitar") && typeof h.foto === "string"){ ponerFotos(p, h.foto); cambio.celda = h.foto; }
+                else if (x.accion === "subir"){ ponerFotos(p, h.url || ""); p.mejorar = false; cambio.url = p.foto; cambio.mejorar = false; }
+                else if (x.accion === "quitar"){ ponerFotos(p, ""); cambio.url = ""; }
                 if (x.accion === "mostrar"){ p.oculto = x.valor !== "SÍ"; cambio.oculto = p.oculto; }
                 SUBIDAS[p.numero || p.nombre] = cambio;
                 try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}

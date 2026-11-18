@@ -1,5 +1,5 @@
 /**
- * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 6
+ * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 7
  * Dónde va: en la hoja «Catálogo Alumol – Productos» › Extensiones › Apps Script.
  *
  * DOS CLAVES:
@@ -16,6 +16,9 @@
  *  - Marcar para mejorar: SÍ o vacío en la columna «Mejorar foto».
  *  - Ocultar / mostrar: NO o SÍ en la columna «Mostrar».
  *  - Notas: pestaña «Notas de revisión» (no se publica).
+ *  - Varias fotos (v7): la celda Foto puede tener varias fotos separadas con «;». Cada una puede llevar
+ *    el color delante, por ejemplo «Rojo teja: enlace; Naranja: enlace». La primera es la principal.
+ *    «Agregar otra foto» la suma al final; cambiar o quitar afecta solo a la foto elegida.
  *  - Registro: todo queda en la pestaña «Registro de fotos».
  *  - Menú «Catálogo › Reordenar números».
  */
@@ -31,7 +34,7 @@ var HOJA_NOTAS = "Notas de revisión";
 var HOJA_REGISTRO = "Registro de fotos";
 var HOJA_APROBAR = "Por aprobar";
 var CAB_APROBAR = ["ID", "Fecha", "Quién", "N°", "Producto", "Acción", "Valor", "Foto nueva", "Foto anterior", "Estado", "Revisado"];
-var VERSION = 6;
+var VERSION = 7;
 
 function rolDe(clave) {
   clave = String(clave || "").trim();
@@ -77,8 +80,9 @@ function doPost(e) {
         if (ids.indexOf(String(fl[0])) < 0 || fl[9] !== "Pendiente") continue;
         var p = { numero: String(fl[3]), producto: String(fl[4]) }, res = { ok: true };
         if (accion === "aprobar") {
-          if (fl[5] === "subir") res = aplicarFoto(p, String(fl[7]), String(fl[2]) + " (aprobado por " + autor + ")");
-          else if (fl[5] === "quitar") res = aplicar("quitar", p, null, String(fl[2]) + " (aprobado por " + autor + ")");
+          var op = opcionesDe(fl[6]);
+          if (fl[5] === "subir") res = aplicarFoto(p, String(fl[7]), String(fl[2]) + " (aprobado por " + autor + ")", op);
+          else if (fl[5] === "quitar") res = aplicar("quitar", p, null, String(fl[2]) + " (aprobado por " + autor + ")", op);
           else if (fl[5] === "mostrar") res = aplicar("mostrar", p, fl[6] === "SÍ", String(fl[2]) + " (aprobado por " + autor + ")");
         } else {
           if (fl[5] === "subir") mandarAPapelera(String(fl[7]), CARPETA_PENDIENTES);
@@ -86,7 +90,7 @@ function doPost(e) {
         }
         if (!res.ok) { hechos.push({ id: String(fl[0]), ok: false, error: res.error }); continue; }
         ha.getRange(i + 2, 10, 1, 2).setValues([[accion === "aprobar" ? "Aprobado" : "Rechazado", autor + " · " + Utilities.formatDate(new Date(), "America/Guayaquil", "dd/MM HH:mm")]]);
-        hechos.push({ id: String(fl[0]), ok: true, url: res.url || "" });
+        hechos.push({ id: String(fl[0]), ok: true, url: res.url || "", foto: res.foto });
       }
       return salida({ ok: true, hechos: hechos });
     }
@@ -97,7 +101,7 @@ function doPost(e) {
       r.rol = rol; return salida(r);
     }
     if (rol === "admin") {
-      var r2 = accion === "subir" ? subirDirecto(d, autor) : aplicar(accion, d, d.valor, autor);
+      var r2 = accion === "subir" ? subirDirecto(d, autor) : aplicar(accion, d, d.valor, autor, d);
       r2.rol = rol; return salida(r2);
     }
     // Trabajador: queda por aprobar
@@ -106,9 +110,12 @@ function doPost(e) {
     if (accion === "subir") {
       var arch = guardarImagen(d, CARPETA_PENDIENTES);
       urlNueva = "https://drive.google.com/file/d/" + arch.getId() + "/view";
+      valor = textoOpciones(d);
+    } else if (accion === "quitar") {
+      valor = textoOpciones(d);
     } else if (accion === "mostrar") {
       valor = d.valor ? "SÍ" : "NO";
-    } else if (accion !== "quitar") {
+    } else {
       return salida({ ok: false, error: "Acción desconocida." });
     }
     var actual = filaProducto(d);
@@ -163,16 +170,23 @@ function filaProducto(d) {
   return { hoja: hoja, cab: cab, ultimaCol: ultimaCol, fila: fila + 2, cF: cF, foto: String(datos[fila][cF] || "") };
 }
 
-function aplicar(accion, d, valor, autor) {
+function aplicar(accion, d, valor, autor, op) {
   var x = filaProducto(d);
   if (!x) return { ok: false, error: "No encuentro ese producto en la hoja." };
   var cM = columna(x.cab, "mejorar foto");
   if (accion === "quitar") {
-    x.hoja.getRange(x.fila, x.cF + 1).setValue("");
-    if (cM >= 0) x.hoja.getRange(x.fila, cM + 1).setValue("");
-    mandarAPapelera(x.foto, CARPETA);
-    registrar(autor, d, "Foto quitada");
-    return { ok: true };
+    // Sin «indice» (o con una sola foto) se quitan todas; con «indice» solo esa foto
+    var fotos = partesFoto(x.foto), i = indiceDe(op, fotos.length), quitadas;
+    if (conIndice(op) && fotos.length > 1) {
+      if (i < 0) return { ok: false, error: "Esa foto ya no está. Actualiza la página." };
+      quitadas = fotos.splice(i, 1);
+    } else { quitadas = fotos; fotos = []; }
+    var celda = fotos.join("; ");
+    x.hoja.getRange(x.fila, x.cF + 1).setValue(celda);
+    if (!celda && cM >= 0) x.hoja.getRange(x.fila, cM + 1).setValue("");
+    quitadas.forEach(function (q) { mandarAPapelera(urlDe(q), CARPETA); });
+    registrar(autor, d, fotos.length ? "Foto quitada (quedan " + fotos.length + ")" : "Foto quitada");
+    return { ok: true, foto: celda };
   }
   if (accion === "mejorar") {
     if (cM < 0) { cM = x.ultimaCol; x.hoja.getRange(1, cM + 1).setValue("Mejorar foto"); }
@@ -192,22 +206,48 @@ function aplicar(accion, d, valor, autor) {
 
 function subirDirecto(d, autor) {
   var arch = guardarImagen(d, CARPETA);
-  return aplicarFoto(d, "https://drive.google.com/file/d/" + arch.getId() + "/view", autor);
+  return aplicarFoto(d, "https://drive.google.com/file/d/" + arch.getId() + "/view", autor, d);
 }
 
 // Pone en la columna Foto una foto que ya está en Drive (si está en «por aprobar», la pasa a la carpeta normal)
-function aplicarFoto(d, url, autor) {
+// op (opcional): { modo: "agregar" | "cambiar", indice: n° de foto a cambiar (0 = la principal), color: "Rojo" }
+function aplicarFoto(d, url, autor, op) {
+  op = op || {};
   var x = filaProducto(d);
   if (!x) return { ok: false, error: "No encuentro ese producto en la hoja." };
   var m = String(url).match(/\/d\/([A-Za-z0-9_-]{20,})/);
   if (m) { try { var f = DriveApp.getFileById(m[1]); f.moveTo(carpeta(CARPETA)); f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {} }
-  x.hoja.getRange(x.fila, x.cF + 1).setValue(url);
-  var cM = columna(x.cab, "mejorar foto");
-  if (cM >= 0) x.hoja.getRange(x.fila, cM + 1).setValue("");
-  if (x.foto && x.foto !== url) mandarAPapelera(x.foto, CARPETA);
-  registrar(autor, d, x.foto ? "Foto cambiada" : "Foto subida");
-  return { ok: true, url: url };
+  var fotos = partesFoto(x.foto), color = String(op.color || "").replace(/[:;]/g, " ").trim().slice(0, 40), vieja = "", texto;
+  if (op.modo === "agregar" && fotos.length) {
+    fotos.push((color ? color + ": " : "") + url); texto = "Foto agregada (" + fotos.length + " fotos)";
+  } else {
+    var i = Math.max(indiceDe(op, fotos.length), 0);
+    vieja = fotos[i] || "";
+    if (!color && vieja) color = colorDe(vieja);
+    fotos[i] = (color ? color + ": " : "") + url;
+    texto = vieja ? "Foto cambiada" : "Foto subida";
+    var cM = columna(x.cab, "mejorar foto");
+    if (cM >= 0 && i === 0) x.hoja.getRange(x.fila, cM + 1).setValue("");
+  }
+  var celda = fotos.join("; ");
+  x.hoja.getRange(x.fila, x.cF + 1).setValue(celda);
+  if (vieja && urlDe(vieja) !== url) mandarAPapelera(urlDe(vieja), CARPETA);
+  registrar(autor, d, texto + (color ? " · color " + color : ""));
+  return { ok: true, url: url, foto: celda };
 }
+
+// ---------- Varias fotos en una celda ----------
+function partesFoto(celda) { return String(celda || "").split(/\s*[;\n]\s*/).filter(function (x) { return x.trim() !== ""; }); }
+function etiquetaFoto(parte) { var m = String(parte).match(/^([^:\/]{1,40}):\s*(\S.*)$/); return m && !/^(https?|data)$/i.test(m[1].trim()) ? m : null; }
+function urlDe(parte) { var m = etiquetaFoto(parte); return m ? m[2].trim() : String(parte).trim(); }
+function colorDe(parte) { var m = etiquetaFoto(parte); return m ? m[1].trim() : ""; }
+function indiceDe(op, total) { var i = parseInt(op && op.indice, 10); return i >= 0 && i < total ? i : -1; }
+function conIndice(op) { return !!op && op.indice !== undefined && op.indice !== null && op.indice !== ""; }
+function textoOpciones(d) {
+  var o = {}; if (d.modo) o.modo = d.modo; if (d.indice !== undefined && d.indice !== "") o.indice = d.indice; if (d.color) o.color = d.color;
+  return Object.keys(o).length ? JSON.stringify(o) : "";
+}
+function opcionesDe(valor) { try { var o = JSON.parse(String(valor || "")); return o && typeof o === "object" ? o : {}; } catch (e) { return {}; } }
 
 function guardarImagen(d, nombreCarpeta) {
   var nombre = (d.numero ? "N" + d.numero + " - " : "") + String(d.producto).replace(/[\\/:*?"<>|]/g, "-") + ".jpg";
@@ -218,7 +258,8 @@ function guardarImagen(d, nombreCarpeta) {
 }
 
 function descripcion(accion, valor) {
-  if (accion === "subir") return "foto nueva";
+  var o = opcionesDe(valor);
+  if (accion === "subir") return o.modo === "agregar" ? "otra foto" + (o.color ? " (" + o.color + ")" : "") : "foto nueva";
   if (accion === "quitar") return "quitar foto";
   if (accion === "mostrar") return valor === "SÍ" ? "mostrar en el catálogo" : "ocultar del catálogo";
   return String(accion);
