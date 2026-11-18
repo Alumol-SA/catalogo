@@ -1,5 +1,5 @@
 /**
- * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 8
+ * FOTOS Y NOTAS DESDE LA APP DEL CATÁLOGO (modo revisión) — versión 9
  * Dónde va: en la hoja «Catálogo Alumol – Productos» › Extensiones › Apps Script.
  *
  * DOS CLAVES:
@@ -20,6 +20,7 @@
  *    el color delante, por ejemplo «Rojo teja: enlace; Naranja: enlace». La primera es la principal.
  *    «Agregar otra foto» la suma al final; cambiar o quitar afecta solo a la foto elegida.
  *  - Color nuevo (v8): si la foto es de un color que todavía no está en la columna Colores, se agrega solo.
+ *  - Quitar color (v9): lo saca de la columna Colores; las fotos de ese color se quedan, pero sin color.
  *  - Registro: todo queda en la pestaña «Registro de fotos».
  *  - Menú «Catálogo › Reordenar números».
  */
@@ -35,7 +36,7 @@ var HOJA_NOTAS = "Notas de revisión";
 var HOJA_REGISTRO = "Registro de fotos";
 var HOJA_APROBAR = "Por aprobar";
 var CAB_APROBAR = ["ID", "Fecha", "Quién", "N°", "Producto", "Acción", "Valor", "Foto nueva", "Foto anterior", "Estado", "Revisado"];
-var VERSION = 8;
+var VERSION = 9;
 
 function rolDe(clave) {
   clave = String(clave || "").trim();
@@ -85,13 +86,14 @@ function doPost(e) {
           if (fl[5] === "subir") res = aplicarFoto(p, String(fl[7]), String(fl[2]) + " (aprobado por " + autor + ")", op);
           else if (fl[5] === "quitar") res = aplicar("quitar", p, null, String(fl[2]) + " (aprobado por " + autor + ")", op);
           else if (fl[5] === "mostrar") res = aplicar("mostrar", p, fl[6] === "SÍ", String(fl[2]) + " (aprobado por " + autor + ")");
+          else if (fl[5] === "color") res = aplicar("color", p, String(fl[6]), String(fl[2]) + " (aprobado por " + autor + ")");
         } else {
           if (fl[5] === "subir") mandarAPapelera(String(fl[7]), CARPETA_PENDIENTES);
           registrar(autor, p, "Rechazado: " + descripcion(fl[5], fl[6]) + " (propuesto por " + fl[2] + ")");
         }
         if (!res.ok) { hechos.push({ id: String(fl[0]), ok: false, error: res.error }); continue; }
         ha.getRange(i + 2, 10, 1, 2).setValues([[accion === "aprobar" ? "Aprobado" : "Rechazado", autor + " · " + Utilities.formatDate(new Date(), "America/Guayaquil", "dd/MM HH:mm")]]);
-        hechos.push({ id: String(fl[0]), ok: true, url: res.url || "", foto: res.foto });
+        hechos.push({ id: String(fl[0]), ok: true, url: res.url || "", foto: res.foto, colores: res.colores });
       }
       return salida({ ok: true, hechos: hechos });
     }
@@ -116,6 +118,9 @@ function doPost(e) {
       valor = textoOpciones(d);
     } else if (accion === "mostrar") {
       valor = d.valor ? "SÍ" : "NO";
+    } else if (accion === "color") {
+      valor = String(d.valor || "").trim();
+      if (!valor) return salida({ ok: false, error: "Falta el color." });
     } else {
       return salida({ ok: false, error: "Acción desconocida." });
     }
@@ -194,6 +199,20 @@ function aplicar(accion, d, valor, autor, op) {
     x.hoja.getRange(x.fila, cM + 1).setValue(valor ? "SÍ" : "");
     registrar(autor, d, valor ? "Marcada para mejorar" : "Quitada la marca de mejorar");
     return { ok: true };
+  }
+  if (accion === "color") {   // quitar un color de la lista
+    var cC = columna(x.cab, "colores"), quitar = normal(valor);
+    if (cC < 0 || !quitar) return { ok: false, error: "No encuentro ese color." };
+    var lista = String(x.hoja.getRange(x.fila, cC + 1).getValue() || "").split(",").map(function (c) { return c.trim(); }).filter(String);
+    var quedan = lista.filter(function (c) { return normal(c) !== quitar; });
+    var coloresCelda = quedan.join(", ");
+    x.hoja.getRange(x.fila, cC + 1).setValue(coloresCelda);
+    // Las fotos de ese color se quedan, pero sin color
+    var fotos = partesFoto(x.foto).map(function (q) { return normal(colorDe(q)) === quitar ? urlDe(q) : q; });
+    var celda = fotos.join("; ");
+    if (celda !== x.foto) x.hoja.getRange(x.fila, x.cF + 1).setValue(celda);
+    registrar(autor, d, "Color quitado de la lista: " + valor);
+    return { ok: true, colores: coloresCelda, foto: celda };
   }
   if (accion === "mostrar") {
     var cV = columna(x.cab, "mostrar");
@@ -278,6 +297,7 @@ function descripcion(accion, valor) {
   if (accion === "subir") return o.modo === "agregar" ? "otra foto" + (o.color ? " (" + o.color + ")" : "") : "foto nueva";
   if (accion === "quitar") return "quitar foto";
   if (accion === "mostrar") return valor === "SÍ" ? "mostrar en el catálogo" : "ocultar del catálogo";
+  if (accion === "color") return "quitar el color " + valor;
   return String(accion);
 }
 

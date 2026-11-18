@@ -146,6 +146,11 @@ section.seccion{display:flex;flex-direction:column;gap:14px;padding-top:18px}
 /* CAMBIO 17 · Quitar foto y marcar para mejorar (modo revisión) */
 #ficha .rev-acciones{display:flex;flex-wrap:wrap;gap:6px}
 #ficha .rev-acciones .btn-subir{margin-top:0}
+/* CAMBIO 30 · Quitar un color de la lista (modo revisión) */
+#ficha .rev-colores{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+#ficha .rev-colores > span{font-size:12px;font-weight:700;color:var(--suave);text-transform:uppercase;letter-spacing:.04em}
+#ficha .rev-colores div{display:flex;flex-wrap:wrap;gap:6px}
+#ficha .rev-colores button{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 10px;border-radius:999px;border:1.5px solid var(--rojo);background:#fff;color:var(--rojo);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .btn-subir.suave{background:#fff;color:var(--profundo);border:1.5px solid var(--profundo)}
 .btn-subir.peligro{background:#fff;color:var(--rojo);border:1.5px solid var(--rojo)}
 .btn-subir.naranja{background:#FFF4E0;color:#8A4B00;border:1.5px solid #F59E0B}
@@ -1251,6 +1256,7 @@ var FICHA = (function(){
                        '<button type="button" class="btn-subir peligro" id="f-quitar-foto">Quitar foto</button>';
       h += '<button type="button" class="btn-subir gris" id="f-ocultar">' + (p.oculto ? "Mostrar en el catálogo" : "Ocultar producto") + '</button>';
       h += '</div>';
+      if (p.colores.length) h += '<div class="rev-colores"><span>Quitar un color de la lista</span><div>' + p.colores.map(function(c){ return '<button type="button" data-quitar-color="' + esc(c) + '" aria-label="Quitar el color ' + esc(c) + '">' + esc(c) + ' ×</button>'; }).join("") + '</div></div>';
       h += NOTAS.html(p);
     }
     h += '<button type="button" class="btn-agregar" id="f-agregar">Agregar a mi pedido</button>';
@@ -1329,6 +1335,14 @@ var FICHA = (function(){
       var varias = (actual.fotos || []).length > 1;
       if (!confirm(varias ? "¿Quitar la foto " + (fotoI + 1) + " de " + actual.fotos.length + (actual.fotos[fotoI].color ? " (" + actual.fotos[fotoI].color + ")" : "") + "? Las demás se quedan." : "¿Seguro que quieres quitar la foto de " + (actual.numero ? "N° " + actual.numero + " · " : "") + actual.nombre + "?")) return;
       var p0 = actual; FOTOS.accion(p0, "quitar", varias ? { indice: fotoI } : undefined).then(function(ok){ if (ok){ if (varias && ok !== "pendiente") abrir(p0); else ficha.close(); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : (varias ? "Foto quitada. Las demás se quedan." : "Foto quitada. El producto quedó sin foto.")); } });
+      return;
+    }
+    var qc = e.target.closest("[data-quitar-color]");
+    if (qc){
+      var col = qc.getAttribute("data-quitar-color"), p5 = actual;
+      var conFoto = (p5.fotos || []).some(function(f){ return sinTildes(f.color) === sinTildes(col); });
+      if (!confirm("¿Quitar el color «" + col + "» de " + p5.nombre + "?" + (conFoto ? " La foto de ese color se queda, pero sin color." : ""))) return;
+      FOTOS.accion(p5, "color", col).then(function(ok){ if (ok){ abrir(p5); aviso(ok === "pendiente" ? "Enviado: queda por aprobar." : "Color «" + col + "» quitado."); } });
       return;
     }
     if (e.target.closest("#f-ocultar")) {
@@ -1563,7 +1577,7 @@ var FOTOS = (function(){
     var conIndice = tipo === "quitar" && !!valor && typeof valor === "object" && valor.indice !== undefined;
     // Primero se confirma que el código de Apps Script ya tiene estas opciones (versión 2 o más)
     return fetch(SUBIR_FOTOS).then(function(r){ return r.json(); }).then(function(info){
-      if (!info || !(info.version >= (conIndice ? 7 : tipo === "mostrar" ? 4 : 2))) throw new Error("ACTUALIZAR");
+      if (!info || !(info.version >= (tipo === "color" ? 9 : conIndice ? 7 : tipo === "mostrar" ? 4 : 2))) throw new Error("ACTUALIZAR");
       var cuerpo = { clave: clave, autor: autorGuardado(), accion: tipo, valor: conIndice ? "" : valor, numero: p.numero || "", producto: p.nombre };
       if (conIndice) cuerpo.indice = valor.indice;
       return fetch(SUBIR_FOTOS, { method: "POST", body: JSON.stringify(cuerpo) });
@@ -1577,7 +1591,7 @@ var FOTOS = (function(){
         try { localStorage.setItem("alumol-clave", clave); } catch (e) {}
         if (r.rol) ROL = r.rol;
         if (r.pendiente){
-          NOTAS.agregarPendiente(p, { id: r.id, accion: tipo, valor: tipo === "mostrar" ? (valor ? "SÍ" : "NO") : (conIndice ? JSON.stringify({ indice: valor.indice }) : ""), nueva: "", anterior: conIndice && p.fotos[valor.indice] ? p.fotos[valor.indice].url : (p.foto || ""), autor: autorGuardado(), fecha: "ahora" });
+          NOTAS.agregarPendiente(p, { id: r.id, accion: tipo, valor: tipo === "mostrar" ? (valor ? "SÍ" : "NO") : tipo === "color" ? valor : (conIndice ? JSON.stringify({ indice: valor.indice }) : ""), nueva: "", anterior: conIndice && p.fotos[valor.indice] ? p.fotos[valor.indice].url : (p.foto || ""), autor: autorGuardado(), fecha: "ahora" });
           return "pendiente";
         }
         // Se guarda junto con los cambios recientes de este producto (si los hay)
@@ -1590,6 +1604,10 @@ var FOTOS = (function(){
         }
         if (tipo === "mejorar"){ p.mejorar = !!valor; cambio.mejorar = !!valor; }
         if (tipo === "mostrar"){ p.oculto = !valor; cambio.oculto = !valor; }
+        if (tipo === "color"){
+          if (typeof r.colores === "string"){ p.colores = r.colores.split(",").map(function(x){ return x.trim(); }).filter(Boolean); cambio.colores = r.colores; }
+          if (typeof r.foto === "string" && r.foto){ ponerFotos(p, r.foto); delete cambio.url; cambio.celda = r.foto; }
+        }
         SUBIDAS[p.numero || p.nombre] = cambio;
         try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
         var card = document.querySelector('.tarjeta[data-id="' + p.id + '"]');
@@ -1727,7 +1745,7 @@ var APROBAR = (function(){
     lista.innerHTML = l.map(function(x){
       var p = producto(x), nombre = (x.numero ? "N° " + x.numero + " · " : "") + (p ? p.nombre : x.producto);
       var o = {}; try { o = JSON.parse(x.valor || "{}") || {}; } catch (e) {}
-      var que = x.accion === "subir" ? (o.modo === "agregar" ? "Otra foto" : "Foto nueva") + (o.color ? " · color " + o.color : "") : x.accion === "quitar" ? (o.indice !== undefined ? "Quitar la foto " + (+o.indice + 1) : "Quitar la foto") : (x.valor === "SÍ" ? "Mostrar en el catálogo" : "Ocultar del catálogo");
+      var que = x.accion === "subir" ? (o.modo === "agregar" ? "Otra foto" : "Foto nueva") + (o.color ? " · color " + o.color : "") : x.accion === "quitar" ? (o.indice !== undefined ? "Quitar la foto " + (+o.indice + 1) : "Quitar la foto") : x.accion === "color" ? "Quitar el color «" + x.valor + "»" : (x.valor === "SÍ" ? "Mostrar en el catálogo" : "Ocultar del catálogo");
       var h = '<div class="ap-item"><h4>' + esc(nombre) + '</h4><span class="ap-que">' + que + '</span><small>' + esc((x.autor || "") + " · " + (x.fecha || "")) + '</small>';
       if (x.accion === "subir") h += '<div class="ap-fotos">' + img(o.modo === "agregar" ? ((p && p.foto) || "") : (x.anterior || (p && p.foto) || ""), o.modo === "agregar" ? "Foto principal" : "Ahora", +o.indice || 0) + img(x.nueva, "Nueva") + '</div>';
       if (x.accion === "quitar") h += '<div class="ap-fotos">' + img(x.anterior || (p && p.foto) || "", "Foto que se quitaría", +o.indice || 0) + '</div>';
@@ -1749,9 +1767,10 @@ var APROBAR = (function(){
               var p = producto(x);
               if (tipo === "aprobar" && p){
                 var cambio = { t: Date.now() };
-                if ((x.accion === "subir" || x.accion === "quitar") && typeof h.foto === "string"){ ponerFotos(p, h.foto); cambio.celda = h.foto; }
+                if ((x.accion === "subir" || x.accion === "quitar" || x.accion === "color") && typeof h.foto === "string"){ ponerFotos(p, h.foto); cambio.celda = h.foto; }
                 else if (x.accion === "subir"){ ponerFotos(p, h.url || ""); p.mejorar = false; cambio.url = p.foto; cambio.mejorar = false; }
                 else if (x.accion === "quitar"){ ponerFotos(p, ""); cambio.url = ""; }
+                if (x.accion === "color" && typeof h.colores === "string"){ p.colores = h.colores.split(",").map(function(c){ return c.trim(); }).filter(Boolean); cambio.colores = h.colores; }
                 if (x.accion === "mostrar"){ p.oculto = x.valor !== "SÍ"; cambio.oculto = p.oculto; }
                 SUBIDAS[p.numero || p.nombre] = cambio;
                 try { localStorage.setItem("alumol-subidas", JSON.stringify(SUBIDAS)); } catch (e) {}
